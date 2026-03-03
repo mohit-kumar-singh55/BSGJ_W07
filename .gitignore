@@ -96,5 +96,4 @@ bin/
 
 
 # === Custom Folders to Ignore (Temperorily) ===
-Survivalist/
-Mixamo/
+StreamingAssets/

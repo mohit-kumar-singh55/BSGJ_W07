@@ -13,6 +13,8 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 {
   public class HandLandmarkerRunner : VisionTaskApiRunner<HandLandmarker>
   {
+    public event System.Action<HandLandmarkerResult> OnHandResultOutput;
+
     [SerializeField] private HandLandmarkerResultAnnotationController _handLandmarkerResultAnnotationController;
 
     private Experimental.TextureFramePool _textureFramePool;
@@ -127,7 +129,8 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
           case Tasks.Vision.Core.RunningMode.IMAGE:
             if (taskApi.TryDetect(image, imageProcessingOptions, ref result))
             {
-              _handLandmarkerResultAnnotationController.DrawNow(result);
+               OnHandResultOutput?.Invoke(result);
+               _handLandmarkerResultAnnotationController.DrawNow(result);
             }
             else
             {
@@ -137,7 +140,8 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
           case Tasks.Vision.Core.RunningMode.VIDEO:
             if (taskApi.TryDetectForVideo(image, GetCurrentTimestampMillisec(), imageProcessingOptions, ref result))
             {
-              _handLandmarkerResultAnnotationController.DrawNow(result);
+                            OnHandResultOutput?.Invoke(result);
+                            _handLandmarkerResultAnnotationController.DrawNow(result);
             }
             else
             {
@@ -153,7 +157,9 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
     private void OnHandLandmarkDetectionOutput(HandLandmarkerResult result, Image image, long timestamp)
     {
-      _handLandmarkerResultAnnotationController.DrawLater(result);
+        OnHandResultOutput?.Invoke(result);   // Åöí«â¡
+
+        _handLandmarkerResultAnnotationController.DrawLater(result);
     }
   }
 }

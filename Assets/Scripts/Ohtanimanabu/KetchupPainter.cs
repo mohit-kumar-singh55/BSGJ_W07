@@ -21,6 +21,9 @@ public class KetchupPainter : MonoBehaviour
     // 前回のクリック位置を記録
     private Vector2? lastUV = null;
 
+    //一度描き終えたかどうか覚えるフラグ
+    private bool hasFinishedDrawing = false;
+
     private void Awake() => Validate();
 
     private void Start() => InitializeTexture();
@@ -35,32 +38,48 @@ public class KetchupPainter : MonoBehaviour
 
         // アクティブを解除
         RenderTexture.active = null;
+
+        //リセット時はフラグも外す
+        hasFinishedDrawing = false;
     }
 
     private void Update()
     {
-        if (IsPointerOverGameObject(out RaycastHit hit))
+        var pointer = Pointer.current;
+        if (!hasFinishedDrawing && pointer != null && pointer.press.isPressed)
         {
-            Vector2 currentUV = hit.textureCoord;
+            if (IsPointerOverGameObject(out RaycastHit hit))
+            {
+                Vector2 currentUV = hit.textureCoord;
 
-            // 前回の位置を埋める
+                // 前回の位置を埋める
+                if (lastUV.HasValue)
+                {
+                    float distance = Vector2.Distance(lastUV.Value, currentUV);
+                    int steps = Mathf.CeilToInt(distance * 500);
+
+                    for (int i = 0; i <= steps; i++)
+                    {
+                        float t = (float)i / steps;
+                        // Lerpを使って中間地点を計算して塗る
+                        PaintAt(Vector2.Lerp(lastUV.Value, currentUV, t));
+                    }
+                }
+                else PaintAt(currentUV);
+
+                lastUV = currentUV;// 今回の位置を保存
+            }
+            else lastUV = null;// 離したらリセット
+        }
+        else
+        {
             if (lastUV.HasValue)
             {
-                float distance = Vector2.Distance(lastUV.Value, currentUV);
-                int steps = Mathf.CeilToInt(distance * 500);
-
-                for (int i = 0; i <= steps; i++)
-                {
-                    float t = (float)i / steps;
-                    // Lerpを使って中間地点を計算して塗る
-                    PaintAt(Vector2.Lerp(lastUV.Value, currentUV, t));
-                }
+                hasFinishedDrawing = true;
+                lastUV = null;
+                Debug.Log("一筆書き終わり：もう描けません");
             }
-            else PaintAt(currentUV);
-
-            lastUV = currentUV;// 今回の位置を保存
         }
-        else lastUV = null;// 離したらリセット
     }
 
     private bool IsPointerOverGameObject(out RaycastHit hit)

@@ -97,3 +97,4 @@ bin/
 
 # === Custom Folders to Ignore (Temperorily) ===
 StreamingAssets/
+UnUploadables/

@@ -972,7 +972,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShaderProgressBar
   _progressSteps: 10
   _fillColor: {r: 0.7176471, g: 0.18823528, b: 0.27336493, a: 0}
-  _defaultColor: {r: 1, g: 1, b: 1, a: 0}
+  _defaultColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &1283170687
 GameObject:
   m_ObjectHideFlags: 0
@@ -1139,50 +1139,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!1 &1406642445
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1406642448}
-  - component: {fileID: 1406642449}
-  m_Layer: 0
-  m_Name: Vosk Model Loader
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1406642448
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1406642445}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1406642449
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1406642445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1eb028ec0f16ed940b64c3ba0afde435, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VoskModel
 --- !u!1 &1476053854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1215,25 +1171,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BSGJ_W07.SpeechToText
   _voiceProcessor: {fileID: 1476053857}
   _recordingSampleRate: 16000
-  _keyPhrases:
-  - "\u30AD\u30E5\u30F3"
-  - "\u304D\u3085\u3093"
-  - "\u3082\u3048"
-  - "\u30E2\u30A8"
-  - "\u840C\u3048"
-  - "\u840C\u3048\u840C\u3048"
-  - "\u3082\u3048\u3082\u3048"
-  - "\u30E2\u30A8\u30E2\u30A8"
-  - "\u840C\u3048\u840C\u3048\u30AD\u30E5\u30F3"
-  - "\u3082\u3048\u3082\u3048\u304D\u3085\u3093"
-  - "\u30E2\u30A8\u30E2\u30A8\u30AD\u30E5\u30F3"
-  - kyun
-  - moe
-  - moe moe
-  - moemoe
-  - moe moe kyun
-  - "\u524D"
-  - "\u4E5D"
+  _maxAlternatives: 3
+  _maxRecordLength: 5
+  _keyPhrases: []
 --- !u!4 &1476053856
 Transform:
   m_ObjectHideFlags: 0
@@ -1611,5 +1551,4 @@ SceneRoots:
   - {fileID: 1767437850}
   - {fileID: 855116642}
   - {fileID: 1537290549}
-  - {fileID: 1406642448}
   - {fileID: 1476053856}

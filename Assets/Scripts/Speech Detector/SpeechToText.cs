@@ -1,22 +1,18 @@
-using System.IO;
+using System.Collections.Generic;
 using UnityEngine;
 using Vosk;
 
 public class SpeechToText : MonoBehaviour
 {
     [SerializeField] private VoiceProcessor _voiceProcessor;
-    // [SerializeField] private float _recordingDuration = 30f;
     [SerializeField] private float _recordingSampleRate = 16000.0f;
+    [SerializeField] private List<string> _keyPhrases = new();
 
-    private Model _model;
+    private VoskModel _model;
     private VoskRecognizer _rec;
-    private string _fullModelPath;
+
     private bool _running = false;
-    private string _result = "";
-
-    private const string _modelPath = "vosk-model-ja-0.22";
-
-    public string Result => _result;
+    private string _grammar = "";
 
     private void OnEnable()
     {
@@ -30,62 +26,107 @@ public class SpeechToText : MonoBehaviour
         _voiceProcessor.OnRecordingStop -= OnRecordingStop;
     }
 
-    private void OnDestroy() => CleanUp();
-
     private void Start()
     {
-        _fullModelPath = Path.Combine(Application.streamingAssetsPath, _modelPath).Replace("\\", "/");
+        _model = VoskModel.Instance;
+        UpdateGrammar();
     }
 
     private void ProcessAudioFrame(short[] data)
     {
-        if (_rec != null && _rec.AcceptWaveform(data, data.Length))
+        if (!_running || !_model.ModelReady || _rec == null)
+            return;
+
+        if (_rec.AcceptWaveform(data, data.Length))
         {
-            string result = _rec.Result();
-            _result += (result + "").Trim();
-            Debug.Log("Result: " + result);
+            var result = _rec.Result();
+
+            if (ContainsKeyPhrase(result))
+            {
+                Debug.Log("💖 KYUN DETECTED 💖");
+                StopRecording();
+            }
+        }
+        else
+        {
+            var partial = _rec.PartialResult();
+
+            if (ContainsKeyPhrase(partial))
+            {
+                Debug.Log("💖 KYUN DETECTED (partial) 💖");
+                StopRecording();
+            }
         }
     }
 
     private void OnRecordingStop()
     {
-        string partialResult = _rec?.PartialResult();
-        _result += (partialResult + "").Trim();
-        Debug.Log("Partial Result: " + partialResult);
-    }
-
-    private void CleanUp()
-    {
-        _rec?.Dispose();
-        _model?.Dispose();
-        _rec = null;
-        _model = null;
+        Debug.Log("Recording stopped.");
     }
 
     public void StartRecording()
     {
-        if (_running) return;
+        if (_running || !_model.ModelReady)
+            return;
 
-        // Initialize Vosk model and recognizer
         _running = true;
-        _model = new Model(_fullModelPath);
-        _rec = new VoskRecognizer(_model, _recordingSampleRate);
 
-        // Start recording
+        if (string.IsNullOrEmpty(_grammar))
+            _rec = new VoskRecognizer(_model.Model, _recordingSampleRate);
+        else
+            _rec = new VoskRecognizer(_model.Model, _recordingSampleRate, _grammar);
+
         _voiceProcessor.StartRecording();
-        Debug.Log("*********** Started recording ***********");
+
+        Debug.Log("🎤 Started recording");
     }
 
     public void StopRecording()
     {
-        if (!_running) return;
+        if (!_running)
+            return;
 
-        // Stop recording and processing
         _running = false;
-        _voiceProcessor.StopRecording();
-        Debug.Log("*********** Stopped recording ***********");
 
-        // clean up resources
-        CleanUp();
+        _voiceProcessor.StopRecording();
+
+        _rec?.Dispose();
+        _rec = null;
+
+        Debug.Log("🛑 Stopped recording");
+    }
+
+    private void UpdateGrammar()
+    {
+        if (_keyPhrases.Count == 0)
+        {
+            _grammar = "";
+            return;
+        }
+
+        List<string> phrases = new();
+
+        foreach (string keyphrase in _keyPhrases)
+            phrases.Add($"\"{keyphrase}\"");
+
+        // phrases.Add("\"[unk]\"");
+
+        _grammar = "[" + string.Join(",", phrases) + "]";
+    }
+
+    private bool ContainsKeyPhrase(string result)
+    {
+        if (string.IsNullOrEmpty(result))
+            return false;
+
+        string lower = result.ToLower();
+
+        foreach (var phrase in _keyPhrases)
+        {
+            if (lower.Contains(phrase))
+                return true;
+        }
+
+        return false;
     }
 }

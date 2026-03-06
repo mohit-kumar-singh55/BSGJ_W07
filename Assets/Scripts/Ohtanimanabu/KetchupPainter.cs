@@ -1,6 +1,8 @@
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(MeshCollider))]// MeshColliderが必要
 public class KetchupPainter : MonoBehaviour
@@ -18,6 +20,11 @@ public class KetchupPainter : MonoBehaviour
     [Header("Current Gameobject Settings")]
     [SerializeField] private Color backgroundColor = new(1f, 0.8f, 0f);// 卵色
 
+    [SerializeField] private Texture2D sampleGuideTexture;
+    [SerializeField] private RenderTexture sampleRT;
+    [SerializeField] private Color sampleColor = new Color(1, 1, 1, 0.5f);
+
+
     // 前回のクリック位置を記録
     private Vector2? lastUV = null;
 
@@ -26,7 +33,11 @@ public class KetchupPainter : MonoBehaviour
 
     private void Awake() => Validate();
 
-    private void Start() => InitializeTexture();
+    private void Start()
+    {
+        InitializeTexture();
+        InitializeSampleFromImage();
+    }
 
     private void InitializeTexture()
     {
@@ -41,6 +52,18 @@ public class KetchupPainter : MonoBehaviour
 
         //リセット時はフラグも外す
         hasFinishedDrawing = false;
+    }
+    private void InitializeSampleFromImage()
+    {
+        RenderTexture.active = sampleRT;
+        GL.PushMatrix();
+        GL.LoadPixelMatrix(0, sampleRT.width, sampleRT.height, 0);
+
+        Rect rect = new Rect(0, 0, sampleRT.width, sampleRT.height);
+
+        Graphics.DrawTexture(rect, sampleGuideTexture, new Rect(0, 0, 1, 1), 0, 0, 0, 0, sampleColor);
+        GL.PopMatrix();
+        RenderTexture.active = null;
     }
 
     private void Update()

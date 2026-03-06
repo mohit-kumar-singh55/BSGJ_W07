@@ -6,9 +6,18 @@ public class HandDataReceiver : MonoBehaviour
 {
     [SerializeField] private HandLandmarkerRunner runner;
 
+    [SerializeField] private int numHands;
+
+    private int phase;
     private void Start()
     {
         runner.OnHandResultOutput += OnHandResult;
+        runner.config.NumHands = numHands;
+    }
+
+    private void Update()
+    {
+        
     }
 
     private void OnHandResult(HandLandmarkerResult result)
@@ -16,11 +25,6 @@ public class HandDataReceiver : MonoBehaviour
         if (result.handLandmarks == null || result.handLandmarks.Count == 0)
             return;
 
-        var wrist = result.handLandmarks[0].landmarks[0];
-        float x = wrist.x;
-        float y = wrist.y;
-        float z = wrist.z;
-
-        Debug.Log($"ŽèŽñ: x={x}, y={y}, z={z}");
+        var wrist1 = result.handLandmarks[0].landmarks[0];
     }
 }

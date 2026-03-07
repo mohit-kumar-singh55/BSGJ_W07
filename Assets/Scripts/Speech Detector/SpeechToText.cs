@@ -6,13 +6,20 @@ public class SpeechToText : MonoBehaviour
 {
     [SerializeField] private VoiceProcessor _voiceProcessor;
     [SerializeField] private float _recordingSampleRate = 16000.0f;
-    [SerializeField] private List<string> _keyPhrases = new();
 
     private VoskModel _model;
     private VoskRecognizer _rec;
 
     private bool _running = false;
+    private bool _phraseDetected = false;
     private string _grammar = "";
+    private List<string> _keyPhrases = new();
+
+    // set key phrases and update grammar accordingly
+    public List<string> KeyPhrases { set { _keyPhrases = value; UpdateGrammar(); } }
+
+    public event System.Action<string> OnKeyPhraseDetected;
+    public event System.Action<string> OnKeyPhraseUnDetected;
 
     private void OnEnable()
     {
@@ -28,8 +35,8 @@ public class SpeechToText : MonoBehaviour
 
     private void Start()
     {
+        // init
         _model = VoskModel.Instance;
-        UpdateGrammar();
     }
 
     private void ProcessAudioFrame(short[] data)
@@ -37,25 +44,21 @@ public class SpeechToText : MonoBehaviour
         if (!_running || !_model.ModelReady || _rec == null)
             return;
 
+        string result;
+
         if (_rec.AcceptWaveform(data, data.Length))
-        {
-            var result = _rec.Result();
 
-            if (ContainsKeyPhrase(result))
-            {
-                Debug.Log("💖 KYUN DETECTED 💖");
-                StopRecording();
-            }
-        }
+            result = _rec.Result();
         else
-        {
-            var partial = _rec.PartialResult();
+            result = _rec.PartialResult();
 
-            if (ContainsKeyPhrase(partial))
-            {
-                Debug.Log("💖 KYUN DETECTED (partial) 💖");
-                StopRecording();
-            }
+        if (ContainsKeyPhrase(result))
+        {
+            _phraseDetected = true;
+            OnKeyPhraseDetected?.Invoke(result);
+            Debug.Log("💖 KYUN DETECTED 💖");
+            CancelInvoke(nameof(StopRecording));   // cancel the auto stop if key phrase detected
+            StopRecording();
         }
     }
 
@@ -64,12 +67,13 @@ public class SpeechToText : MonoBehaviour
         Debug.Log("Recording stopped.");
     }
 
-    public void StartRecording()
+    public void StartRecording(float duration = 3f)
     {
         if (_running || !_model.ModelReady)
             return;
 
         _running = true;
+        _phraseDetected = false;
 
         if (string.IsNullOrEmpty(_grammar))
             _rec = new VoskRecognizer(_model.Model, _recordingSampleRate);
@@ -79,6 +83,9 @@ public class SpeechToText : MonoBehaviour
         _voiceProcessor.StartRecording();
 
         Debug.Log("🎤 Started recording");
+
+        // stop recording after specified duration
+        Invoke(nameof(StopRecording), duration);
     }
 
     public void StopRecording()
@@ -94,6 +101,9 @@ public class SpeechToText : MonoBehaviour
         _rec = null;
 
         Debug.Log("🛑 Stopped recording");
+
+        // when recording stops without detecting key phrase by timeout, invoke un-detected event
+        if (!_phraseDetected) OnKeyPhraseUnDetected?.Invoke("Not detected & Recording stopped because of timeout");
     }
 
     private void UpdateGrammar()

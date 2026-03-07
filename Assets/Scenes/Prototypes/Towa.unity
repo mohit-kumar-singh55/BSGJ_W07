@@ -985,6 +985,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HandDataReceiver
   runner: {fileID: 352267531}
+  numHands: 2
+  prevPosUpdateCountMax: 10
 --- !u!4 &2011104986
 Transform:
   m_ObjectHideFlags: 0

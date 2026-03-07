@@ -10,7 +10,7 @@ public class TraceScore : MonoBehaviour
     Texture2D sampleTex;
     Texture2D ketchupTex;
 
-    int overPixels = 0;
+
 
 
     void Update()
@@ -28,6 +28,8 @@ public class TraceScore : MonoBehaviour
 
         int guidePixels = 0;
         int hitPixels = 0;
+        int overPixels = 0;
+
 
         for (int x = 0; x < sampleTex.width; x++)
         {
@@ -54,7 +56,12 @@ public class TraceScore : MonoBehaviour
                 }
             }
         }
-        float score = (float)hitPixels / guidePixels * 100f;
+
+        float hitRate = (float)hitPixels / guidePixels;
+        float overRate = (float)overPixels / guidePixels;
+
+        float score = (hitRate - overRate) * 100f;
+        score = Mathf.Clamp(score, 0f, 100f);
         return score;
     }
     Texture2D Convert(RenderTexture rt)

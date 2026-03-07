@@ -1,0 +1,1 @@
+- load vosk model at the start of the game using VoskModel.cs class

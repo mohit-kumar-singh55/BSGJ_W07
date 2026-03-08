@@ -1,3 +1,4 @@
+using System;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -23,6 +24,8 @@ public class KetchupPainter : MonoBehaviour
     [SerializeField] private Texture2D sampleGuideTexture;
     [SerializeField] private RenderTexture sampleRT;
     [SerializeField] private Color sampleColor = new Color(1, 1, 1, 0.5f);
+
+
 
 
     // 前回のクリック位置を記録
@@ -85,7 +88,7 @@ public class KetchupPainter : MonoBehaviour
                     if (lastUV.HasValue)
                     {
                         float distance = Vector2.Distance(lastUV.Value, currentUV);
-                        int steps = Mathf.CeilToInt(distance * 500);
+                        int steps = Mathf.CeilToInt(distance * 50);
 
                         for (int i = 0; i <= steps; i++)
                         {
@@ -106,6 +109,9 @@ public class KetchupPainter : MonoBehaviour
         if (wasPressing && !pressing)
         {
             hasFinishedDrawing = true;
+
+            float score = CalculateScorePercent();
+            Debug.Log("完成度:" + score.ToString("F1") + "%");
             lastUV = null;
             Debug.Log("一筆書き終わり：もう描けません");
         }
@@ -121,7 +127,8 @@ public class KetchupPainter : MonoBehaviour
             Vector2 pointerPosition = pointer.position.ReadValue();
             Ray ray = Camera.main.ScreenPointToRay(pointerPosition);
 
-            return Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject;  // このgameObjectに当たっているか確認
+            LayerMask mask = LayerMask.GetMask("PaintTarget");
+            return Physics.Raycast(ray, out hit, 100f, mask) && hit.collider.gameObject == gameObject;  // このgameObjectに当たっているか確認
         }
 
         hit = default;
@@ -152,5 +159,72 @@ public class KetchupPainter : MonoBehaviour
     {
         Assert.IsNotNull(ketchupRT, "Ketchup RenderTexture is not assigned.");
         Assert.IsNotNull(brushTexture, "Brush Texture is not assigned.");
+    }
+
+    Texture2D ReadTexture(RenderTexture rt)
+    {
+        RenderTexture current = RenderTexture.active;
+        RenderTexture.active = rt;
+
+        Texture2D tex = new Texture2D(rt.width, rt.height, TextureFormat.RGBA32, false);
+        tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
+        tex.Apply();
+
+        RenderTexture.active = current;
+
+        return tex;
+
+    }
+
+
+    float CalculateScorePercent()
+    {
+        Texture2D sample = ReadTexture(sampleRT);
+        Texture2D ketchup = ReadTexture(ketchupRT);
+
+        Color[] samplePixels = sample.GetPixels();
+        Color[] ketchupPixels = ketchup.GetPixels();
+
+        int totalGuidePixels = 0;
+        int correctPaintedPixels = 0;
+        int overflowPixels = 0;
+
+        for (int i = 0; i < samplePixels.Length; i++)
+        {
+            bool isGuide = samplePixels[i].a > 0.1f;
+            bool isPainted = ketchupPixels[i].a > 0.1f;
+
+            if (isGuide)
+            {
+                totalGuidePixels++;
+                if (isPainted)
+                {
+                    correctPaintedPixels++;
+                }
+            }
+            else if (isPainted)
+            {
+
+                overflowPixels++;
+
+            }
+        }
+        //なぞり具合
+        float coverage = (float)correctPaintedPixels / totalGuidePixels;
+        //清潔度
+        float allowedOverflow = totalGuidePixels * 5.0f;
+
+        //許容範囲の超え具合(清潔度を下げる)
+        float excessOverflow = Mathf.Max(0, overflowPixels - allowedOverflow);
+
+        //ガイド面積の５倍以上塗ったら清潔度は０
+        float cleanliness = Mathf.Max(0, 1.0f - (excessOverflow / (totalGuidePixels * 5.0f)));
+
+        //最終スコア
+        float finalScore = coverage * cleanliness * 100f;
+        //１００％をでやすくする調整
+        if (coverage > 0.9f && cleanliness > 0.9f) return 100f;
+        return Mathf.Clamp(finalScore, 0f, 100f);
+
     }
 }

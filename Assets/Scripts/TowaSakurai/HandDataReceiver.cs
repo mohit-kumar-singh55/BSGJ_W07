@@ -9,8 +9,9 @@ public class HandDataReceiver : MonoBehaviour
     [SerializeField] private int prevPosUpdateCountMax;
 
     [SerializeField]private int[] isFleezCount;
-    private float handsDistance;
+    [SerializeField]private float handsDistance;
     private int prevPosUpdateCount;
+    [SerializeField] private Vector2[] handMoveDir;
 
     private Vector3[] handPos;
     private Vector3[] prevHandPos;
@@ -23,11 +24,13 @@ public class HandDataReceiver : MonoBehaviour
         isFleezCount = new int[numHands];
         handPos = new Vector3[numHands];
         prevHandPos = new Vector3[numHands];
+        handMoveDir = new Vector2[numHands];
 
         for (int i = 0; i < numHands; i++)
         {
             handPos[i] = Vector3.zero;
             prevHandPos[i] = Vector3.zero;
+            handMoveDir[i] = Vector3.zero;
         }
     }
 
@@ -39,6 +42,11 @@ public class HandDataReceiver : MonoBehaviour
         {
             IsSlowHand(0);
             IsSlowHand(1);
+
+            handsDistance = Distance(handPos[0], handPos[1]);
+
+            handMoveDir[0] = CheckMoveDir(handPos[0], prevHandPos[0]);
+            handMoveDir[1] = CheckMoveDir(handPos[1], prevHandPos[1]);
 
             UpdatePrevHands();
 
@@ -90,4 +98,32 @@ public class HandDataReceiver : MonoBehaviour
         return distance <= threshold;
     }
 
+    private float Distance(Vector3 a,Vector3 b)
+    {
+        return Mathf.Sqrt(
+            (a.x - b.x) * (a.x - b.x) +
+            (a.y - b.y) * (a.y - b.y) +
+            (a.z - b.z) * (a.z - b.z)
+        );
+    }
+
+    private Vector2 CheckMoveDir(Vector3 a, Vector3 b)
+    {
+        Vector2 moveDir = Vector2.zero;
+
+        Vector3 diff = b - a;
+        float threshold = 0.02f;
+
+        if (Mathf.Abs(diff.x) > threshold)
+            moveDir.x = diff.x;
+        else
+            moveDir.x = 0f;
+
+        if (Mathf.Abs(diff.y) > threshold)
+            moveDir.y = diff.y;
+        else
+            moveDir.y = 0f;
+
+        return moveDir;
+    }
 }

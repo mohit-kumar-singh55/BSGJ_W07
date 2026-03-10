@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Score_UI.uss?fileID=7433441132597879392&amp;guid=ef2e73638287a460887c543317bd1ae5&amp;type=3#Score_UI"/>
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:Label text="Score" style="height: 275px; align-items: center; justify-content: center; align-self: center; align-content: center; font-size: 200px; -unity-font-style: bold; color: rgb(255, 169, 0); margin-top: 150px;"/>
+        <ui:Label text="000" style="height: 390px; align-items: center; justify-content: center; align-self: center; align-content: center; width: 584px; -unity-text-align: middle-center; font-size: 200px; -unity-font-style: bold; color: rgb(219, 193, 28); margin-top: 50px;"/>
+    </ui:VisualElement>
+</ui:UXML>

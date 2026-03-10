@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/TitleUI.uss?fileID=7433441132597879392&amp;guid=87d3fce5ba04f4488b1979e1f42daf77&amp;type=3#TitleUI"/>
+    <ui:VisualElement style="flex-grow: 1; width: 637px; height: 100px; justify-content: center; align-self: center; margin-top: 100px; align-items: center; font-size: 50px;">
+        <ui:Label text="萌えキュン！&#10; Cooking" emoji-fallback-support="false" style="-unity-font-style: bold; font-size: 100px; width: 717px; -unity-text-align: middle-center; margin-top: 10px;"/>
+        <ui:TextField label="name" placeholder-text="filler text" vertical-scroller-visibility="Auto" tabindex="0" focusable="true" name="TextField" style="width: 526px; background-size: 100% 100%; align-items: flex-start; justify-content: center; align-self: center; align-content: center; border-top-width: 10px; border-right-width: 10px; border-bottom-width: 10px; border-left-width: 10px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; margin-top: 200px; top: -10px; opacity: 1; height: 111px; font-size: 60px; -unity-font-style: bold; -unity-text-align: upper-center;"/>
+        <ui:Button text="Button" style="margin-top: 200px; width: 565px; height: 135px; font-size: 100px;"/>
+    </ui:VisualElement>
+</ui:UXML>

@@ -4,17 +4,22 @@ using UnityEngine;
 
 public class HandDataReceiver : MonoBehaviour
 {
+    private int prevPosUpdateCount;
+
     [SerializeField] private HandLandmarkerRunner runner;
     [SerializeField] private int numHands;
     [SerializeField] private int prevPosUpdateCountMax;
 
-    [SerializeField]private int[] isFleezCount;
-    [SerializeField]private float handsDistance;
-    private int prevPosUpdateCount;
-    [SerializeField] private Vector2[] handMoveDir;
-
-    private Vector3[] handPos;
-    private Vector3[] prevHandPos;
+    // 止まり続けたフレーム
+    public int[] isFleezCount { get;private set; }
+    // 手と手の距離
+    public float handsDistance { get;private set; }
+    // 手の移動距離と移動方向
+    public Vector2[] handMoveDir { get;private set; }
+    // 手の座標
+    public Vector3[] handPos { get;private set; }
+    // １プレーム前の
+    public Vector3[] prevHandPos{ get;private set; }
 
     private void Start()
     {
@@ -112,17 +117,10 @@ public class HandDataReceiver : MonoBehaviour
         Vector2 moveDir = Vector2.zero;
 
         Vector3 diff = b - a;
-        float threshold = 0.02f;
 
-        if (Mathf.Abs(diff.x) > threshold)
             moveDir.x = diff.x;
-        else
-            moveDir.x = 0f;
 
-        if (Mathf.Abs(diff.y) > threshold)
             moveDir.y = diff.y;
-        else
-            moveDir.y = 0f;
 
         return moveDir;
     }

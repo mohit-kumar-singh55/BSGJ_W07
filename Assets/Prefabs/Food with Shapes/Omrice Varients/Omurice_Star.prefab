@@ -74,6 +74,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Omurice_Star
       objectReference: {fileID: 0}
+    - target: {fileID: 7103442505323944351, guid: 472c9e23e62e8854b8d05170f382ae89, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.368
+      objectReference: {fileID: 0}
     - target: {fileID: 8365829362087211332, guid: 472c9e23e62e8854b8d05170f382ae89, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -113,6 +117,10 @@ PrefabInstance:
     - target: {fileID: 8365829362087211332, guid: 472c9e23e62e8854b8d05170f382ae89, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9080752471956379634, guid: 472c9e23e62e8854b8d05170f382ae89, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.424
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

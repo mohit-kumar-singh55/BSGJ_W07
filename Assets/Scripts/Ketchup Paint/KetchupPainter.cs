@@ -15,10 +15,6 @@ public class KetchupPainter : MonoBehaviour
     [SerializeField] private Color paintColor = Color.red;// ケチャップの赤
 
     [Space(10)]
-    [Header("Current Gameobject Settings")]
-    [SerializeField] private Color backgroundColor = new(1f, 0.8f, 0f);// 卵色
-
-    [Space(10)]
     [SerializeField] private Texture2D sampleGuideTexture;
     [SerializeField] private RenderTexture sampleRT;
     [SerializeField] private Color sampleColor = new(1, 1, 1, 0.5f);
@@ -107,7 +103,6 @@ public class KetchupPainter : MonoBehaviour
 
         if (isDrawing && wasPressing && !pressing)
         {
-
             currentDrawCount++;
             if (currentDrawCount >= maxDrawCount)
             {
@@ -116,12 +111,9 @@ public class KetchupPainter : MonoBehaviour
                 float score = CalculateScorePercent();
                 Debug.Log("完成度:" + score.ToString("F1") + "%");
                 Debug.Log("もう描けません");
+            }
+            else Debug.Log("書いた回数:" + currentDrawCount + "/" + maxDrawCount);
 
-            }
-            else
-            {
-                Debug.Log("書いた回数:" + currentDrawCount + "/" + maxDrawCount);
-            }
             isDrawing = false;
             lastUV = null;
         }
@@ -170,7 +162,7 @@ public class KetchupPainter : MonoBehaviour
         RenderTexture current = RenderTexture.active;
         RenderTexture.active = rt;
 
-        Texture2D tex = new Texture2D(rt.width, rt.height, TextureFormat.RGBA32, false);
+        Texture2D tex = new(rt.width, rt.height, TextureFormat.RGBA32, false);
         tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
         tex.Apply();
 
@@ -199,18 +191,11 @@ public class KetchupPainter : MonoBehaviour
             if (isGuide)
             {
                 totalGuidePixels++;
-                if (isPainted)
-                {
-                    correctPaintedPixels++;
-                }
+                if (isPainted) correctPaintedPixels++;
             }
-            else if (isPainted)
-            {
-
-                overflowPixels++;
-
-            }
+            else if (isPainted) overflowPixels++;
         }
+
         //なぞり具合
         float coverage = (float)correctPaintedPixels / totalGuidePixels;
         //清潔度
@@ -224,6 +209,7 @@ public class KetchupPainter : MonoBehaviour
 
         //最終スコア
         float finalScore = coverage * cleanliness * 100f;
+
         //１００％をでやすくする調整
         if (coverage > 0.9f && cleanliness > 0.9f) return 100f;
         return Mathf.Clamp(finalScore, 0f, 100f);

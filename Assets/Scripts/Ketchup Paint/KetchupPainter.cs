@@ -22,8 +22,9 @@ public class KetchupPainter : MonoBehaviour
     [SerializeField] private Texture2D sampleGuideTexture;
     [SerializeField] private RenderTexture sampleRT;
     [SerializeField] private Color sampleColor = new(1, 1, 1, 0.5f);
-    [Header("Draw Settings")]
 
+    [Space(10)]
+    [Header("Draw Settings")]
     [SerializeField] private int maxDrawCount = 1;
 
     // 前回のクリック位置を記録
@@ -35,6 +36,7 @@ public class KetchupPainter : MonoBehaviour
 
     private bool isDrawing = false;
     private int currentDrawCount = 0;
+
     private void Awake() => Validate();
 
     private void Start()

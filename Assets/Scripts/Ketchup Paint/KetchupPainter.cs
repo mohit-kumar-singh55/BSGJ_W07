@@ -22,6 +22,9 @@ public class KetchupPainter : MonoBehaviour
     [SerializeField] private Texture2D sampleGuideTexture;
     [SerializeField] private RenderTexture sampleRT;
     [SerializeField] private Color sampleColor = new(1, 1, 1, 0.5f);
+    [Header("Draw Settings")]
+
+    [SerializeField] private int maxDrawCount = 1;
 
     // 前回のクリック位置を記録
     private Vector2? lastUV = null;
@@ -30,10 +33,13 @@ public class KetchupPainter : MonoBehaviour
     private bool hasFinishedDrawing = false;
     private bool wasPressing = false;
 
+    private bool isDrawing = false;
+    private int currentDrawCount = 0;
     private void Awake() => Validate();
 
     private void Start()
     {
+        currentDrawCount = 0;
         InitializeTexture();
         InitializeSampleFromImage();
     }
@@ -75,6 +81,7 @@ public class KetchupPainter : MonoBehaviour
         {
             if (IsPointerOverGameObject(out RaycastHit hit))
             {
+                isDrawing = true;
                 Vector2 currentUV = hit.textureCoord;
 
                 // 前回の位置を埋める
@@ -96,15 +103,27 @@ public class KetchupPainter : MonoBehaviour
             }
         }
 
-        if (wasPressing && !pressing)
+        if (isDrawing && wasPressing && !pressing)
         {
-            hasFinishedDrawing = true;
 
-            float score = CalculateScorePercent();
-            Debug.Log("完成度:" + score.ToString("F1") + "%");
+            currentDrawCount++;
+            if (currentDrawCount >= maxDrawCount)
+            {
+                hasFinishedDrawing = true;
+
+                float score = CalculateScorePercent();
+                Debug.Log("完成度:" + score.ToString("F1") + "%");
+                Debug.Log("もう描けません");
+
+            }
+            else
+            {
+                Debug.Log("書いた回数:" + currentDrawCount + "/" + maxDrawCount);
+            }
+            isDrawing = false;
             lastUV = null;
-            Debug.Log("一筆書き終わり：もう描けません");
         }
+
         wasPressing = pressing;
     }
 

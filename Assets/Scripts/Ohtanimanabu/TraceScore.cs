@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class TraceScore : MonoBehaviour
 {
@@ -9,9 +7,6 @@ public class TraceScore : MonoBehaviour
 
     Texture2D sampleTex;
     Texture2D ketchupTex;
-
-
-
 
     void Update()
     {
@@ -64,6 +59,7 @@ public class TraceScore : MonoBehaviour
         score = Mathf.Clamp(score, 0f, 100f);
         return score;
     }
+
     Texture2D Convert(RenderTexture rt)
     {
         RenderTexture.active = rt;
@@ -72,7 +68,6 @@ public class TraceScore : MonoBehaviour
         tex.Apply();
         RenderTexture.active = null;
         return tex;
-
     }
 
     public void Check()
@@ -98,11 +93,7 @@ public class TraceScore : MonoBehaviour
                     return true;
                 }
             }
-
-
         }
         return false;
     }
-
-
 }

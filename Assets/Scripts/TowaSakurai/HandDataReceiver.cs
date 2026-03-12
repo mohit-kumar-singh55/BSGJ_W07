@@ -10,16 +10,16 @@ public class HandDataReceiver : MonoBehaviour
     [SerializeField] private int numHands;
     [SerializeField] private int prevPosUpdateCountMax;
 
-    // ~‚Ü‚è‘±‚¯‚½ƒtƒŒ[ƒ€
-    public int[] isFleezCount { get;private set; }
-    // è‚Æè‚Ì‹——£
-    public float handsDistance { get;private set; }
-    // è‚ÌˆÚ“®‹——£‚ÆˆÚ“®•ûŒü
-    public Vector2[] handMoveDir { get;private set; }
-    // è‚ÌÀ•W
-    public Vector3[] handPos { get;private set; }
-    // ‚PƒvƒŒ[ƒ€‘O‚Ì
-    public Vector3[] prevHandPos{ get;private set; }
+    // æ­¢ã¾ã‚Šç¶šã‘ãŸãƒ•ãƒ¬ãƒ¼ãƒ 
+    public int[] isFleezCount { get; private set; }
+    // æ‰‹ã¨æ‰‹ã®è·é›¢
+    public float handsDistance { get; private set; }
+    // æ‰‹ã®ç§»å‹•è·é›¢ã¨ç§»å‹•æ–¹å‘
+    public Vector2[] handMoveDir { get; private set; }
+    // æ‰‹ã®åº§æ¨™
+    public Vector3[] handPos { get; private set; }
+    // ï¼‘ãƒ—ãƒ¬ãƒ¼ãƒ å‰ã®
+    public Vector3[] prevHandPos { get; private set; }
 
     private void Start()
     {
@@ -103,7 +103,7 @@ public class HandDataReceiver : MonoBehaviour
         return distance <= threshold;
     }
 
-    private float Distance(Vector3 a,Vector3 b)
+    private float Distance(Vector3 a, Vector3 b)
     {
         return Mathf.Sqrt(
             (a.x - b.x) * (a.x - b.x) +
@@ -118,9 +118,9 @@ public class HandDataReceiver : MonoBehaviour
 
         Vector3 diff = b - a;
 
-            moveDir.x = diff.x;
+        moveDir.x = diff.x;
 
-            moveDir.y = diff.y;
+        moveDir.y = diff.y;
 
         return moveDir;
     }

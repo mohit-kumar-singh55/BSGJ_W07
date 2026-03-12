@@ -4,10 +4,12 @@ public class MoeMoeChecker : MonoBehaviour
 {
     [SerializeField] private HandDataReceiver receiver;
     [SerializeField] private int phase;
+
     private float prevHandMoveDirX;
     public float HandMoveDirX;
     private float startHandDistance;
     private int nextMoveDir;
+
     void Start()
     {
         phase = 1;
@@ -21,18 +23,17 @@ public class MoeMoeChecker : MonoBehaviour
     {
         switch (phase)
         {
-            case 0:break;
-            case 1:Phase1(); break;
-            case 2:Phase2(); break;
-            case 3:Phase3(); break;
-            case 4:Phase4(); break;
-                
+            case 0: break;
+            case 1: Phase1(); break;
+            case 2: Phase2(); break;
+            case 3: Phase3(); break;
+            case 4: Phase4(); break;
         }
     }
 
     private void Phase1()
     {
-        // Žè‚ª‚µ‚Î‚ç‚­Ž~‚Ü‚Á‚Ä‚¢‚é
+        // æ‰‹ãŒã—ã°ã‚‰ãæ­¢ã¾ã£ã¦ã„ã‚‹
         if (receiver.isFleezCount[0] > 5 && receiver.isFleezCount[1] > 5)
         {
             SetStartHandDistance();
@@ -41,13 +42,12 @@ public class MoeMoeChecker : MonoBehaviour
             nextMoveDir = 0;
 
             phase = 2;
-            Debug.Log("–G‚¦–G‚¦ƒLƒ…ƒ“ƒZƒbƒg");
+            Debug.Log("èŒãˆèŒãˆã‚­ãƒ¥ãƒ³ã‚»ãƒƒãƒˆ");
         }
     }
 
     private void Phase2()
     {
-
         if (HandDistanceCheck()) phase = 1;
 
         if (receiver.handMoveDir[0].x != prevHandMoveDirX)
@@ -56,20 +56,18 @@ public class MoeMoeChecker : MonoBehaviour
             HandMoveDirX += receiver.handMoveDir[0].x;
         }
 
-        if(Mathf.Abs(HandMoveDirX) > 0.1f)
+        if (Mathf.Abs(HandMoveDirX) > 0.1f)
         {
             nextMoveDir = HandMoveDirX > 0 ? -1 : 1;
             HandMoveDirX = 0;
             phase = 3;
-            Debug.Log("–G‚¦");
-
+            Debug.Log("èŒãˆ");
         }
-
     }
 
     private void Phase3()
     {
-        if(HandDistanceCheck())phase = 1;
+        if (HandDistanceCheck()) phase = 1;
 
         if (receiver.handMoveDir[0].x != prevHandMoveDirX)
         {
@@ -82,8 +80,7 @@ public class MoeMoeChecker : MonoBehaviour
             nextMoveDir *= -1;
             HandMoveDirX = 0;
             phase = 4;
-            Debug.Log("–G‚¦");
-
+            Debug.Log("èŒãˆ");
         }
     }
 
@@ -101,8 +98,8 @@ public class MoeMoeChecker : MonoBehaviour
         {
             nextMoveDir *= -1;
             phase = 1;
-            Debug.Log("ƒLƒ…ƒ“");
-            Debug.Log("–G‚¦–G‚¦ƒLƒ…ƒ“¬Œ÷I");
+            Debug.Log("ã‚­ãƒ¥ãƒ³");
+            Debug.Log("èŒãˆèŒãˆã‚­ãƒ¥ãƒ³æˆåŠŸï¼");
         }
     }
 
@@ -120,5 +117,4 @@ public class MoeMoeChecker : MonoBehaviour
     {
         return startHandDistance > receiver.handsDistance + 0.1 || startHandDistance < receiver.handsDistance - 0.1;
     }
-
 }

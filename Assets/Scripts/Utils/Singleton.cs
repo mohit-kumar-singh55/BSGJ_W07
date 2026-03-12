@@ -13,6 +13,6 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         }
 
         Instance = this as T;
-        // DontDestroyOnLoad(gameObject);   // write this in derived class if you want
+        // DontDestroyOnLoad(gameObject);   // write this in derived class if needed
     }
 }

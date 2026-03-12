@@ -1,11 +1,8 @@
-using System;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
-[RequireComponent(typeof(MeshCollider))]// MeshColliderが必要
+[RequireComponent(typeof(MeshCollider))]
 public class KetchupPainter : MonoBehaviour
 {
     [Header("References")]
@@ -21,12 +18,10 @@ public class KetchupPainter : MonoBehaviour
     [Header("Current Gameobject Settings")]
     [SerializeField] private Color backgroundColor = new(1f, 0.8f, 0f);// 卵色
 
+    [Space(10)]
     [SerializeField] private Texture2D sampleGuideTexture;
     [SerializeField] private RenderTexture sampleRT;
-    [SerializeField] private Color sampleColor = new Color(1, 1, 1, 0.5f);
-
-
-
+    [SerializeField] private Color sampleColor = new(1, 1, 1, 0.5f);
 
     // 前回のクリック位置を記録
     private Vector2? lastUV = null;
@@ -57,13 +52,14 @@ public class KetchupPainter : MonoBehaviour
         //リセット時はフラグも外す
         hasFinishedDrawing = false;
     }
+
     private void InitializeSampleFromImage()
     {
         RenderTexture.active = sampleRT;
         GL.PushMatrix();
         GL.LoadPixelMatrix(0, sampleRT.width, sampleRT.height, 0);
 
-        Rect rect = new Rect(0, 0, sampleRT.width, sampleRT.height);
+        Rect rect = new(0, 0, sampleRT.width, sampleRT.height);
 
         Graphics.DrawTexture(rect, sampleGuideTexture, new Rect(0, 0, 1, 1), 0, 0, 0, 0, sampleColor);
         GL.PopMatrix();
@@ -77,33 +73,27 @@ public class KetchupPainter : MonoBehaviour
 
         if (!hasFinishedDrawing && pressing)
         {
-            if (!hasFinishedDrawing && pointer != null && pointer.press.isPressed)
+            if (IsPointerOverGameObject(out RaycastHit hit))
             {
+                Vector2 currentUV = hit.textureCoord;
 
-                if (IsPointerOverGameObject(out RaycastHit hit))
+                // 前回の位置を埋める
+                if (lastUV.HasValue)
                 {
-                    Vector2 currentUV = hit.textureCoord;
+                    float distance = Vector2.Distance(lastUV.Value, currentUV);
+                    int steps = Mathf.CeilToInt(distance * 50);
 
-                    // 前回の位置を埋める
-                    if (lastUV.HasValue)
+                    for (int i = 0; i <= steps; i++)
                     {
-                        float distance = Vector2.Distance(lastUV.Value, currentUV);
-                        int steps = Mathf.CeilToInt(distance * 50);
-
-                        for (int i = 0; i <= steps; i++)
-                        {
-                            float t = (float)i / steps;
-                            // Lerpを使って中間地点を計算して塗る
-                            PaintAt(Vector2.Lerp(lastUV.Value, currentUV, t));
-                        }
+                        float t = (float)i / steps;
+                        // Lerpを使って中間地点を計算して塗る
+                        PaintAt(Vector2.Lerp(lastUV.Value, currentUV, t));
                     }
-                    else PaintAt(currentUV);
-
-                    lastUV = currentUV;// 今回の位置を保存
                 }
+                else PaintAt(currentUV);
 
+                lastUV = currentUV;// 今回の位置を保存
             }
-
         }
 
         if (wasPressing && !pressing)
@@ -116,7 +106,6 @@ public class KetchupPainter : MonoBehaviour
             Debug.Log("一筆書き終わり：もう描けません");
         }
         wasPressing = pressing;
-
     }
 
     private bool IsPointerOverGameObject(out RaycastHit hit)
@@ -155,13 +144,7 @@ public class KetchupPainter : MonoBehaviour
         RenderTexture.active = null;
     }
 
-    private void Validate()
-    {
-        Assert.IsNotNull(ketchupRT, "Ketchup RenderTexture is not assigned.");
-        Assert.IsNotNull(brushTexture, "Brush Texture is not assigned.");
-    }
-
-    Texture2D ReadTexture(RenderTexture rt)
+    private Texture2D ReadTexture(RenderTexture rt)
     {
         RenderTexture current = RenderTexture.active;
         RenderTexture.active = rt;
@@ -173,11 +156,9 @@ public class KetchupPainter : MonoBehaviour
         RenderTexture.active = current;
 
         return tex;
-
     }
 
-
-    float CalculateScorePercent()
+    private float CalculateScorePercent()
     {
         Texture2D sample = ReadTexture(sampleRT);
         Texture2D ketchup = ReadTexture(ketchupRT);
@@ -225,6 +206,13 @@ public class KetchupPainter : MonoBehaviour
         //１００％をでやすくする調整
         if (coverage > 0.9f && cleanliness > 0.9f) return 100f;
         return Mathf.Clamp(finalScore, 0f, 100f);
+    }
 
+    private void Validate()
+    {
+        Assert.IsNotNull(ketchupRT, "Ketchup RenderTexture is not assigned.");
+        Assert.IsNotNull(brushTexture, "Brush Texture is not assigned.");
+        Assert.IsNotNull(sampleGuideTexture, "Sample Guide Texture is not assigned.");
+        Assert.IsNotNull(sampleRT, "Sample Render Texture is not assigned.");
     }
 }

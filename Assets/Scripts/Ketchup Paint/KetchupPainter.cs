@@ -33,6 +33,8 @@ public class KetchupPainter : MonoBehaviour
     private bool isDrawing = false;
     private int currentDrawCount = 0;
 
+    public static event System.Action<int> OnFinishedDrawing = delegate { };
+
     private void Awake() => Validate();
 
     private void Start()
@@ -109,8 +111,11 @@ public class KetchupPainter : MonoBehaviour
                 hasFinishedDrawing = true;
 
                 float score = CalculateScorePercent();
-                Debug.Log("完成度:" + score.ToString("F1") + "%");
+                // Debug.Log("完成度:" + score.ToString("F1") + "%");
                 Debug.Log("もう描けません");
+
+                // スコアを送る
+                OnFinishedDrawing(Mathf.RoundToInt(score));
             }
             else Debug.Log("書いた回数:" + currentDrawCount + "/" + maxDrawCount);
 

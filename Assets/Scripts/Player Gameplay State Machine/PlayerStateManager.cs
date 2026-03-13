@@ -12,12 +12,12 @@ public class PlayerStateManager : StateManager<PlayerStateManager.PlayerState>
     void OnEnable()
     {
         // stop player state machine, when times up
-        Timer.OnTimesUp += () => gameObject.SetActive(false);
+        Timer.OnTimesUp += OnTimesUp;
     }
 
     void OnDisable()
     {
-        Timer.OnTimesUp -= () => gameObject.SetActive(false);
+        Timer.OnTimesUp -= OnTimesUp;
     }
 
     void Awake()
@@ -35,5 +35,11 @@ public class PlayerStateManager : StateManager<PlayerStateManager.PlayerState>
 
         // always start in idle
         CurrentState = States[PlayerState.Idle];
+    }
+
+    private void OnTimesUp()
+    {
+        CurrentState.ExitState();
+        gameObject.SetActive(false);
     }
 }

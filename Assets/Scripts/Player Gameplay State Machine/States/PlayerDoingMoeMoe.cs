@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 {
     private PlayerStateContext _context;
@@ -36,9 +34,10 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         return _canTransition ? PlayerStateManager.PlayerState.Idle : PlayerStateManager.PlayerState.DoingMoeMoe;
     }
 
-    public void OnRecordingCompleted(int stage, string message)
+    public void OnRecordingCompleted(int score, string message)
     {
-        Debug.Log("Score: " + stage + ", " + message);
+        // Debug.Log("Score: " + score + ", " + message);
+        ScoreManager.Instance.AddScore(score);
         _canTransition = true;
 
         // TODO: add all three scores to the total score

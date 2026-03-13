@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
 {
     private PlayerStateContext _context;
@@ -12,8 +10,6 @@ public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
 
     public override void EnterState()
     {
-        // TODO: spawn random food on the table
-        
         _canTransition = false;
         _context.Animator.SetBool("Painting", true);
         KetchupPainter.OnFinishedDrawing += OnDrawingFinished;
@@ -35,7 +31,7 @@ public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
 
     private void OnDrawingFinished(int score)
     {
-        Debug.Log("Score: " + score);
+        ScoreManager.Instance.AddScore(score);
         _canTransition = true;
     }
 }

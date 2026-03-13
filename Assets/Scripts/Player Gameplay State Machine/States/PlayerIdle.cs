@@ -43,6 +43,3 @@ public class PlayerIdle : BaseState<PlayerStateManager.PlayerState>
         return _canTransition ? PlayerStateManager.PlayerState.Painting : PlayerStateManager.PlayerState.Idle;
     }
 }
-
-// create timer
-// create overall score manager

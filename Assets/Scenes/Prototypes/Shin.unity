@@ -1359,7 +1359,6 @@ MonoBehaviour:
   - moe moe kyun
   - "\u524D"
   - "\u4E5D"
-  _detectionVFXPrefab: {fileID: 4370158027970891713, guid: c348070eda2004f46b98e69fd6cde0cb, type: 3}
 --- !u!1 &1537290548
 GameObject:
   m_ObjectHideFlags: 0

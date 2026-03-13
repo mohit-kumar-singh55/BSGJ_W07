@@ -9,6 +9,17 @@ public class PlayerStateManager : StateManager<PlayerStateManager.PlayerState>
 
     private PlayerStateContext _context;
 
+    void OnEnable()
+    {
+        // stop player state machine, when times up
+        Timer.OnTimesUp += () => gameObject.SetActive(false);
+    }
+
+    void OnDisable()
+    {
+        Timer.OnTimesUp -= () => gameObject.SetActive(false);
+    }
+
     void Awake()
     {
         _context = new PlayerStateContext(GetComponent<Animator>(), _speechDetector);

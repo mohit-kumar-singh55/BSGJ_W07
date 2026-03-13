@@ -233,12 +233,12 @@ public class HandDataReceiver : MonoBehaviour
         };
 
         int handCount = result.handLandmarks.Count;
-
+        
         for (int h = 0; h < handCount; h++)
         {
             var lm = result.handLandmarks[h].landmarks;
 
-            float direction = (h == 0) ? 1f : -1f;
+            float direction = (result.handedness[h].categories[0].categoryName == "Right") ? 1f : -1f;
 
             for (int i = 0; i < fingerPairs.GetLength(0); i++)
             {
@@ -294,5 +294,15 @@ public class HandDataReceiver : MonoBehaviour
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// 手が2つあるかのチェック
+    /// </summary>
+    /// <param name="result"></param>
+    /// <returns></returns>
+    public bool AreTwoHandsPresent(HandLandmarkerResult result)
+    {
+        return result.handLandmarks != null && result.handLandmarks.Count >= 2;
     }
 }

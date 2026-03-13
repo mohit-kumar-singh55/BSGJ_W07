@@ -49,10 +49,17 @@ public class MoeMoeChecker : MonoBehaviour
     // フェーズ1
     private void Phase1()
     {
+        // 手が2つあるかのチェック
+        if (!receiver.AreTwoHandsPresent(receiver.result))
+        {
+            Debug.Log("手が2つ無い");
+            return;
+        }
+
         // 手の形がハートになっているかのチェック
         if (receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result))
         {
-            Debug.Log("手の形がハートになっていない");
+            Debug.Log("手の形がハートではない");
 
             return;
         }
@@ -60,6 +67,8 @@ public class MoeMoeChecker : MonoBehaviour
         // 手がしばらく止まっている
         if (receiver.isFleezCount[0] > 5 && receiver.isFleezCount[1] > 5)
         {
+
+
             // フェーズ移行処理
             SetStartHandDistance();
 

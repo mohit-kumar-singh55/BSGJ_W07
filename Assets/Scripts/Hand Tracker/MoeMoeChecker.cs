@@ -1,20 +1,35 @@
+using Mediapipe.Tasks.Vision.HandLandmarker;
 using UnityEngine;
 
 public class MoeMoeChecker : MonoBehaviour
 {
+    // レシーバー
     [SerializeField] private HandDataReceiver receiver;
+
+    // 萌え萌えきゅんの進行度
     [SerializeField] private int phase;
 
+    // 前フレームのX移動距離
     private float prevHandMoveDirX;
-    public float HandMoveDirX;
+
+    // 前のフェーズからの手の移動距離X
+    private float HandMoveDirX;
+    // 前のフェーズからの手の移動距離X
+    private float HandMoveDirY;
+
+    // 最初の手と手の距離
     private float startHandDistance;
+
+    // 次のフェーズの移動方向
     private int nextMoveDir;
 
     void Start()
     {
+        // 初期化
         phase = 1;
         startHandDistance = 0;
         HandMoveDirX = 0;
+        HandMoveDirY = 0;
         prevHandMoveDirX = 0;
         nextMoveDir = 0;
     }
@@ -31,14 +46,25 @@ public class MoeMoeChecker : MonoBehaviour
         }
     }
 
+    // フェーズ1
     private void Phase1()
     {
+        // 手の形がハートになっているかのチェック
+        if (receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result))
+        {
+            Debug.Log("手の形がハートになっていない");
+
+            return;
+        }
+
         // 手がしばらく止まっている
         if (receiver.isFleezCount[0] > 5 && receiver.isFleezCount[1] > 5)
         {
+            // フェーズ移行処理
             SetStartHandDistance();
 
             HandMoveDirX = 0;
+            HandMoveDirY = 0;
             nextMoveDir = 0;
 
             phase = 2;
@@ -46,75 +72,115 @@ public class MoeMoeChecker : MonoBehaviour
         }
     }
 
+    // フェーズ2
     private void Phase2()
     {
-        if (HandDistanceCheck()) phase = 1;
+        // 手の距離のチェック
+        if (HandDistanceCheck()) MoveStart();
 
+        // 手の移動の更新
         if (receiver.handMoveDir[0].x != prevHandMoveDirX)
         {
             prevHandMoveDirX = receiver.handMoveDir[0].x;
             HandMoveDirX += receiver.handMoveDir[0].x;
+            HandMoveDirY += receiver.handMoveDir[0].y;
         }
 
-        if (Mathf.Abs(HandMoveDirX) > 0.1f)
+        // 一定量横に移動したかのチェック
+        if (Mathf.Abs(HandMoveDirX) > 0.09f)
         {
             nextMoveDir = HandMoveDirX > 0 ? -1 : 1;
             HandMoveDirX = 0;
+            HandMoveDirY = 0;
             phase = 3;
             Debug.Log("萌え");
+        }
+
+        // 縦方向に移動しすぎていないかのチェック
+        if (Mathf.Abs(HandMoveDirY) > 0.1f)
+        {
+            MoveStart();
         }
     }
 
     private void Phase3()
     {
-        if (HandDistanceCheck()) phase = 1;
+        // 手の距離のチェック
+        if (HandDistanceCheck()) MoveStart();
 
+        // 手の移動の更新
         if (receiver.handMoveDir[0].x != prevHandMoveDirX)
         {
             prevHandMoveDirX = receiver.handMoveDir[0].x;
             HandMoveDirX += receiver.handMoveDir[0].x;
+            HandMoveDirY += receiver.handMoveDir[0].y;
         }
 
-        if (HandMoveDirX * nextMoveDir > 0.1f)
+        // 一定量横に移動したかのチェック
+        if (HandMoveDirX * nextMoveDir > 0.09f)
         {
             nextMoveDir *= -1;
             HandMoveDirX = 0;
+            HandMoveDirY = 0;
             phase = 4;
             Debug.Log("萌え");
+        }
+
+        // 縦方向に移動しすぎていないかのチェック
+        if (Mathf.Abs(HandMoveDirY) > 0.1f)
+        {
+            MoveStart();
         }
     }
 
     private void Phase4()
     {
+        // 手の距離のチェック
         if (HandDistanceCheck()) phase = 1;
 
+        // 手の移動の更新
         if (receiver.handMoveDir[0].x != prevHandMoveDirX)
         {
             prevHandMoveDirX = receiver.handMoveDir[0].x;
             HandMoveDirX += receiver.handMoveDir[0].x;
+            HandMoveDirY += receiver.handMoveDir[0].y;
         }
 
-        if (HandMoveDirX * nextMoveDir > 0.05f)
+        // 一定量横に移動したかのチェック
+        if (HandMoveDirX * nextMoveDir > 0.04f)
         {
-            nextMoveDir *= -1;
-            phase = 1;
+            MoveStart();
             Debug.Log("キュン");
             Debug.Log("萌え萌えキュン成功！");
         }
+
+        // 縦方向に移動しすぎていないかのチェック
+        if (Mathf.Abs(HandMoveDirY) > 0.1f)
+        {
+            MoveStart();
+        }
     }
 
+    // 初期化
     private void MoveStart()
     {
+        nextMoveDir = 0;
+        HandMoveDirX = 0;
+        HandMoveDirY = 0;
         phase = 1;
     }
 
+    // セッター：手の距離
     private void SetStartHandDistance()
     {
         startHandDistance = receiver.handsDistance;
     }
 
+    // 手の距離のチェック
     private bool HandDistanceCheck()
     {
         return startHandDistance > receiver.handsDistance + 0.1 || startHandDistance < receiver.handsDistance - 0.1;
     }
+
+
 }

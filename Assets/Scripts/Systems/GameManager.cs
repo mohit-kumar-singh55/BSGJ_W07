@@ -9,18 +9,6 @@ public class GameManager : Singleton<GameManager>
         DontDestroyOnLoad(gameObject);
     }
 
-    void OnEnable()
-    {
-        // PlayerHealth.OnPlayerDeath += OnGameOver;
-        // GhostHealth.OnPlayerWin += GoNextLevel;
-    }
-
-    void OnDisable()
-    {
-        // PlayerHealth.OnPlayerDeath -= OnGameOver;
-        // GhostHealth.OnPlayerWin -= GoNextLevel;
-    }
-
     // ** Input System Callbacks
     private void OnGoNextScene(InputValue val) => GoNextScene();
 
@@ -36,11 +24,4 @@ public class GameManager : Singleton<GameManager>
         index = index == SCENES.DOES_NOT_EXIST ? SCENES.TITLE : index;
         SceneManager.LoadScene(index);
     }
-
-    // void OnGameClear()
-    // {
-    //     // ゲームクリアしているのでレベル1からやり直す
-    //     PlayerPrefs.SetInt(PLAYER_PREFS.LAST_PLAYING_LEVEL, SCENES.LEVEL_1);
-    //     SceneManager.LoadScene(SCENES.GAME_CLEAR);
-    // }
 }

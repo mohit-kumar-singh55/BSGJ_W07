@@ -115,7 +115,7 @@ public class KetchupPainter : MonoBehaviour
                 Debug.Log("もう描けません");
 
                 // スコアを送る
-                OnFinishedDrawing(Mathf.RoundToInt(score));
+                OnFinishedDrawing?.Invoke(Mathf.RoundToInt(score));
             }
             else Debug.Log("書いた回数:" + currentDrawCount + "/" + maxDrawCount);
 

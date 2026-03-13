@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Vosk;
 
+[RequireComponent(typeof(VoiceProcessor))]
 public class SpeechToText : MonoBehaviour
 {
     [SerializeField] private VoiceProcessor _voiceProcessor;

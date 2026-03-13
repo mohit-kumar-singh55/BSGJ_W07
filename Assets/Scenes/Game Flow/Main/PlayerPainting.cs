@@ -12,8 +12,8 @@ public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
 
     public override void EnterState()
     {
-        // set animator bool
-        // wait for paiting to complete (add the event in painting class, if no strokes left, then call the event here and transition to doing moe moe)
+        // TODO: spawn random food on the table
+        
         _canTransition = false;
         _context.Animator.SetBool("Painting", true);
         KetchupPainter.OnFinishedDrawing += OnDrawingFinished;

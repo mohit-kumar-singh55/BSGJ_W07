@@ -5,15 +5,13 @@ public class PlayerStateManager : StateManager<PlayerStateManager.PlayerState>
 {
     public enum PlayerState { Idle, Painting, DoingMoeMoe }
 
+    [SerializeField] private SpeechDetector _speechDetector;
+
     private PlayerStateContext _context;
 
     void Awake()
     {
-        _context = new PlayerStateContext(GetComponent<Animator>());
-    }
-
-    void Start()
-    {
+        _context = new PlayerStateContext(GetComponent<Animator>(), _speechDetector);
         InitializeStates();
     }
 

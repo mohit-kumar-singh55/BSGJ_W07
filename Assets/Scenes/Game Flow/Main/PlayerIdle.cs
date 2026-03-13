@@ -12,6 +12,9 @@ public class PlayerIdle : BaseState<PlayerStateManager.PlayerState>
         // just wait for sometime and then transition to painting
         _idleTimer = 5f;
         _canTransition = false;
+
+        // spawn food
+        FoodManager.Instance.SpawnFood();
     }
 
     public override void UpdateState()

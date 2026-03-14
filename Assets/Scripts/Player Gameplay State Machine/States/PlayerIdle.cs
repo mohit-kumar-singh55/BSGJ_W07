@@ -19,6 +19,7 @@ public class PlayerIdle : BaseState<PlayerStateManager.PlayerState>
 
         // spawn food
         // FoodManager.Instance.SpawnFood();
+        // TODO: stop player from painting while in idle
     }
 
     public override void UpdateState()

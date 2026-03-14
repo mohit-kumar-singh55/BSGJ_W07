@@ -35,11 +35,5 @@ public class GameManager : Singleton<GameManager>
         SceneManager.LoadScene(index);
     }
 
-    private void OnTimesUp()
-    {
-        // TODO: try to save the playername & score in a text file as csv and then read the file in the ranking scene
-
-        // go to next scene
-        GoNextScene();
-    }
+    private void OnTimesUp() => GoNextScene();
 }

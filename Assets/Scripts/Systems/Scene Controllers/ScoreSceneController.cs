@@ -21,7 +21,7 @@ public class ScoreSceneController : MonoBehaviour
         _scoreText = root.Q<Label>(_scoreName);
 
         // get current player's score
-        _score = PlayerDataManager.Instance.GetPlayerScore();
+        _score = PlayerDataManager.Instance.Score;
 
         // show score
         StartCoroutine(CountUpToScore());

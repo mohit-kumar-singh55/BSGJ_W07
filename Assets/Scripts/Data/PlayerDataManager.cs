@@ -6,6 +6,9 @@ public class PlayerDataManager : Singleton<PlayerDataManager>
 {
     private PlayerData _playerData;
 
+    public PlayerData PlayerData => _playerData;
+    public int Score => _playerData.Score;
+
     protected override void Awake()
     {
         base.Awake();
@@ -23,8 +26,6 @@ public class PlayerDataManager : Singleton<PlayerDataManager>
             if (scene.buildIndex == SCENES.TITLE) ResetPlayerData();
         };
     }
-
-    public int GetPlayerScore() => _playerData.Score;
 
     public void SetPlayerName(string name) => _playerData.Name = name;
 

@@ -351,7 +351,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 389579197}
-  - component: {fileID: 389579196}
+  - component: {fileID: 389579199}
+  - component: {fileID: 389579198}
   m_Layer: 0
   m_Name: Rank Data Binder
   m_TagString: Untagged
@@ -359,20 +360,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &389579196
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 389579195}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49c5fa54e98a5b541a6c7f6f1b9a40a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RankDataBinder
-  _rankUI: {fileID: 221700529}
-  _playerDataListName: RankingList
 --- !u!4 &389579197
 Transform:
   m_ObjectHideFlags: 0
@@ -388,6 +375,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &389579198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389579195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49c5fa54e98a5b541a6c7f6f1b9a40a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RankDataBinder
+  _rankUI: {fileID: 221700529}
+  _playerDataListName: RankingList
+--- !u!114 &389579199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389579195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ead1c4d0f1623f44a855b895db44a03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RankingManager
+  _maxRankingSize: 20
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

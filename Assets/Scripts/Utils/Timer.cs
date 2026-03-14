@@ -28,7 +28,6 @@ public class Timer : MonoBehaviour
             isRunning = false;
 
             // stop player state machine
-            // save the current score
             // go to next scene
             OnTimesUp?.Invoke();
             return;

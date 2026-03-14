@@ -6,6 +6,7 @@ public class ScoreSceneController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private UIDocument _scoreUIPanel;
+    [SerializeField] private float _countTimeLimit = 3.0f;
 
     [Header("Element Names")]
     [SerializeField] private string _scoreName = "ScoreData";
@@ -19,7 +20,8 @@ public class ScoreSceneController : MonoBehaviour
 
         _scoreText = root.Q<Label>(_scoreName);
 
-        _score = PlayerPrefs.GetInt(PLAYER_PREFS.TOTAL_SCORE, 0);
+        // get current player's score
+        _score = PlayerDataManager.Instance.GetPlayerScore();
 
         // show score
         StartCoroutine(CountUpToScore());
@@ -29,12 +31,19 @@ public class ScoreSceneController : MonoBehaviour
 
     private IEnumerator CountUpToScore()
     {
+        float t = 0;
         int score = 0;
+
         while (score < _score)
         {
-            score++;
+            t += Time.deltaTime / _countTimeLimit;
+
+            score = Mathf.RoundToInt(t * _score);
             _scoreText.text = score.ToString();
-            yield return new WaitForSeconds(0.01f);
+            yield return null;
         }
+
+        // show final score to be sure
+        _scoreText.text = _score.ToString();
     }
 }

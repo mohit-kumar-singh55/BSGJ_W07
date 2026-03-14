@@ -10,7 +10,7 @@
                 <ui:DataBinding property="text" data-source-path="Name" binding-mode="ToTarget"/>
             </Bindings>
         </ui:Label>
-        <ui:Label text="000" name="Score" style="font-size: 120px; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Examples%20&amp;%20Extras/Fonts/Bangers.ttf?fileID=12800000&amp;guid=5dd49b3eacc540408c98eee0de38e0f1&amp;type=3#Bangers&quot;); color: rgb(200, 203, 255); -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(142, 52, 210);">
+        <ui:Label text="0000" name="Score" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="true" style="font-size: 120px; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Examples%20&amp;%20Extras/Fonts/Bangers.ttf?fileID=12800000&amp;guid=5dd49b3eacc540408c98eee0de38e0f1&amp;type=3#Bangers&quot;); color: rgb(200, 203, 255); -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(142, 52, 210); text-overflow: ellipsis;">
             <Bindings>
                 <ui:DataBinding property="text" data-source-path="Score" binding-mode="ToTarget"/>
             </Bindings>

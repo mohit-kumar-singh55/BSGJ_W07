@@ -31,7 +31,7 @@ public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
 
     private void OnDrawingFinished(int score)
     {
-        ScoreManager.Instance.AddScore(score);
+        if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(score);
         _canTransition = true;
     }
 }

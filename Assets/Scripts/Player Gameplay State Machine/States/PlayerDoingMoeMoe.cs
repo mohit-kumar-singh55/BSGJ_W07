@@ -36,8 +36,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     public void OnRecordingCompleted(int score, string message)
     {
-        // Debug.Log("Score: " + score + ", " + message);
-        ScoreManager.Instance.AddScore(score);
+        if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(score);
         _canTransition = true;
 
         // TODO: add all three scores to the total score

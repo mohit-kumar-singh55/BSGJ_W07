@@ -19,13 +19,11 @@ public class VoskModel : Singleton<VoskModel>
         Model?.Dispose();
     }
 
-#if UNITY_EDITOR
     void OnApplicationQuit()
     {
         // Dispose model to avoid memory leaks
         Model?.Dispose();
     }
-#endif
 
     protected override void Awake()
     {

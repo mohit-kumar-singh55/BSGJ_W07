@@ -3,6 +3,16 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
+    void OnEnable()
+    {
+        Timer.OnTimesUp += OnTimesUp;
+    }
+
+    void OnDisable()
+    {
+        Timer.OnTimesUp -= OnTimesUp;
+    }
+
     protected override void Awake()
     {
         base.Awake();
@@ -23,5 +33,13 @@ public class GameManager : Singleton<GameManager>
         int index = SceneManager.GetActiveScene().buildIndex + 1;
         index = index == SCENES.DOES_NOT_EXIST ? SCENES.TITLE : index;
         SceneManager.LoadScene(index);
+    }
+
+    private void OnTimesUp()
+    {
+        // TODO: try to save the playername & score in a text file as csv and then read the file in the ranking scene
+
+        // go to next scene
+        GoNextScene();
     }
 }

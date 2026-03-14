@@ -235,6 +235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoreSceneController
   _scoreUIPanel: {fileID: 221700529}
+  _countTimeLimit: 3
   _scoreName: ScoreData
 --- !u!4 &323086436
 Transform:

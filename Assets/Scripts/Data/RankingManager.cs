@@ -36,7 +36,7 @@ public class RankingManager : MonoBehaviour
         // if empty just set current player's data
         if (_playerDatas.Count <= 0)
         {
-            _playerDatas.Add(_playerDataManager.PlayerData);
+            _playerDatas.Add(new(1, _playerDataManager.PlayerData.Name, _playerDataManager.PlayerData.Score));
             return;
         }
 
@@ -55,7 +55,7 @@ public class RankingManager : MonoBehaviour
         for (int i = 0; i < _playerDatas.Count; i++)
             _playerDatas[i] = new(i + 1, _playerDatas[i].Name, _playerDatas[i].Score);
 
-        // if there are more than _maxRankingSize players, remove the last one (K)
+        // if there are more than _maxRankingSize players, remove the last one
         if (_playerDatas.Count > _maxRankingSize) _playerDatas.RemoveAt(_maxRankingSize);
     }
 }

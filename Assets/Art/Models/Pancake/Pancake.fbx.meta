@@ -3,7 +3,17 @@ guid: 586473dc7479f184a855a4dbd5ca8de4
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: butter
+    second: {fileID: 2100000, guid: e0868e246920a3b45b1d2b1df4e9cbfc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pancke.001
+    second: {fileID: 2100000, guid: 46b3a20d576fb63419c314f4ec636c12, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

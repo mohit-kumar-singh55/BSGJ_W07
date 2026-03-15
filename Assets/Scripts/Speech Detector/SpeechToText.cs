@@ -19,8 +19,8 @@ public class SpeechToText : MonoBehaviour
     // set key phrases and update grammar accordingly
     public List<string> KeyPhrases { set { _keyPhrases = value; UpdateGrammar(); } }
 
-    public event System.Action<string> OnKeyPhraseDetected;
-    public event System.Action<string> OnKeyPhraseUnDetected;
+    public event System.Action<string, int> OnKeyPhraseDetected;
+    public event System.Action<string, int> OnKeyPhraseUnDetected;
 
     private void OnEnable()
     {
@@ -56,7 +56,7 @@ public class SpeechToText : MonoBehaviour
         if (ContainsKeyPhrase(result))
         {
             _phraseDetected = true;
-            OnKeyPhraseDetected?.Invoke(result);
+            OnKeyPhraseDetected?.Invoke(result, NormalizedVolume());
             Debug.Log("💖 KYUN DETECTED 💖");
             CancelInvoke(nameof(StopRecording));   // cancel the auto stop if key phrase detected
             StopRecording();
@@ -104,7 +104,7 @@ public class SpeechToText : MonoBehaviour
         Debug.Log("🛑 Stopped recording");
 
         // when recording stops without detecting key phrase by timeout, invoke un-detected event
-        if (!_phraseDetected) OnKeyPhraseUnDetected?.Invoke("Not detected & Recording stopped because of timeout");
+        if (!_phraseDetected) OnKeyPhraseUnDetected?.Invoke("Not detected & Recording stopped because of timeout", NormalizedVolume());
     }
 
     private void UpdateGrammar()
@@ -140,4 +140,6 @@ public class SpeechToText : MonoBehaviour
 
         return false;
     }
+
+    private int NormalizedVolume() => Mathf.RoundToInt(Mathf.Clamp01(_voiceProcessor.MaxVolume) * 100);
 }

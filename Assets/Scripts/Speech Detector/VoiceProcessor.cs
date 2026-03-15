@@ -56,6 +56,11 @@ public class VoiceProcessor : MonoBehaviour
     public int FrameLength { get; private set; }
 
     /// <summary>
+    /// Maximum volume of recorded audio
+    /// </summary>
+    public float MaxVolume { get; private set; }
+
+    /// <summary>
     /// Event where frames of audio are delivered
     /// </summary>
     public event Action<short[]> OnFrameCaptured;
@@ -306,6 +311,9 @@ public class VoiceProcessor : MonoBehaviour
                         _audioDetected = false;
                     }
                 }
+
+                // setting max volume obtained
+                if (maxVolume > MaxVolume) MaxVolume = maxVolume;
             }
 
             if (_audioDetected)

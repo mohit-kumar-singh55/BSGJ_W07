@@ -25,7 +25,6 @@ public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
 
     public override PlayerStateManager.PlayerState GetNextState()
     {
-        // return PlayerStateManager.PlayerState.DoingMoeMoe;
         return _canTransition ? PlayerStateManager.PlayerState.DoingMoeMoe : PlayerStateManager.PlayerState.Painting;
     }
 

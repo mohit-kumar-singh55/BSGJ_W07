@@ -48,31 +48,29 @@ public class SpeechDetector : MonoBehaviour
         _startTime = Time.time;
     }
 
-    private void OnKeyPhraseDetected(string keyphrase)
+    private void OnKeyPhraseDetected(string keyphrase, int volume)
     {
         float elapsedTime = Time.time - _startTime;
-        // Debug.Log($"Key phrase detected: {keyphrase}, Elapsed Time: {elapsedTime} seconds");
 
-        if (elapsedTime < _detectionWindow.x)
-        {
-            //  score as Early
-            OnRecordingCompleted?.Invoke((int)DetectionStage.Early, keyphrase);
-        }
-        else if (elapsedTime <= _detectionWindow.y)
-        {
-            // score as Good
-            OnRecordingCompleted?.Invoke((int)DetectionStage.Good, keyphrase);
-        }
-        else
-        {
-            // score as Late
-            OnRecordingCompleted?.Invoke((int)DetectionStage.Late, keyphrase);
-        }
+        // score based on the elapsed time and volume
+        DetectionStage stage;
+
+        //  score as Early
+        if (elapsedTime < _detectionWindow.x) stage = DetectionStage.Early;
+        // score as Good
+        else if (elapsedTime <= _detectionWindow.y) stage = DetectionStage.Good;
+        // score as Late
+        else stage = DetectionStage.Late;
+
+        // sending score
+        OnRecordingCompleted?.Invoke(CalculateScore((int)stage, volume), keyphrase);
     }
 
-    private void OnKeyPhraseUnDetected(string message)
+    private void OnKeyPhraseUnDetected(string message, int volume)
     {
         // score as Miss
-        OnRecordingCompleted?.Invoke((int)DetectionStage.Miss, message + " Score: Miss");
+        OnRecordingCompleted?.Invoke(CalculateScore((int)DetectionStage.Miss, volume), message + " Score: Miss");
     }
+
+    private int CalculateScore(int stageScore, int volumeScore) => Mathf.RoundToInt((stageScore + volumeScore) / 2f);
 }

@@ -5,7 +5,7 @@
                 <ui:DataBinding property="text" data-source-path="RankNo" binding-mode="ToTarget"/>
             </Bindings>
         </ui:Label>
-        <ui:Label text="shin mks" name="Name" style="font-size: 120px; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Examples%20&amp;%20Extras/Fonts/Bangers.ttf?fileID=12800000&amp;guid=5dd49b3eacc540408c98eee0de38e0f1&amp;type=3#Bangers&quot;); color: rgb(70, 76, 165); -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(188, 210, 52);">
+        <ui:Label text="shin mks" name="Name" style="font-size: 120px; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Examples%20&amp;%20Extras/Fonts/Bangers.ttf?fileID=12800000&amp;guid=5dd49b3eacc540408c98eee0de38e0f1&amp;type=3#Bangers&quot;); color: rgb(165, 96, 70); -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(255, 255, 255);">
             <Bindings>
                 <ui:DataBinding property="text" data-source-path="Name" binding-mode="ToTarget"/>
             </Bindings>

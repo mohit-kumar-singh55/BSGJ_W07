@@ -13,7 +13,8 @@ public class RankingManager : MonoBehaviour
     {
         _playerDataManager = PlayerDataManager.Instance;
 
-        if (_playerDataManager == null){
+        if (_playerDataManager == null)
+        {
             Debug.LogError("RankingManager: PlayerDataManager is null");
             return;
         }
@@ -39,10 +40,12 @@ public class RankingManager : MonoBehaviour
             return;
         }
 
-        // check if current player has enough score (is atleast greater than last player's score)
-        bool hasEnoughScore = _playerDataManager.Score > _playerDatas[^1].Score;
-
-        if (!hasEnoughScore) return;
+        if (_playerDatas.Count >= _maxRankingSize)
+        {
+            // check if current player has enough score (is atleast greater than last player's score)
+            bool hasEnoughScore = _playerDataManager.Score > _playerDatas[^1].Score;
+            if (!hasEnoughScore) return;
+        }
 
         // add current player's data and sort
         _playerDatas.Add(_playerDataManager.PlayerData);

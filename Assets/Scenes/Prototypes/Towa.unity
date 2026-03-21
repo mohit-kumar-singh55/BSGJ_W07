@@ -972,10 +972,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea74b88e6872954f9ad7e05d008d5d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoeMoeChecker2
-  checkTime: 
-  nowCheckTime: 0
   point: 0
   receiver: {fileID: 2011104985}
+  handLandmarker: {fileID: 352267531}
   phase: 0
 --- !u!1 &2011104984
 GameObject:

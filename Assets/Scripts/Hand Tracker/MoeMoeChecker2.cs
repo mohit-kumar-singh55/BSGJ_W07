@@ -1,18 +1,24 @@
 using Mediapipe.Tasks.Vision.HandLandmarker;
+using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using UnityEngine;
+using static Unity.Collections.Unicode;
 
 public class MoeMoeChecker2 : MonoBehaviour
 {
+    // コメントアウトをするフレーム
+    private const int LogFlame = 0;
     // チェックする時間
-    [SerializeField] private int[] checkTime;
+    private int[] checkTime;
 
     // 今のチェック時間
-    [SerializeField] private int nowCheckTime;
+    private int nowCheckTime;
 
     [SerializeField] private int point;
 
     // レシーバー
     [SerializeField] private HandDataReceiver receiver;
+
+    [SerializeField] private HandLandmarkerRunner handLandmarker;
 
     // 萌え萌えきゅんの進行度
     [SerializeField] private int phase;
@@ -35,7 +41,15 @@ public class MoeMoeChecker2 : MonoBehaviour
     // クリアしたフェーズ
     private int clearPhase;
 
+    private int startCount;
+
     void Start()
+    {
+        startCount = 0;
+       StartCheck();
+    }
+
+    private void Initalize()
     {
         // 初期化
         phase = 1;
@@ -48,8 +62,31 @@ public class MoeMoeChecker2 : MonoBehaviour
         checkTime = new int[5] { 0, 0, 60, 60, 60 };
     }
 
+    // チェック開始
+    public void StartCheck()
+    {
+        Initalize();
+        receiver.gameObject.SetActive(true);
+        StartCoroutine(handLandmarker.Resume());
+
+    }
+
+    // チェック終了
+    public void EndCheck()
+    {
+        Initalize();
+        receiver.gameObject.SetActive(false);
+        handLandmarker.Pause();
+
+    }
+
     private void FixedUpdate()
     {
+        if(startCount == 20)
+        {
+            EndCheck();
+        }
+
         switch (phase)
         {
             case 0: break;
@@ -58,6 +95,8 @@ public class MoeMoeChecker2 : MonoBehaviour
             case 3: Phase3(); break;
             case 4: Phase4(); break;
         }
+
+        startCount++;
     }
 
     // フェーズ1
@@ -101,7 +140,7 @@ public class MoeMoeChecker2 : MonoBehaviour
         UpdateMoveDir();
 
         // タイムのチェック
-        if (nowCheckTime == 20)
+        if (nowCheckTime == LogFlame)
         {
             Debug.Log("萌え");
         }
@@ -130,7 +169,7 @@ public class MoeMoeChecker2 : MonoBehaviour
         UpdateMoveDir();
 
         // タイムのチェック
-        if (nowCheckTime == 20)
+        if (nowCheckTime == LogFlame)
         {
             Debug.Log("萌え");
         }
@@ -157,7 +196,7 @@ public class MoeMoeChecker2 : MonoBehaviour
         // 手の移動の更新
         UpdateMoveDir();
         // タイムのチェック
-        if (nowCheckTime == 20)
+        if (nowCheckTime == LogFlame)
         {
             Debug.Log("キュン");
         }

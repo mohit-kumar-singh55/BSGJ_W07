@@ -36,6 +36,11 @@ public class HandDataReceiver : MonoBehaviour
 
     private void Start()
     {
+        Initalize();
+    }
+    // 初期化
+    private void Initalize()
+    {
         //初期化
         runner.OnHandResultOutput += OnHandResult;
         runner.config.NumHands = numHands;

@@ -1,10 +1,12 @@
 using Mediapipe.Tasks.Vision.HandLandmarker;
+using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using UnityEngine;
 
 public class MoeMoeChecker : MonoBehaviour
 {
     // レシーバー
     [SerializeField] private HandDataReceiver receiver;
+    [SerializeField] private HandLandmarkerRunner handLandmarker;
 
     // 萌え萌えきゅんの進行度
     [SerializeField] private int phase;
@@ -25,6 +27,12 @@ public class MoeMoeChecker : MonoBehaviour
 
     void Start()
     {
+        Initalize();
+        EndCheck();
+    }
+
+    private void Initalize()
+    {
         // 初期化
         phase = 1;
         startHandDistance = 0;
@@ -44,6 +52,22 @@ public class MoeMoeChecker : MonoBehaviour
             case 3: Phase3(); break;
             case 4: Phase4(); break;
         }
+    }
+
+    // チェック開始
+    public void StartCheck()
+    {
+        Initalize();
+        receiver.gameObject.SetActive(true);
+        handLandmarker.gameObject.SetActive(true);
+    }
+
+    // チェック終了
+    public void EndCheck()
+    {
+        Initalize();
+        receiver.gameObject.SetActive(false);
+        handLandmarker.gameObject.SetActive(false);
     }
 
     // フェーズ1

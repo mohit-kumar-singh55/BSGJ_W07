@@ -21,7 +21,42 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
     public readonly HandLandmarkDetectionConfig config = new HandLandmarkDetectionConfig();
 
-    public override void Stop()
+        private bool cameraPaused = false;
+
+        public new void Pause()
+        {
+            if (isPaused) return;
+
+            isPaused = true;
+
+            var imageSource = ImageSourceProvider.ImageSource;
+            imageSource?.Stop();   // 完全停止（WebCamTexture が破棄される）
+        }
+
+        public new IEnumerator Resume()
+        {
+            if (!isPaused) yield break;
+
+            isPaused = false;
+
+            var imageSource = ImageSourceProvider.ImageSource;
+
+            // ★ Restart（再初期化）
+            yield return imageSource.Play();
+
+            // 起動待ち
+            yield return new WaitUntil(() => imageSource.isPrepared);
+
+            if (!imageSource.isPrepared)
+            {
+                Debug.LogError("Failed to restart camera");
+                yield break;
+            }
+
+            Debug.Log("Camera restarted");
+        }
+
+        public override void Stop()
     {
       base.Stop();
       _textureFramePool?.Dispose();
@@ -111,15 +146,23 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
             break;
           case ImageReadMode.CPUAsync:
           default:
-            req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
-            yield return waitUntilReqDone;
+                        var tex = imageSource.GetCurrentTexture();
+                        if (tex == null)
+                        {
+                            textureFrame.Release();
+                            yield return null;
+                            continue;
+                        }
 
-            if (req.hasError)
-            {
-              Debug.LogWarning($"Failed to read texture from the image source");
-              continue;
-            }
-            image = textureFrame.BuildCPUImage();
+                        req = textureFrame.ReadTextureAsync(tex, flipHorizontally, flipVertically);
+                        yield return waitUntilReqDone;
+
+                        if (req.hasError)
+                        {
+                            Debug.LogWarning("Failed to read texture from the image source");
+                            continue;
+                        }
+                        image = textureFrame.BuildCPUImage();
             textureFrame.Release();
             break;
         }

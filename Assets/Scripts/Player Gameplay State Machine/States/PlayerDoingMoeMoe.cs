@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 {
     private PlayerStateContext _context;
@@ -13,18 +15,15 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         _canTransition = false;
         // TODO: wait for some seconds, play some sound
 
-        // check voice
+        // events
         _context.SpeechDetector.OnRecordingCompleted += OnRecordingCompleted;
+        _context.HandDetection.OnHandCheckStart += OnHandCheckStart;
+        _context.HandDetection.OnHandDetectionOver += OnHandDetectionOver;
+
         _context.VFXCountdown.StartCountdown(() =>
         {
-            // start voice detection
-            _context.SpeechDetector.StartDetection();
-
             // start hand detection
             _context.HandDetection.StartCheck();
-
-            // play moe effect
-            _context.MoeEffectAnimator.SetTrigger("MoeMoe");
         });
 
         // TODO: check hand gesture
@@ -38,6 +37,8 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         // remove current spawned food
         FoodManager.Instance.DestroyFood();
         _context.SpeechDetector.OnRecordingCompleted -= OnRecordingCompleted;
+        _context.HandDetection.OnHandCheckStart -= OnHandCheckStart;
+        _context.HandDetection.OnHandDetectionOver -= OnHandDetectionOver;
     }
 
     public override PlayerStateManager.PlayerState GetNextState()
@@ -45,7 +46,16 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         return _canTransition ? PlayerStateManager.PlayerState.Idle : PlayerStateManager.PlayerState.DoingMoeMoe;
     }
 
-    public void OnRecordingCompleted(int score, string message)
+    private void OnHandCheckStart()
+    {
+        // start voice detection
+        _context.SpeechDetector.StartDetection();
+
+        // play moe effect
+        _context.MoeEffectAnimator.SetTrigger("MoeMoe");
+    }
+
+    private void OnRecordingCompleted(int score, string message)
     {
         if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(score);
 
@@ -55,5 +65,10 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         // _canTransition = true;
 
         // TODO: add all three scores to the total score
+    }
+
+    private void OnHandDetectionOver(int point)
+    {
+        Debug.Log("Point: " + point);
     }
 }

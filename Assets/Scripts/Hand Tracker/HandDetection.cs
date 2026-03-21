@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class HandDetection : MonoBehaviour
 {
-    // コメントアウトをするフレーム
-    private const int TimeToCheck = 0;
     // チェックする時間
     private float[] checkTime;
 
@@ -43,6 +41,11 @@ public class HandDetection : MonoBehaviour
     private float initializeTimer = 0;
     private float initializeUpTo = .5f;
 
+    private bool isDetecting = false;
+
+    public event System.Action OnHandCheckStart = delegate { };
+    public event System.Action<int> OnHandDetectionOver = delegate { };
+
     private
 
     void Start()
@@ -73,11 +76,19 @@ public class HandDetection : MonoBehaviour
         nowCheckTime = 0;
         receiver.gameObject.SetActive(true);
         StartCoroutine(handLandmarker.Resume());
+
+        if (!isInitializing) isDetecting = true;
     }
 
     // チェック終了
     public void EndCheck()
     {
+        if (!isInitializing) isDetecting = false;
+
+        // 終了時の処理
+        if (isInitializing) OnHandDetectionOver?.Invoke(point);
+
+        // stop checking
         Initalize();
         receiver.gameObject.SetActive(false);
         handLandmarker.Pause();
@@ -85,6 +96,8 @@ public class HandDetection : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!isDetecting) return;
+
         if (isInitializing)
         {
             if (initializeTimer > initializeUpTo)
@@ -104,6 +117,7 @@ public class HandDetection : MonoBehaviour
                 case 4: Phase4(); break;
                 default: break;
             }
+
             nowCheckTime += Time.fixedDeltaTime;
         }
     }
@@ -135,6 +149,9 @@ public class HandDetection : MonoBehaviour
             point = 0;
             NextPhase();
             Debug.Log("チェックスタート");
+
+            // 音声認識　と　エフェクト　を開始
+            OnHandCheckStart?.Invoke();
         }
     }
 

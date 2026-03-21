@@ -8,6 +8,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1285905789564209843, guid: 472c9e23e62e8854b8d05170f382ae89, type: 3}
+      propertyPath: paintColor.b
+      value: 0.08627451
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285905789564209843, guid: 472c9e23e62e8854b8d05170f382ae89, type: 3}
+      propertyPath: paintColor.g
+      value: 0.1764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285905789564209843, guid: 472c9e23e62e8854b8d05170f382ae89, type: 3}
+      propertyPath: paintColor.r
+      value: 0.4392157
+      objectReference: {fileID: 0}
     - target: {fileID: 3454429670309862570, guid: 472c9e23e62e8854b8d05170f382ae89, type: 3}
       propertyPath: m_Name
       value: Pancake_Heart

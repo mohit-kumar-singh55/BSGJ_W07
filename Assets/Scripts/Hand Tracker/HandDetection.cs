@@ -1,7 +1,7 @@
 using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using UnityEngine;
 
-public class MoeMoeChecker2 : MonoBehaviour
+public class HandDetection : MonoBehaviour
 {
     // コメントアウトをするフレーム
     private const int TimeToCheck = 0;
@@ -9,7 +9,7 @@ public class MoeMoeChecker2 : MonoBehaviour
     private float[] checkTime;
 
     // 今のチェック時間
-    private float nowCheckTime = 0f;
+    [SerializeField] private float nowCheckTime = 0f;
 
     [SerializeField] private int point;
 
@@ -22,7 +22,7 @@ public class MoeMoeChecker2 : MonoBehaviour
     [SerializeField] private int phase;
 
     // 前フレームのX移動距離
-    private float prevHandMoveDirX;
+    [SerializeField] private float prevHandMoveDirX;
 
     // 前のフェーズからの手の移動距離X
     private float HandMoveDirX;
@@ -68,7 +68,9 @@ public class MoeMoeChecker2 : MonoBehaviour
     // チェック開始
     public void StartCheck()
     {
+        Debug.Log("*************************チェック開始");
         Initalize();
+        nowCheckTime = 0;
         receiver.gameObject.SetActive(true);
         StartCoroutine(handLandmarker.Resume());
     }
@@ -112,14 +114,14 @@ public class MoeMoeChecker2 : MonoBehaviour
         // 手が2つあるかのチェック
         if (!receiver.AreTwoHandsPresent(receiver.result))
         {
-            //Debug.Log("手が2つ無い");
+            Debug.Log("手が2つ無い");
             return;
         }
 
         // 手の形がハートになっているかのチェック
         if (receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result))
         {
-            // Debug.Log("手の形がハートではない");
+            Debug.Log("手の形がハートではない");
             return;
         }
 

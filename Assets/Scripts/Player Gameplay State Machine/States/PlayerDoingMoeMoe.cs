@@ -15,7 +15,17 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
         // check voice
         _context.SpeechDetector.OnRecordingCompleted += OnRecordingCompleted;
-        _context.VFXCountdown.StartCountdown(() => _context.SpeechDetector.StartDetection());
+        _context.VFXCountdown.StartCountdown(() =>
+        {
+            // start voice detection
+            _context.SpeechDetector.StartDetection();
+
+            // start hand detection
+            _context.HandDetection.StartCheck();
+
+            // play moe effect
+            _context.MoeEffectAnimator.SetTrigger("MoeMoe");
+        });
 
         // TODO: check hand gesture
         // TODO: add events to capture them and once done, call another function that will check the current score and the time remaining, if time remaining, transition to idle, if not, go to next scene
@@ -39,10 +49,10 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
     {
         if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(score);
 
-        // play moe effect
-        _context.MoeEffectAnimator.SetTrigger("MoeMoe");
+        // // play moe effect
+        // _context.MoeEffectAnimator.SetTrigger("MoeMoe");
 
-        _canTransition = true;
+        // _canTransition = true;
 
         // TODO: add all three scores to the total score
     }

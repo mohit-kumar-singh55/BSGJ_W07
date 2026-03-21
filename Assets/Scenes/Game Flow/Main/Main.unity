@@ -2363,7 +2363,7 @@ GameObject:
   - component: {fileID: 833439095}
   - component: {fileID: 833439094}
   m_Layer: 0
-  m_Name: MoeMoeChecker
+  m_Name: Hand Detector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4125,6 +4125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStateManager
   _speechDetector: {fileID: 463278451}
+  _handDetection: {fileID: 833439094}
   _moeEffectAnimator: {fileID: 1662567485}
   _vfxCountdown: {fileID: 916207817}
 --- !u!1 &1305714639

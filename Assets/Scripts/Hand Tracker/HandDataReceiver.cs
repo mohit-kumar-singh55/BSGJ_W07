@@ -238,7 +238,7 @@ public class HandDataReceiver : MonoBehaviour
         };
 
         int handCount = result.handLandmarks.Count;
-        
+
         for (int h = 0; h < handCount; h++)
         {
             var lm = result.handLandmarks[h].landmarks;

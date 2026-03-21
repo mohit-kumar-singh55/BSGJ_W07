@@ -1,17 +1,15 @@
-using Mediapipe.Tasks.Vision.HandLandmarker;
 using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using UnityEngine;
-using static Unity.Collections.Unicode;
 
 public class MoeMoeChecker2 : MonoBehaviour
 {
     // コメントアウトをするフレーム
-    private const int LogFlame = 0;
+    private const int TimeToCheck = 0;
     // チェックする時間
-    private int[] checkTime;
+    private float[] checkTime;
 
     // 今のチェック時間
-    private int nowCheckTime;
+    private float nowCheckTime = 0f;
 
     [SerializeField] private int point;
 
@@ -41,12 +39,17 @@ public class MoeMoeChecker2 : MonoBehaviour
     // クリアしたフェーズ
     private int clearPhase;
 
-    private int startCount;
+    private bool isInitializing = true;
+    private float initializeTimer = 0;
+    private float initializeUpTo = .5f;
+
+    private
 
     void Start()
     {
-        startCount = 0;
-       StartCheck();
+        isInitializing = true;
+        initializeTimer = 0;
+        StartCheck();
     }
 
     private void Initalize()
@@ -59,7 +62,7 @@ public class MoeMoeChecker2 : MonoBehaviour
         prevHandMoveDirX = 0;
         nextMoveDir = 0;
         point = 0;
-        checkTime = new int[5] { 0, 0, 60, 60, 60 };
+        checkTime = new float[4] { 0, 1, 1, 1 };
     }
 
     // チェック開始
@@ -68,7 +71,6 @@ public class MoeMoeChecker2 : MonoBehaviour
         Initalize();
         receiver.gameObject.SetActive(true);
         StartCoroutine(handLandmarker.Resume());
-
     }
 
     // チェック終了
@@ -77,26 +79,30 @@ public class MoeMoeChecker2 : MonoBehaviour
         Initalize();
         receiver.gameObject.SetActive(false);
         handLandmarker.Pause();
-
     }
 
     private void FixedUpdate()
     {
-        if(startCount == 20)
-        {
-            EndCheck();
-        }
-
+        // if (isInitializing)
+        // {
+        //     if (initializeTimer > initializeUpTo)
+        //     {
+        //         EndCheck();
+        //         isInitializing = false;
+        //     }
+        //     else initializeTimer += Time.fixedDeltaTime;
+        // }
+        // else
+        // {
         switch (phase)
         {
-            case 0: break;
             case 1: Phase1(); break;
             case 2: Phase2(); break;
             case 3: Phase3(); break;
             case 4: Phase4(); break;
+            default: break;
         }
-
-        startCount++;
+        // }
     }
 
     // フェーズ1
@@ -113,7 +119,6 @@ public class MoeMoeChecker2 : MonoBehaviour
         if (receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result))
         {
             // Debug.Log("手の形がハートではない");
-
             return;
         }
 
@@ -139,25 +144,17 @@ public class MoeMoeChecker2 : MonoBehaviour
         // 手の移動の更新
         UpdateMoveDir();
 
-        // タイムのチェック
-        if (nowCheckTime == LogFlame)
-        {
-            Debug.Log("萌え");
-        }
-
         // 判定のチェック
-        if (nowCheckTime == checkTime[phase])
+        if (nowCheckTime >= checkTime[phase - 1])
         {
             // 一定量横に移動したかのチェック
-            if (Mathf.Abs(HandMoveDirX) > 0.09f)
-            {
-                point++;
-            }
+            if (Mathf.Abs(HandMoveDirX) > 0.09f) point++;
             NextPhase();
+            Debug.Log("萌え");
             nextMoveDir = HandMoveDirX > 0 ? -1 : 1;
         }
 
-        nowCheckTime++;
+        nowCheckTime += Time.fixedDeltaTime;
     }
 
     private void Phase3()
@@ -168,24 +165,16 @@ public class MoeMoeChecker2 : MonoBehaviour
         // 手の移動の更新
         UpdateMoveDir();
 
-        // タイムのチェック
-        if (nowCheckTime == LogFlame)
+        // 判定のチェック
+        if (nowCheckTime >= checkTime[phase - 1])
         {
+            // 一定量横に移動したかのチェック
+            if (Mathf.Abs(HandMoveDirX) > 0.09f) point++;
+            NextPhase();
             Debug.Log("萌え");
         }
 
-        // 判定のチェック
-        if (nowCheckTime == checkTime[phase])
-        {
-            // 一定量横に移動したかのチェック
-            if (Mathf.Abs(HandMoveDirX) > 0.09f)
-            {
-                point++;
-            }
-            NextPhase();
-        }
-
-        nowCheckTime++;
+        nowCheckTime += Time.fixedDeltaTime;
     }
 
     private void Phase4()
@@ -195,24 +184,18 @@ public class MoeMoeChecker2 : MonoBehaviour
 
         // 手の移動の更新
         UpdateMoveDir();
-        // タイムのチェック
-        if (nowCheckTime == LogFlame)
-        {
-            Debug.Log("キュン");
-        }
 
         // 判定のチェック
-        if (nowCheckTime == checkTime[phase])
+        if (nowCheckTime >= checkTime[phase - 1])
         {
             // 一定量横に移動したかのチェック
-            if (Mathf.Abs(HandMoveDirX) > 0.04f)
-            {
-                point++;
-            }
-            MoveStart();
+            if (Mathf.Abs(HandMoveDirX) > 0.04f) point++;
+            Debug.Log("キュン");
+            EndCheck();
+            return;
         }
 
-        nowCheckTime++;
+        nowCheckTime += Time.fixedDeltaTime;
     }
 
     // 初期化
@@ -253,6 +236,4 @@ public class MoeMoeChecker2 : MonoBehaviour
         HandMoveDirY += receiver.handMoveDir[0].y;
         return true;
     }
-
-
 }

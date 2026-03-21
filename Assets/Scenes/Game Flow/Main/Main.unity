@@ -440,7 +440,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &151966943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2368,7 +2368,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &833439094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2381,10 +2381,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea74b88e6872954f9ad7e05d008d5d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoeMoeChecker2
-  checkTime: 
-  nowCheckTime: 0
   point: 0
   receiver: {fileID: 151966943}
+  handLandmarker: {fileID: 151966945}
   phase: 0
 --- !u!4 &833439095
 Transform:

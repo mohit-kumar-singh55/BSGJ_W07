@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
 {
     private PlayerStateContext _context;
@@ -31,6 +33,7 @@ public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
     private void OnDrawingFinished(int score)
     {
         if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(score);
+        Debug.Log("Score: " + score);
         _canTransition = true;
     }
 }

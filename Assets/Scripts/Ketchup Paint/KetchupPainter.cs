@@ -23,6 +23,11 @@ public class KetchupPainter : MonoBehaviour
     [Header("Draw Settings")]
     [SerializeField] private int maxDrawCount = 1;
 
+    [Space(10)]
+    [Header("Score Settings")]
+    [Tooltip("Score is calculated out of 100% and then multiplied by this value")]
+    [SerializeField] private float scoreMultiplier = 1.0f;
+
     // 前回のクリック位置を記録
     private Vector2? lastUV = null;
 
@@ -110,9 +115,9 @@ public class KetchupPainter : MonoBehaviour
             {
                 hasFinishedDrawing = true;
 
-                float score = CalculateScorePercent();
+                float score = CalculateScorePercent() * scoreMultiplier;
                 // Debug.Log("完成度:" + score.ToString("F1") + "%");
-                Debug.Log("もう描けません");
+                // Debug.Log("もう描けません");
 
                 // スコアを送る
                 OnFinishedDrawing?.Invoke(Mathf.RoundToInt(score));

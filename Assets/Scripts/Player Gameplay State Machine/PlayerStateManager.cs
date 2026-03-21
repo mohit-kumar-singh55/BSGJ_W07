@@ -7,6 +7,7 @@ public class PlayerStateManager : StateManager<PlayerStateManager.PlayerState>
 
     [SerializeField] private SpeechDetector _speechDetector;
     [SerializeField] private Animator _moeEffectAnimator;
+    [SerializeField] private VFXCountdown _vfxCountdown;
 
     private PlayerStateContext _context;
 
@@ -23,7 +24,7 @@ public class PlayerStateManager : StateManager<PlayerStateManager.PlayerState>
 
     void Awake()
     {
-        _context = new PlayerStateContext(GetComponent<Animator>(), _speechDetector, _moeEffectAnimator);
+        _context = new PlayerStateContext(GetComponent<Animator>(), _speechDetector, _moeEffectAnimator, _vfxCountdown);
         InitializeStates();
     }
 

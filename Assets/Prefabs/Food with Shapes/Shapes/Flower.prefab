@@ -73,6 +73,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8313868460854270579, guid: ee5ded49125d09c458d3bad60c1b93da, type: 3}
+      propertyPath: scoreMultiplier
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8313868460854270579, guid: ee5ded49125d09c458d3bad60c1b93da, type: 3}
       propertyPath: sampleGuideTexture
       value: 
       objectReference: {fileID: 2800000, guid: 99674b6ff576e49fc9c07ba48d9e2066, type: 3}

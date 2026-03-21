@@ -83,26 +83,27 @@ public class MoeMoeChecker2 : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // if (isInitializing)
-        // {
-        //     if (initializeTimer > initializeUpTo)
-        //     {
-        //         EndCheck();
-        //         isInitializing = false;
-        //     }
-        //     else initializeTimer += Time.fixedDeltaTime;
-        // }
-        // else
-        // {
-        switch (phase)
+        if (isInitializing)
         {
-            case 1: Phase1(); break;
-            case 2: Phase2(); break;
-            case 3: Phase3(); break;
-            case 4: Phase4(); break;
-            default: break;
+            if (initializeTimer > initializeUpTo)
+            {
+                EndCheck();
+                isInitializing = false;
+            }
+            else initializeTimer += Time.fixedDeltaTime;
         }
-        // }
+        else
+        {
+            switch (phase)
+            {
+                case 1: Phase1(); break;
+                case 2: Phase2(); break;
+                case 3: Phase3(); break;
+                case 4: Phase4(); break;
+                default: break;
+            }
+            nowCheckTime += Time.fixedDeltaTime;
+        }
     }
 
     // フェーズ1
@@ -153,8 +154,6 @@ public class MoeMoeChecker2 : MonoBehaviour
             Debug.Log("萌え");
             nextMoveDir = HandMoveDirX > 0 ? -1 : 1;
         }
-
-        nowCheckTime += Time.fixedDeltaTime;
     }
 
     private void Phase3()
@@ -173,14 +172,12 @@ public class MoeMoeChecker2 : MonoBehaviour
             NextPhase();
             Debug.Log("萌え");
         }
-
-        nowCheckTime += Time.fixedDeltaTime;
     }
 
     private void Phase4()
     {
         // 手の距離のチェック
-        if (HandDistanceCheck()) phase = 1;
+        if (HandDistanceCheck()) EndCheck();
 
         // 手の移動の更新
         UpdateMoveDir();
@@ -194,8 +191,6 @@ public class MoeMoeChecker2 : MonoBehaviour
             EndCheck();
             return;
         }
-
-        nowCheckTime += Time.fixedDeltaTime;
     }
 
     // 初期化

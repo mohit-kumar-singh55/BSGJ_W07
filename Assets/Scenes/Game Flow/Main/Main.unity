@@ -432,30 +432,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 151966944}
-  - component: {fileID: 151966943}
   - component: {fileID: 151966945}
   m_Layer: 0
-  m_Name: HandDataReceiver & LandmarkerRunner
+  m_Name: LandmarkerRunner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &151966943
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 151966942}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47b422b80f567b4478ad719c2dd11542, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HandDataReceiver
-  runner: {fileID: 151966945}
-  numHands: 2
-  prevPosUpdateCountMax: 10
 --- !u!4 &151966944
 Transform:
   m_ObjectHideFlags: 0
@@ -2381,10 +2365,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea74b88e6872954f9ad7e05d008d5d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoeMoeChecker2
+  nowCheckTime: 0
   point: 0
-  receiver: {fileID: 151966943}
+  receiver: {fileID: 1548630785}
   handLandmarker: {fileID: 151966945}
   phase: 0
+  prevHandMoveDirX: 0
 --- !u!4 &833439095
 Transform:
   m_ObjectHideFlags: 0
@@ -4599,6 +4585,53 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1548630784
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1548630786}
+  - component: {fileID: 1548630785}
+  m_Layer: 0
+  m_Name: HandDataReceiver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1548630785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548630784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47b422b80f567b4478ad719c2dd11542, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandDataReceiver
+  runner: {fileID: 151966945}
+  numHands: 2
+  prevPosUpdateCountMax: 10
+--- !u!4 &1548630786
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548630784}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.65162, y: -0, z: 61.68736}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8874,6 +8907,7 @@ SceneRoots:
   - {fileID: 1991821093}
   - {fileID: 631514127}
   - {fileID: 151966944}
+  - {fileID: 1548630786}
   - {fileID: 833439095}
   - {fileID: 837514658}
   - {fileID: 727851963}

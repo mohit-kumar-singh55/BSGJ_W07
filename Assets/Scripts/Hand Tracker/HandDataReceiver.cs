@@ -1,6 +1,7 @@
 using Mediapipe.Tasks.Vision.HandLandmarker;
 using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using UnityEngine;
+using UnityEngine.InputSystem.Utilities;
 
 public class HandDataReceiver : MonoBehaviour
 {
@@ -33,6 +34,9 @@ public class HandDataReceiver : MonoBehaviour
 
     // １プレーム前の
     public Vector3[] prevHandPos { get; private set; }
+
+    // 手のスケール
+    public float handScale;
 
     private void Start()
     {
@@ -86,6 +90,8 @@ public class HandDataReceiver : MonoBehaviour
     /// <param name="result">リザルト</param>
     private void OnHandResult(HandLandmarkerResult result)
     {
+        const float scaleMultiPlier = 5;
+
         this.result = result;
 
         if (result.handLandmarks == null || result.handLandmarks.Count == 0)
@@ -95,8 +101,19 @@ public class HandDataReceiver : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            var wrist = result.handLandmarks[i].landmarks[0];
+            var lm = result.handLandmarks[i].landmarks;
+
+            // 手首の座標
+            var wrist = lm[0];
             handPos[i] = new Vector3(wrist.x, wrist.y, wrist.z);
+
+            float dx = lm[12].x - lm[0].x;
+            float dy = lm[12].y - lm[0].y;
+            float dz = lm[12].z - lm[0].z;
+
+            float scale = Mathf.Sqrt(dx * dx + dy * dy + dz * dz);
+
+            handScale = scale * scaleMultiPlier;
         }
     }
 
@@ -310,4 +327,6 @@ public class HandDataReceiver : MonoBehaviour
     {
         return result.handLandmarks != null && result.handLandmarks.Count >= 2;
     }
+
+
 }

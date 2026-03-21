@@ -31,12 +31,6 @@ public class HandDetection : MonoBehaviour
     // 最初の手と手の距離
     private float startHandDistance;
 
-    // 次のフェーズの移動方向
-    private int nextMoveDir;
-
-    // クリアしたフェーズ
-    private int clearPhase;
-
     private bool isInitializing = true;
     private float initializeTimer = 0;
     private float initializeUpTo = .5f;
@@ -44,7 +38,8 @@ public class HandDetection : MonoBehaviour
     private bool isDetecting = false;
 
     public event System.Action OnHandCheckStart = delegate { };
-    public event System.Action<int> OnHandDetectionOver = delegate { };
+    public event System.Action<int> OnHandDetectionProceed = delegate { }; // phase
+    public event System.Action<int> OnHandDetectionOver = delegate { }; // point
 
     private
 
@@ -63,7 +58,6 @@ public class HandDetection : MonoBehaviour
         HandMoveDirX = 0;
         HandMoveDirY = 0;
         prevHandMoveDirX = 0;
-        nextMoveDir = 0;
         point = 0;
         checkTime = new float[4] { 0, 1, 1, 1 };
     }
@@ -71,22 +65,24 @@ public class HandDetection : MonoBehaviour
     // チェック開始
     public void StartCheck()
     {
-        Debug.Log("*************************チェック開始");
+        Debug.Log("************************* チェック開始 *************************");
         Initalize();
         nowCheckTime = 0;
         receiver.gameObject.SetActive(true);
         StartCoroutine(handLandmarker.Resume());
 
-        if (!isInitializing) isDetecting = true;
+        // if (!isInitializing) isDetecting = true;
+        isDetecting = true;
     }
 
     // チェック終了
     public void EndCheck()
     {
-        if (!isInitializing) isDetecting = false;
+        // if (!isInitializing) isDetecting = false;
+        isDetecting = false;
 
-        // 終了時の処理
-        if (isInitializing) OnHandDetectionOver?.Invoke(point);
+        // on check over
+        if (!isInitializing) OnHandDetectionOver?.Invoke(point);
 
         // stop checking
         Initalize();
@@ -118,6 +114,8 @@ public class HandDetection : MonoBehaviour
                 default: break;
             }
 
+            // Debug.Log("StartHandDistance: " + startHandDistance + ", ReceiverHandDistance: " + receiver.handsDistance);
+
             nowCheckTime += Time.fixedDeltaTime;
         }
     }
@@ -140,17 +138,16 @@ public class HandDetection : MonoBehaviour
         }
 
         // 手がしばらく止まっている
-        if (receiver.isFleezCount[0] > 2 && receiver.isFleezCount[1] > 2)
+        if (receiver.isFleezCount[0] > 1 && receiver.isFleezCount[1] > 1)
         {
             // フェーズ移行処理
             SetStartHandDistance();
 
-            nextMoveDir = 0;
             point = 0;
             NextPhase();
             Debug.Log("チェックスタート");
 
-            // 音声認識　と　エフェクト　を開始
+            // on check start (show moe1 anim)
             OnHandCheckStart?.Invoke();
         }
     }
@@ -159,7 +156,7 @@ public class HandDetection : MonoBehaviour
     private void Phase2()
     {
         // 手の距離のチェック
-        if (HandDistanceCheck()) MoveStart();
+        // if (HandDistanceCheck()) ResetDueToDistruption();
 
         // 手の移動の更新
         UpdateMoveDir();
@@ -171,14 +168,16 @@ public class HandDetection : MonoBehaviour
             if (Mathf.Abs(HandMoveDirX) > 0.09f) point++;
             NextPhase();
             Debug.Log("萌え");
-            nextMoveDir = HandMoveDirX > 0 ? -1 : 1;
+
+            // on check proceed (show moe2 anim)
+            OnHandDetectionProceed?.Invoke(phase);
         }
     }
 
     private void Phase3()
     {
         // 手の距離のチェック
-        if (HandDistanceCheck()) MoveStart();
+        // if (HandDistanceCheck()) ResetDueToDistruption();
 
         // 手の移動の更新
         UpdateMoveDir();
@@ -190,13 +189,16 @@ public class HandDetection : MonoBehaviour
             if (Mathf.Abs(HandMoveDirX) > 0.09f) point++;
             NextPhase();
             Debug.Log("萌え");
+
+            // on check proceed (show kyun anim)
+            OnHandDetectionProceed?.Invoke(phase);
         }
     }
 
     private void Phase4()
     {
         // 手の距離のチェック
-        if (HandDistanceCheck()) EndCheck();
+        // if (HandDistanceCheck()) EndCheck();
 
         // 手の移動の更新
         UpdateMoveDir();
@@ -208,17 +210,15 @@ public class HandDetection : MonoBehaviour
             if (Mathf.Abs(HandMoveDirX) > 0.04f) point++;
             Debug.Log("キュン");
             EndCheck();
-            return;
         }
     }
 
     // 初期化
-    private void MoveStart()
+    private void ResetDueToDistruption()
     {
-        nextMoveDir = 0;
+        phase = 1;
         HandMoveDirX = 0;
         HandMoveDirY = 0;
-        phase = 1;
     }
 
     // セッター：手の距離
@@ -235,11 +235,10 @@ public class HandDetection : MonoBehaviour
 
     private void NextPhase()
     {
+        phase++;
         nowCheckTime = 0;
-        nextMoveDir *= -1;
         HandMoveDirX = 0;
         HandMoveDirY = 0;
-        phase++;
     }
 
     private bool UpdateMoveDir()

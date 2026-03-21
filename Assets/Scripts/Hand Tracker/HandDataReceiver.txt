@@ -1,0 +1,254 @@
+using Mediapipe.Tasks.Vision.HandLandmarker;
+using Mediapipe.Unity.Sample.HandLandmarkDetection;
+using UnityEngine;
+
+public class HandDataReceiver : MonoBehaviour
+{
+    [Header("References")]
+    [SerializeField] private HandLandmarkerRunner runner;
+
+    [Header("Settings")]
+    [SerializeField] private float slowMoveThreshold = 0.01f;
+
+    private bool _hasLeftHand;
+    private bool _hasRightHand;
+
+    private Vector3 _leftHandPos;
+    private Vector3 _rightHandPos;
+
+    private Vector3 _prevLeftHandPos;
+    private Vector3 _prevRightHandPos;
+
+    private Vector3 _leftHandDelta;
+    private Vector3 _rightHandDelta;
+
+    private int _leftStillFrames;
+    private int _rightStillFrames;
+
+    public bool HasLeftHand => _hasLeftHand;
+    public bool HasRightHand => _hasRightHand;
+
+    public Vector3 LeftHandPos => _leftHandPos;
+    public Vector3 RightHandPos => _rightHandPos;
+
+    public Vector3 LeftHandDelta => _leftHandDelta;
+    public Vector3 RightHandDelta => _rightHandDelta;
+
+    public int LeftStillFrames => _leftStillFrames;
+    public int RightStillFrames => _rightStillFrames;
+
+    public HandLandmarkerResult Result { get; private set; }
+    public float HandsDistance { get; private set; }
+
+    private void OnEnable()
+    {
+        if (runner != null)
+            runner.OnHandResultOutput += OnHandResult;
+    }
+
+    private void OnDisable()
+    {
+        if (runner != null)
+            runner.OnHandResultOutput -= OnHandResult;
+    }
+
+    private void OnHandResult(HandLandmarkerResult result)
+    {
+        Debug.Log("OnHandResult CALLED");
+
+        // int count = result.handLandmarks == null ? 0 : result.handLandmarks.Count;
+        // Debug.Log($"Hand count: {count}");
+
+        // if (result.handedness != null)
+        // {
+        //     for (int i = 0; i < result.handedness.Count; i++)
+        //     {
+        //         var label = result.handedness[i].categories[0].categoryName;
+        //         Debug.Log($"Hand {i}: {label}");
+        //     }
+        // }
+
+        Result = result;
+
+        bool foundLeft = TryGetHandIndex("Left", out int leftIndex);
+        bool foundRight = TryGetHandIndex("Right", out int rightIndex);
+
+        UpdateHandState(
+            foundLeft,
+            foundLeft ? GetPalmCenter(leftIndex) : Vector3.zero,
+            ref _hasLeftHand,
+            ref _leftHandPos,
+            ref _prevLeftHandPos,
+            ref _leftHandDelta,
+            ref _leftStillFrames
+        );
+
+        UpdateHandState(
+            foundRight,
+            foundRight ? GetPalmCenter(rightIndex) : Vector3.zero,
+            ref _hasRightHand,
+            ref _rightHandPos,
+            ref _prevRightHandPos,
+            ref _rightHandDelta,
+            ref _rightStillFrames
+        );
+
+        HandsDistance = (HasLeftHand && HasRightHand)
+            ? Vector3.Distance(LeftHandPos, RightHandPos)
+            : 0f;
+    }
+
+    private void UpdateHandState(
+        bool detected,
+        Vector3 newPos,
+        ref bool hasHand,
+        ref Vector3 currentPos,
+        ref Vector3 prevPos,
+        ref Vector3 delta,
+        ref int stillFrames)
+    {
+        if (!detected)
+        {
+            hasHand = false;
+            delta = Vector3.zero;
+            stillFrames = 0;
+            return;
+        }
+
+        if (!hasHand)
+        {
+            hasHand = true;
+            currentPos = newPos;
+            prevPos = newPos;
+            delta = Vector3.zero;
+            stillFrames = 0;
+            return;
+        }
+
+        prevPos = currentPos;
+        currentPos = newPos;
+        delta = currentPos - prevPos;
+
+        if (delta.magnitude <= slowMoveThreshold)
+            stillFrames++;
+        else
+            stillFrames = 0;
+    }
+
+    private bool TryGetHandIndex(string handLabel, out int handIndex)
+    {
+        handIndex = -1;
+
+        if (Result.handLandmarks == null || Result.handedness == null)
+            return false;
+
+        int count = Mathf.Min(Result.handLandmarks.Count, Result.handedness.Count);
+
+        for (int i = 0; i < count; i++)
+        {
+            if (Result.handedness[i].categories == null || Result.handedness[i].categories.Count == 0)
+                continue;
+
+            if (Result.handedness[i].categories[0].categoryName == handLabel)
+            {
+                handIndex = i;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private Vector3 GetPalmCenter(int handIndex)
+    {
+        Vector3 wrist = GetLandmarkPosition(handIndex, 0);
+        Vector3 indexBase = GetLandmarkPosition(handIndex, 5);
+        Vector3 pinkyBase = GetLandmarkPosition(handIndex, 17);
+
+        return (wrist + indexBase + pinkyBase) / 3f;
+    }
+
+    public Vector3 GetLandmarkPosition(int handIndex, int landmarkIndex)
+    {
+        var lm = Result.handLandmarks[handIndex].landmarks[landmarkIndex];
+        return new Vector3(lm.x, lm.y, lm.z);
+    }
+
+    public bool AreTwoHandsPresentRelaxed()
+    {
+        return Result.handLandmarks != null && Result.handLandmarks.Count >= 1;
+    }
+
+    public bool AreTwoHandsPresent()
+    {
+        return HasLeftHand && HasRightHand;
+    }
+
+    public bool AreHandsStable(int requiredStillFrames = 3)
+    {
+        return LeftStillFrames >= requiredStillFrames && RightStillFrames >= requiredStillFrames;
+    }
+
+    public float GetAverageAbsDeltaX()
+    {
+        int count = 0;
+        float sum = 0f;
+
+        if (HasLeftHand)
+        {
+            sum += Mathf.Abs(LeftHandDelta.x);
+            count++;
+        }
+
+        if (HasRightHand)
+        {
+            sum += Mathf.Abs(RightHandDelta.x);
+            count++;
+        }
+
+        return count > 0 ? sum / count : 0f;
+    }
+
+    /// <summary>
+    /// Check if the two hands are in a heart pose.
+    /// </summary>
+    /// <param name="indexTipMaxDistance">The maximum distance between the tips of the two index fingers.</param>
+    /// <param name="thumbTipMaxDistance">The maximum distance between the tips of the two thumbs.</param>
+    /// <param name="wristMinDistance">The minimum distance between the wrists of the two hands.</param>
+    /// <param name="thumbBelowIndexMin">The minimum distance between the tip of a thumb and the tip of the corresponding index finger below which the thumb is considered to be below the index finger.</param>
+    /// <returns>True if the two hands are in a heart pose, false otherwise.</returns>
+    public bool IsHeartPose(
+        float indexTipMaxDistance = 0.10f,
+        float thumbTipMaxDistance = 0.12f,
+        float wristMinDistance = 0.15f,
+        float thumbBelowIndexMin = 0.01f)
+    {
+        if (!AreTwoHandsPresent())
+            return false;
+
+        if (!TryGetHandIndex("Left", out int leftIndex)) return false;
+        if (!TryGetHandIndex("Right", out int rightIndex)) return false;
+
+        Vector3 leftIndexTip = GetLandmarkPosition(leftIndex, 8);
+        Vector3 rightIndexTip = GetLandmarkPosition(rightIndex, 8);
+
+        Vector3 leftThumbTip = GetLandmarkPosition(leftIndex, 4);
+        Vector3 rightThumbTip = GetLandmarkPosition(rightIndex, 4);
+
+        Vector3 leftWrist = GetLandmarkPosition(leftIndex, 0);
+        Vector3 rightWrist = GetLandmarkPosition(rightIndex, 0);
+
+        bool indexTipsClose = Vector3.Distance(leftIndexTip, rightIndexTip) <= indexTipMaxDistance;
+        bool thumbTipsClose = Vector3.Distance(leftThumbTip, rightThumbTip) <= thumbTipMaxDistance;
+        bool wristsSeparated = Vector3.Distance(leftWrist, rightWrist) >= wristMinDistance;
+
+        bool leftThumbBelowIndex = (leftThumbTip.y - leftIndexTip.y) >= thumbBelowIndexMin;
+        bool rightThumbBelowIndex = (rightThumbTip.y - rightIndexTip.y) >= thumbBelowIndexMin;
+
+        Debug.Log($"IndexDist: {Vector3.Distance(leftIndexTip, rightIndexTip)}");
+        Debug.Log($"ThumbDist: {Vector3.Distance(leftThumbTip, rightThumbTip)}");
+
+        return indexTipsClose && thumbTipsClose && wristsSeparated &&
+               leftThumbBelowIndex && rightThumbBelowIndex;
+    }
+}

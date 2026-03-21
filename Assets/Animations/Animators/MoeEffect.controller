@@ -123,10 +123,10 @@ AnimatorStateMachine:
     m_Position: {x: 80, y: 410, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8108026960011965661}
-    m_Position: {x: 480, y: 400, z: 0}
+    m_Position: {x: 290, y: 470, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -560748251628587745}
-    m_Position: {x: 290, y: 500, z: 0}
+    m_Position: {x: 490, y: 410, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -240,7 +240,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Kyun
+    m_ConditionEvent: Moe2
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -8108026960011965661}
@@ -341,7 +341,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Moe2
+    m_ConditionEvent: Kyun
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -560748251628587745}

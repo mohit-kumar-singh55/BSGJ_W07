@@ -4622,7 +4622,6 @@ MonoBehaviour:
   runner: {fileID: 151966945}
   numHands: 2
   prevPosUpdateCountMax: 10
-  handScale: 0
 --- !u!4 &1548630786
 Transform:
   m_ObjectHideFlags: 0

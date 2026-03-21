@@ -4,6 +4,11 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 {
     private PlayerStateContext _context;
     private bool _canTransition = false;
+    private int _currentPhase = 0;      // 2 = moe1, 3 = moe2, 4 = kyun
+
+    private const string MOE1_ANIM = "Moe1";
+    private const string MOE2_ANIM = "Moe2";
+    private const string KYUN_ANIM = "Kyun";
 
     public PlayerDoingMoeMoe(PlayerStateContext context, PlayerStateManager.PlayerState stateKey) : base(stateKey)
     {
@@ -18,6 +23,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         // events
         _context.SpeechDetector.OnRecordingCompleted += OnRecordingCompleted;
         _context.HandDetection.OnHandCheckStart += OnHandCheckStart;
+        _context.HandDetection.OnHandDetectionProceed += OnHandDetectionProceed;
         _context.HandDetection.OnHandDetectionOver += OnHandDetectionOver;
 
         _context.VFXCountdown.StartCountdown(() =>
@@ -25,19 +31,20 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
             // start hand detection
             _context.HandDetection.StartCheck();
         });
-
-        // TODO: check hand gesture
-        // TODO: add events to capture them and once done, call another function that will check the current score and the time remaining, if time remaining, transition to idle, if not, go to next scene
     }
 
     public override void UpdateState() { }
 
     public override void ExitState()
     {
+        // reset
+        _currentPhase = 0;
+
         // remove current spawned food
         FoodManager.Instance.DestroyFood();
         _context.SpeechDetector.OnRecordingCompleted -= OnRecordingCompleted;
         _context.HandDetection.OnHandCheckStart -= OnHandCheckStart;
+        _context.HandDetection.OnHandDetectionProceed -= OnHandDetectionProceed;
         _context.HandDetection.OnHandDetectionOver -= OnHandDetectionOver;
     }
 
@@ -48,16 +55,19 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     private void OnHandCheckStart()
     {
-        // start voice detection
+        _currentPhase = 2;
+
+        // start moe1 voice detection
         _context.SpeechDetector.StartDetection();
 
         // play moe effect
-        _context.MoeEffectAnimator.SetTrigger("MoeMoe");
+        _context.MoeEffectAnimator.SetTrigger(MOE1_ANIM);
     }
 
     private void OnRecordingCompleted(int score, string message)
     {
-        if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(score);
+        Debug.Log(_currentPhase + ", Score: " + score + ", Message: " + message);
+        // if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(score);
 
         // // play moe effect
         // _context.MoeEffectAnimator.SetTrigger("MoeMoe");
@@ -67,8 +77,34 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         // TODO: add all three scores to the total score
     }
 
+    private void OnHandDetectionProceed(int phase)
+    {
+        switch (phase)
+        {
+            case 3:
+                _currentPhase = 3;
+
+                // start moe2 voice detection
+                // _context.SpeechDetector.StartDetection();
+
+                // play moe effect
+                _context.MoeEffectAnimator.SetTrigger(MOE2_ANIM);
+                break;
+            case 4:
+                _currentPhase = 4;
+
+                // start kyun voice detection
+                // _context.SpeechDetector.StartDetection();
+
+                // play kyun effect
+                _context.MoeEffectAnimator.SetTrigger(KYUN_ANIM);
+                break;
+        }
+    }
+
     private void OnHandDetectionOver(int point)
     {
         Debug.Log("Point: " + point);
+        _canTransition = true;
     }
 }

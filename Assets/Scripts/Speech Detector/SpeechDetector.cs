@@ -6,7 +6,7 @@ using UnityEngine;
 public class SpeechDetector : MonoBehaviour
 {
     [Tooltip("Time window (in seconds), if speech detected in-between this time, will be considered as Good. Should be in format (min, max) where min < max")]
-    [SerializeField] private Vector2 _detectionWindow = new(2f, 3f);
+    [SerializeField] private Vector2 _detectionWindow = new(1f, 2f);
     [SerializeField] private List<string> _keyPhrases = new();
 
     private float _startTime;

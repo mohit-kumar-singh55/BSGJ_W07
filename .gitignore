@@ -96,5 +96,5 @@ bin/
 
 
 # === Custom Folders to Ignore (Temperorily) ===
-StreamingAssets/
+vosk-model-ja-0.22/
 UnUploadables/

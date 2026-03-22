@@ -4,7 +4,9 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System.IO;
 using Mediapipe.Tasks.Vision.HandLandmarker;
+using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 {
@@ -25,7 +27,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
     public float MinHandDetectionConfidence { get; set; } = 0.5f;
     public float MinHandPresenceConfidence { get; set; } = 0.5f;
     public float MinTrackingConfidence { get; set; } = 0.5f;
-    public string ModelPath => "hand_landmarker.bytes";
+    public string ModelPath => Path.Combine(Application.streamingAssetsPath, "mediapipe/hand_landmarker.bytes").Replace('\\', '/');
 
     public HandLandmarkerOptions GetHandLandmarkerOptions(HandLandmarkerOptions.ResultCallback resultCallback = null)
     {

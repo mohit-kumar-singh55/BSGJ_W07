@@ -2,44 +2,54 @@ using UnityEngine;
 
 public class HandMarker3D : MonoBehaviour
 {
-    // ƒŒƒV[ƒo[
+    // ãƒ¬ã‚·ãƒ¼ãƒãƒ¼
     [SerializeField] private HandDataReceiver receiver;
 
-    // è‚ÌˆÊ’u‚É•\¦‚·‚é‹…
+    // æ‰‹ã®ä½ç½®ã«è¡¨ç¤ºã™ã‚‹çƒ
     [SerializeField] private Transform[] handSpheres;
 
-    // ƒn[ƒg•\¦—pƒIƒuƒWƒFƒNƒg
+    // ãƒãƒ¼ãƒˆè¡¨ç¤ºç”¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     [SerializeField] private Transform heartObject;
 
-    // À•WƒIƒtƒZƒbƒg
+    // åº§æ¨™ã‚ªãƒ•ã‚»ãƒƒãƒˆ
     [SerializeField] private Vector3 posOffset;
 
-    // è‚ÌŒ`‚ªƒn[ƒg‚Å‚ ‚é‚©
+    // æ‰‹ã®å½¢ãŒãƒãƒ¼ãƒˆã§ã‚ã‚‹ã‹
     [SerializeField] private bool isHeart;
 
-    // ƒJƒƒ‰
+    private Vector3 prevHandPos;
+
+    private int isFleezCount;
+    // ã‚«ãƒ¡ãƒ©
     private Camera cam;
 
     private void Start()
     {
         cam = Camera.main;
+        isFleezCount = 0;
     }
 
     private void Update()
     {
         if (receiver == null ||
             receiver.result.handLandmarks == null ||
-            receiver.result.handLandmarks.Count == 0)
+            receiver.result.handLandmarks.Count == 0 || isFleezCount >= 30)
+        {
+            handSpheres[0].gameObject.SetActive(false);
+            handSpheres[1].gameObject.SetActive(false);
+            heartObject.gameObject.SetActive(false);
+
             return;
+        }
 
+        CheckFleez();
 
-
-        // è‚Ì‹…‚ÌXV
+        // æ‰‹ã®çƒã®æ›´æ–°
         for (int i = 0; i < handSpheres.Length; i++)
         {
             if (i >= receiver.result.handLandmarks.Count)
             {
-                    handSpheres[i].gameObject.SetActive(false);
+                handSpheres[i].gameObject.SetActive(false);
                 continue;
             }
 
@@ -61,24 +71,24 @@ public class HandMarker3D : MonoBehaviour
             handSpheres[i].localScale = new Vector3(scale, scale, scale);
         }
 
-        // è‚ªƒn[ƒg‚Å‚ ‚é‚©‚Ìƒ`ƒFƒbƒN
+        // æ‰‹ãŒãƒãƒ¼ãƒˆã§ã‚ã‚‹ã‹ã®ãƒã‚§ãƒƒã‚¯
         UpdateIsHeart();
 
-        // ƒn[ƒg•\¦ˆ—
+        // ãƒãƒ¼ãƒˆè¡¨ç¤ºå‡¦ç†
         UpdateHeart();
     }
 
 
 
     /// <summary>
-    /// ¬w•t‚¯ªEl·‚µw•t‚¯ªEèñ‚Ì3“_‚©‚ç
-    /// è‚Ì‚Ğ‚ç‚Ì’†S‚ğ‹‚ß‚é
+    /// å°æŒ‡ä»˜ã‘æ ¹ãƒ»äººå·®ã—æŒ‡ä»˜ã‘æ ¹ãƒ»æ‰‹é¦–ã®3ç‚¹ã‹ã‚‰
+    /// æ‰‹ã®ã²ã‚‰ã®ä¸­å¿ƒã‚’æ±‚ã‚ã‚‹
     /// </summary>
-    /// <param name="handIndex">è‚ÌƒCƒ“ƒfƒbƒNƒX</param>
+    /// <param name="handIndex">æ‰‹ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹</param>
     /// <returns></returns>
     public Vector3 GetHandCenter(int handIndex)
     {
-        if ( receiver.result.handLandmarks.Count <= handIndex)
+        if (receiver.result.handLandmarks.Count <= handIndex)
             return Vector3.zero;
 
         var lm = receiver.result.handLandmarks[handIndex].landmarks;
@@ -87,7 +97,7 @@ public class HandMarker3D : MonoBehaviour
         Vector3 indexBase = new Vector3(lm[5].x, lm[5].y, lm[5].z);
         Vector3 pinkyBase = new Vector3(lm[17].x, lm[17].y, lm[17].z);
 
-        // dSi3“_‚Ì•½‹Ïj
+        // é‡å¿ƒï¼ˆ3ç‚¹ã®å¹³å‡ï¼‰
         Vector3 center = (wrist + indexBase + pinkyBase) / 3f;
 
         return center;
@@ -102,37 +112,51 @@ public class HandMarker3D : MonoBehaviour
             return;
         }
 
-        // —¼è‚ª‘¶İ‚µ‚È‚¢ê‡‚Í”ñ•\¦
+        // ä¸¡æ‰‹ãŒå­˜åœ¨ã—ãªã„å ´åˆã¯éè¡¨ç¤º
         if (receiver.result.handLandmarks.Count < 2)
         {
             heartObject.gameObject.SetActive(false);
             return;
         }
 
-        // —¼è‚Ì’†S‚ğŒvZ
+        // ä¸¡æ‰‹ã®ä¸­å¿ƒã‚’è¨ˆç®—
         Vector3 left = GetHandCenter(0);
         Vector3 right = GetHandCenter(1);
 
-        // ƒXƒNƒŠ[ƒ“À•W‚Ö
+        // ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã¸
         Vector3 leftScreen = new Vector3(left.x * Screen.width, (1f - left.y) * Screen.height, 1f);
         Vector3 rightScreen = new Vector3(right.x * Screen.width, (1f - right.y) * Screen.height, 1f);
 
-        // ƒ[ƒ‹ƒhÀ•W‚Ö
+        // ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã¸
         Vector3 leftWorld = cam.ScreenToWorldPoint(leftScreen);
         Vector3 rightWorld = cam.ScreenToWorldPoint(rightScreen);
 
-        // ’†SˆÊ’u
+        // ä¸­å¿ƒä½ç½®
         Vector3 center = (leftWorld + rightWorld) * 0.5f;
 
-        // ƒn[ƒg‚ğ•\¦
+        // ãƒãƒ¼ãƒˆã‚’è¡¨ç¤º
         heartObject.gameObject.SetActive(true);
         heartObject.position = center + posOffset;
     }
     /// <summary>
-    /// IsHeart‚ÌXV
+    /// IsHeartã®æ›´æ–°
     /// </summary>
     private void UpdateIsHeart()
     {
         isHeart = !(receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result));
+    }
+
+    private void CheckFleez()
+    {
+        if (receiver.handPos[0] == prevHandPos)
+        {
+            isFleezCount++;
+        }
+        else
+        {
+            isFleezCount = 0;
+        }
+
+        prevHandPos = receiver.handPos[0];
     }
 }

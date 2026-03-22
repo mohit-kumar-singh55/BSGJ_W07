@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -24,26 +23,14 @@ public class ScoreSceneController : MonoBehaviour
         _score = PlayerDataManager.Instance.Score;
 
         // show score
-        StartCoroutine(CountUpToScore());
+        StartCoroutine(Counter.CountUpTo(
+            0,
+            _score,
+            _countTimeLimit,
+            (score) => _scoreText.text = score.ToString(),
+            (score) => _scoreText.text = _score.ToString()
+        ));
 
         // TODO: go to next scene if pressed any button
-    }
-
-    private IEnumerator CountUpToScore()
-    {
-        float t = 0;
-        int score = 0;
-
-        while (score < _score)
-        {
-            t += Time.deltaTime / _countTimeLimit;
-
-            score = Mathf.RoundToInt(t * _score);
-            _scoreText.text = score.ToString();
-            yield return null;
-        }
-
-        // show final score to be sure
-        _scoreText.text = _score.ToString();
     }
 }

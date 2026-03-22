@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 // singleton which holds and manages player data for a single player
@@ -8,6 +9,8 @@ public class PlayerDataManager : Singleton<PlayerDataManager>
 
     public PlayerData PlayerData => _playerData;
     public int Score => _playerData.Score;
+
+    public static event System.Action<int, int> OnPlayerScoreChanged = delegate { };
 
     protected override void Awake()
     {
@@ -29,7 +32,12 @@ public class PlayerDataManager : Singleton<PlayerDataManager>
 
     public void SetPlayerName(string name) => _playerData.Name = name;
 
-    public void AddPlayerScore(int score) => _playerData.Score += score;
+    public void AddPlayerScore(int score)
+    {
+        int newScore = _playerData.Score + score;
+        OnPlayerScoreChanged?.Invoke(_playerData.Score, newScore); // (current, new)
+        _playerData.Score = newScore;
+    }
 
     public void SetPlayerData(PlayerData playerData)
     {

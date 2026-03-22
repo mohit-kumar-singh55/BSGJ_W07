@@ -20,6 +20,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
     {
         _voiceDetectionFinished = false;
         _handDetectionFinished = false;
+
         // TODO: wait for some seconds, play some sound
 
         // events
@@ -32,6 +33,10 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         {
             // start hand detection
             _context.HandDetection.StartCheck();
+
+            // show moe example effect
+            _context.MoeExampleAnimator.gameObject.SetActive(true);
+            _context.MoeExampleAnimator.SetBool("Pulse", true);
         });
     }
 
@@ -64,6 +69,10 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
         // play moe effect
         _context.MoeEffectAnimator.SetTrigger(MOE1_ANIM);
+
+        // hide moe example effect
+        _context.MoeExampleAnimator.SetBool("Pulse", false);
+        _context.MoeExampleAnimator.gameObject.SetActive(false);
     }
 
     private void OnRecordingCompleted(int score, string message)

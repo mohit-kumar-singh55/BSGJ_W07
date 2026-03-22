@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 740439894}
   - component: {fileID: 740439893}
   m_Layer: 0
-  m_Name: "\u30CF\u30FC\u30C8\u76EE\u5370"
+  m_Name: Moe Example Animation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

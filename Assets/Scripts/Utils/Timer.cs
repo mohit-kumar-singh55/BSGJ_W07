@@ -1,10 +1,12 @@
-using TMPro;
 using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
     [SerializeField] private float _timeLimit = 90f;
-    [SerializeField] private TMP_Text _timerText;
+
+    // ! TEMP: separate it into a ui class
+    [SerializeField] private GameObject _needleUI;
+    [SerializeField] private float _rotationOffset = -211f;     // current rotation of needle ui
 
     private float currentTime;
     private bool isRunning = true;
@@ -37,6 +39,15 @@ public class Timer : MonoBehaviour
         int seconds = Mathf.FloorToInt(currentTime % 60);
 
         // UI更新
-        _timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        // _timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        RotateNeedle();
+    }
+
+    // ! TEMP: separate it into a ui class
+    private void RotateNeedle()
+    {
+        float t = Mathf.Clamp01(currentTime / _timeLimit);
+        float angle = t * -360f + _rotationOffset;
+        _needleUI.transform.localEulerAngles = new Vector3(0, 0, angle);
     }
 }

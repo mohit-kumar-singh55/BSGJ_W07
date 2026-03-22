@@ -1,3 +1,4 @@
+using Mediapipe.Tasks.Vision.HandLandmarker;
 using UnityEngine;
 
 public class HandMarker3D : MonoBehaviour
@@ -17,29 +18,39 @@ public class HandMarker3D : MonoBehaviour
     // 手の形がハートであるか
     [SerializeField] private bool isHeart;
 
+    private Vector3 prevHandPos;
+
+    private int isFleezCount;
     // カメラ
     private Camera cam;
 
     private void Start()
     {
         cam = Camera.main;
+        isFleezCount = 0;
     }
 
     private void Update()
     {
         if (receiver == null ||
             receiver.result.handLandmarks == null ||
-            receiver.result.handLandmarks.Count == 0)
+            receiver.result.handLandmarks.Count == 0 || isFleezCount >= 30)
+        {
+            handSpheres[0].gameObject.SetActive(false);
+            handSpheres[1].gameObject.SetActive(false);
+            heartObject.gameObject.SetActive(false);
+
             return;
+        }
 
-
+        CheckFleez();
 
         // 手の球の更新
         for (int i = 0; i < handSpheres.Length; i++)
         {
             if (i >= receiver.result.handLandmarks.Count)
             {
-                    handSpheres[i].gameObject.SetActive(false);
+                handSpheres[i].gameObject.SetActive(false);
                 continue;
             }
 
@@ -78,7 +89,7 @@ public class HandMarker3D : MonoBehaviour
     /// <returns></returns>
     public Vector3 GetHandCenter(int handIndex)
     {
-        if ( receiver.result.handLandmarks.Count <= handIndex)
+        if (receiver.result.handLandmarks.Count <= handIndex)
             return Vector3.zero;
 
         var lm = receiver.result.handLandmarks[handIndex].landmarks;
@@ -134,5 +145,19 @@ public class HandMarker3D : MonoBehaviour
     private void UpdateIsHeart()
     {
         isHeart = !(receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result));
+    }
+
+    private void CheckFleez()
+    {
+        if (receiver.handPos[0] == prevHandPos)
+        {
+            isFleezCount++;
+        }
+        else
+        {
+            isFleezCount = 0;
+        }
+
+        prevHandPos = receiver.handPos[0];
     }
 }

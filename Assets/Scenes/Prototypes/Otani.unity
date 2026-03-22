@@ -131,6 +131,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Omurice_Heart
       objectReference: {fileID: 0}
+    - target: {fileID: 7411208541739976157, guid: 3c6cb61b686da56428536bddab18de25, type: 3}
+      propertyPath: paintColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7411208541739976157, guid: 3c6cb61b686da56428536bddab18de25, type: 3}
+      propertyPath: paintColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7411208541739976157, guid: 3c6cb61b686da56428536bddab18de25, type: 3}
+      propertyPath: paintColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7744795917245153036, guid: 3c6cb61b686da56428536bddab18de25, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.33367
@@ -718,11 +730,11 @@ MonoBehaviour:
   brushTexture: {fileID: 2800000, guid: 6b2004705d4c44447971c003a0788e21, type: 3}
   brushSize: 20
   paintColor: {r: 1, g: 0, b: 0, a: 1}
-  backgroundColor: {r: 1, g: 0.8, b: 0, a: 1}
   sampleGuideTexture: {fileID: 2800000, guid: 2e8e615d3d7c84548bd85e49bb76c38f, type: 3}
   sampleRT: {fileID: 8400000, guid: 0dfe288a0460447629fdf5eddbb679dd, type: 2}
   sampleColor: {r: 1, g: 1, b: 1, a: 0.5}
   maxDrawCount: 1
+  scoreMultiplier: 1
 --- !u!64 &884661344
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -753,6 +765,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3170868903603847237, guid: 5e32a1121cd71084296208bca27652d5, type: 3}
+      propertyPath: paintColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3170868903603847237, guid: 5e32a1121cd71084296208bca27652d5, type: 3}
+      propertyPath: paintColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3170868903603847237, guid: 5e32a1121cd71084296208bca27652d5, type: 3}
+      propertyPath: paintColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3500131280535999202, guid: 5e32a1121cd71084296208bca27652d5, type: 3}
       propertyPath: m_Name
       value: Omurice_Cat
@@ -1131,11 +1155,11 @@ MonoBehaviour:
   brushTexture: {fileID: 2800000, guid: 6b2004705d4c44447971c003a0788e21, type: 3}
   brushSize: 10
   paintColor: {r: 1, g: 0, b: 0, a: 1}
-  backgroundColor: {r: 1, g: 0.8, b: 0, a: 1}
   sampleGuideTexture: {fileID: 2800000, guid: 2e8e615d3d7c84548bd85e49bb76c38f, type: 3}
   sampleRT: {fileID: 8400000, guid: 0dfe288a0460447629fdf5eddbb679dd, type: 2}
   sampleColor: {r: 1, g: 1, b: 1, a: 0.5}
   maxDrawCount: 1
+  scoreMultiplier: 1
 --- !u!23 &1911128846
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Option%20UI/OptionUI.uss?fileID=7433441132597879392&amp;guid=7aa4d275be478453b8466f1c53565a5b&amp;type=3#OptionUI"/>
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:Label text="Option" style="-unity-text-align: upper-left; -unity-font-style: bold; font-size: 200px;"/>
+        <ui:DropdownField label="Mike" name="DropdownField" style="-unity-font-style: bold; font-size: 80px; margin-right: 2px; -unity-text-align: middle-center; width: 504px; white-space: nowrap; position: relative; right: auto; left: 215px; top: 200px;"/>
+        <ui:DropdownField label="Language" style="font-size: 80px; width: 718px; top: 220px; -unity-font-style: bold;"/>
+        <ui:Slider label="Music" value="42" high-value="100" style="-unity-font-style: bold; width: 952px; font-size: 80px; top: 250px; left: 160px; height: 155px;"/>
+    </ui:VisualElement>
+</ui:UXML>

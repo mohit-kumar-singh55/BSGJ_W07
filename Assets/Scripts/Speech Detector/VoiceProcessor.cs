@@ -113,7 +113,6 @@ public class VoiceProcessor : MonoBehaviour
     private bool _didDetect;
     private bool _transmit;
 
-
     AudioClip _audioClip;
     private event Action RestartRecording;
 
@@ -121,6 +120,7 @@ public class VoiceProcessor : MonoBehaviour
     {
         UpdateDevices();
     }
+
 #if UNITY_EDITOR
     void Update()
     {
@@ -280,7 +280,6 @@ public class VoiceProcessor : MonoBehaviour
                 _audioClip.GetData(sampleBuffer, startReadPos);
             }
 
-            // if (_audioClip.samples != 0) startReadPos = endReadPos % _audioClip.samples;
             startReadPos = endReadPos % _audioClip.samples;
             if (_autoDetect == false)
             {

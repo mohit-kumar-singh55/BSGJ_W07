@@ -57,8 +57,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     public override PlayerStateManager.PlayerState GetNextState()
     {
-        // return (_voiceDetectionFinished && _handDetectionFinished) ? PlayerStateManager.PlayerState.Idle : PlayerStateManager.PlayerState.DoingMoeMoe;
-        return _handDetectionFinished ? PlayerStateManager.PlayerState.Idle : PlayerStateManager.PlayerState.DoingMoeMoe;
+        return (_voiceDetectionFinished && _handDetectionFinished) ? PlayerStateManager.PlayerState.Idle : PlayerStateManager.PlayerState.DoingMoeMoe;
     }
 
     private void OnHandCheckStart()
@@ -73,7 +72,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         _context.MoeEffectAnimator.SetTrigger(MOE1_ANIM);
 
         // start voice detection
-        // _context.SpeechDetector.StartDetection();
+        _context.SpeechDetector.StartDetection();
     }
 
     private void OnRecordingCompleted(int score, string message)
@@ -90,17 +89,11 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
             case 3:
                 _currentPhase = 3;
 
-                // start moe2 voice detection
-                // _context.SpeechDetector.StartDetection();
-
                 // play moe effect
                 _context.MoeEffectAnimator.SetTrigger(MOE2_ANIM);
                 break;
             case 4:
                 _currentPhase = 4;
-
-                // start kyun voice detection
-                // _context.SpeechDetector.StartDetection();
 
                 // play kyun effect
                 _context.MoeEffectAnimator.SetTrigger(KYUN_ANIM);

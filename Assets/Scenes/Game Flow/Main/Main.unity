@@ -1368,7 +1368,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4bf1d15eca990e468923838b7c7c84c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpeechDetector
-  _detectionWindow: {x: 1, y: 2}
+  _detectionWindow: {x: 2, y: 3}
   _keyPhrases:
   - "\u30AD\u30E5\u30F3"
   - "\u304D\u3085\u3093"

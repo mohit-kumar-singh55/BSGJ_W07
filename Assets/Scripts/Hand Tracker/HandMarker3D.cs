@@ -40,8 +40,15 @@ public class HandMarker3D : MonoBehaviour
             handSpheres[1].gameObject.SetActive(false);
             heartObject.gameObject.SetActive(false);
 
+            if (isFleezCount >= 30 && !CheckFleez())
+            {
+                isFleezCount = 0;
+            }
+
             return;
         }
+
+
 
         CheckFleez();
 
@@ -147,11 +154,12 @@ public class HandMarker3D : MonoBehaviour
         isHeart = !(receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result));
     }
 
-    private void CheckFleez()
+    private bool CheckFleez()
     {
         if (receiver.handPos[0] == prevHandPos)
         {
             isFleezCount++;
+            return true;
         }
         else
         {
@@ -159,5 +167,6 @@ public class HandMarker3D : MonoBehaviour
         }
 
         prevHandPos = receiver.handPos[0];
+        return false;
     }
 }

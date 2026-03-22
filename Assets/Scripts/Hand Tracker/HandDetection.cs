@@ -126,14 +126,14 @@ public class HandDetection : MonoBehaviour
         // 手が2つあるかのチェック
         if (!receiver.AreTwoHandsPresent(receiver.result))
         {
-            Debug.Log("手が2つ無い");
+            // Debug.Log("手が2つ無い");
             return;
         }
 
         // 手の形がハートになっているかのチェック
         if (receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result))
         {
-            Debug.Log("手の形がハートではない");
+            // Debug.Log("手の形がハートではない");
             return;
         }
 

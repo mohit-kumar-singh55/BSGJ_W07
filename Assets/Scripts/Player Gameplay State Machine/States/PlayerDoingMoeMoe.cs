@@ -3,8 +3,9 @@ using UnityEngine;
 public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 {
     private PlayerStateContext _context;
-    private bool _canTransition = false;
     private int _currentPhase = 0;      // 2 = moe1, 3 = moe2, 4 = kyun
+    private bool _voiceDetectionFinished = false;
+    private bool _handDetectionFinished = false;
 
     private const string MOE1_ANIM = "Moe1";
     private const string MOE2_ANIM = "Moe2";
@@ -17,7 +18,8 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     public override void EnterState()
     {
-        _canTransition = false;
+        _voiceDetectionFinished = false;
+        _handDetectionFinished = false;
         // TODO: wait for some seconds, play some sound
 
         // events
@@ -50,7 +52,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     public override PlayerStateManager.PlayerState GetNextState()
     {
-        return _canTransition ? PlayerStateManager.PlayerState.Idle : PlayerStateManager.PlayerState.DoingMoeMoe;
+        return (_voiceDetectionFinished && _handDetectionFinished) ? PlayerStateManager.PlayerState.Idle : PlayerStateManager.PlayerState.DoingMoeMoe;
     }
 
     private void OnHandCheckStart()
@@ -67,14 +69,8 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
     private void OnRecordingCompleted(int score, string message)
     {
         Debug.Log(_currentPhase + ", Score: " + score + ", Message: " + message);
-        // if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(score);
-
-        // // play moe effect
-        // _context.MoeEffectAnimator.SetTrigger("MoeMoe");
-
-        // _canTransition = true;
-
-        // TODO: add all three scores to the total score
+        if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(score);
+        _voiceDetectionFinished = true;
     }
 
     private void OnHandDetectionProceed(int phase)
@@ -88,6 +84,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
                 // _context.SpeechDetector.StartDetection();
 
                 // play moe effect
+                // Debug.Log("MOEEEEEEEEEEEEEEEEEEEE");
                 _context.MoeEffectAnimator.SetTrigger(MOE2_ANIM);
                 break;
             case 4:
@@ -97,6 +94,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
                 // _context.SpeechDetector.StartDetection();
 
                 // play kyun effect
+                // Debug.Log("KYUNNNNNNNNNNNNNNNNNN");
                 _context.MoeEffectAnimator.SetTrigger(KYUN_ANIM);
                 break;
         }
@@ -104,7 +102,17 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     private void OnHandDetectionOver(int point)
     {
-        Debug.Log("Point: " + point);
-        _canTransition = true;
+        int handScore = point switch
+        {
+            1 => 50,
+            2 => 75,
+            3 => 100,
+            _ => 25,
+        };
+
+        Debug.Log("Hand Detection Over, Score: " + handScore);
+
+        if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(handScore);
+        _handDetectionFinished = true;
     }
 }

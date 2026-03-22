@@ -1,3 +1,4 @@
+using Mediapipe.Tasks.Vision.HandLandmarker;
 using UnityEngine;
 
 public class HandMarker3D : MonoBehaviour

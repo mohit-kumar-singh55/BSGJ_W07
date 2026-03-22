@@ -113,14 +113,15 @@ public class VoiceProcessor : MonoBehaviour
     private bool _didDetect;
     private bool _transmit;
 
-
     AudioClip _audioClip;
     private event Action RestartRecording;
 
     void Awake()
     {
-        UpdateDevices();
+        // UpdateDevices();
+        Invoke(nameof(UpdateDevices), 3f);
     }
+
 #if UNITY_EDITOR
     void Update()
     {

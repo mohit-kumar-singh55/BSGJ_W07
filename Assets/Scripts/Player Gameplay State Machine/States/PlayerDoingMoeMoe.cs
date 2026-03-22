@@ -84,7 +84,6 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
                 // _context.SpeechDetector.StartDetection();
 
                 // play moe effect
-                // Debug.Log("MOEEEEEEEEEEEEEEEEEEEE");
                 _context.MoeEffectAnimator.SetTrigger(MOE2_ANIM);
                 break;
             case 4:
@@ -94,7 +93,6 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
                 // _context.SpeechDetector.StartDetection();
 
                 // play kyun effect
-                // Debug.Log("KYUNNNNNNNNNNNNNNNNNN");
                 _context.MoeEffectAnimator.SetTrigger(KYUN_ANIM);
                 break;
         }

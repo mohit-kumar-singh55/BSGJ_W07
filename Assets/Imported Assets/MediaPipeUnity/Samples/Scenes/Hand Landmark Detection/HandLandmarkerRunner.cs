@@ -29,8 +29,8 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
             isPaused = true;
 
-            var imageSource = ImageSourceProvider.ImageSource;
-            imageSource?.Stop();   // äÆëSí‚é~ÅiWebCamTexture Ç™îjä¸Ç≥ÇÍÇÈÅj
+            //var imageSource = ImageSourceProvider.ImageSource;
+           // imageSource?.Stop();   // ÔøΩÔøΩÔøΩSÔøΩÔøΩ~ÔøΩiWebCamTexture ÔøΩÔøΩÔøΩjÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩj
         }
 
         public new IEnumerator Resume()
@@ -39,21 +39,21 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
             isPaused = false;
 
-            var imageSource = ImageSourceProvider.ImageSource;
+           // var imageSource = ImageSourceProvider.ImageSource;
 
-            // Åö RestartÅiçƒèâä˙âªÅj
-            yield return imageSource.Play();
+            // ÔøΩÔøΩ RestartÔøΩiÔøΩƒèÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩj
+           // yield return imageSource.Play();
 
-            // ãNìÆë“Çø
-            yield return new WaitUntil(() => imageSource.isPrepared);
+            // ÔøΩNÔøΩÔøΩÔøΩ“ÇÔøΩ
+           // yield return new WaitUntil(() => imageSource.isPrepared);
 
-            if (!imageSource.isPrepared)
-            {
-                Debug.LogError("Failed to restart camera");
-                yield break;
-            }
+          //  if (!imageSource.isPrepared)
+        //    {
+             //   Debug.LogError("Failed to restart camera");
+            //    yield break;
+          //  }
 
-            Debug.Log("Camera restarted");
+         //   Debug.Log("Camera restarted");
         }
 
         public override void Stop()
@@ -200,7 +200,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
     private void OnHandLandmarkDetectionOutput(HandLandmarkerResult result, Image image, long timestamp)
     {
-        OnHandResultOutput?.Invoke(result);   // Åöí«â¡
+        OnHandResultOutput?.Invoke(result);   // ÔøΩÔøΩÔøΩ«âÔøΩ
 
         _handLandmarkerResultAnnotationController.DrawLater(result);
     }

@@ -256,6 +256,7 @@ GameObject:
   m_Component:
   - component: {fileID: 221451310}
   - component: {fileID: 221451309}
+  - component: {fileID: 221451311}
   m_Layer: 0
   m_Name: BGM_MoeKyun01(CriAtomSource)
   m_TagString: Untagged
@@ -280,7 +281,7 @@ MonoBehaviour:
   _listenerOnStart: {fileID: 0}
   _use3dPositioning: 1
   _freezeOrientation: 0
-  _loop: 0
+  _loop: 1
   _volume: 1
   _pitch: 0
   _androidUseLowLatencyVoicePool: 0
@@ -311,6 +312,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &221451311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221451308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a3aed7dd885747bca4afc02d83029a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BGMManager
 --- !u!1 &979954223
 GameObject:
   m_ObjectHideFlags: 0

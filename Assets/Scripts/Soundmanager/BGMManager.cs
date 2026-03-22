@@ -1,5 +1,4 @@
 using CriWare;
-using UnityEngine;
 
 public class BGMManager : Singleton<BGMManager>
 {
@@ -9,6 +8,7 @@ public class BGMManager : Singleton<BGMManager>
     protected override void Awake()
     {
         base.Awake();
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()

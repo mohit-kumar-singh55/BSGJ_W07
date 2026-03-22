@@ -57,22 +57,23 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     public override PlayerStateManager.PlayerState GetNextState()
     {
-        return (_voiceDetectionFinished && _handDetectionFinished) ? PlayerStateManager.PlayerState.Idle : PlayerStateManager.PlayerState.DoingMoeMoe;
+        // return (_voiceDetectionFinished && _handDetectionFinished) ? PlayerStateManager.PlayerState.Idle : PlayerStateManager.PlayerState.DoingMoeMoe;
+        return _handDetectionFinished ? PlayerStateManager.PlayerState.Idle : PlayerStateManager.PlayerState.DoingMoeMoe;
     }
 
     private void OnHandCheckStart()
     {
         _currentPhase = 2;
 
-        // start moe1 voice detection
-        _context.SpeechDetector.StartDetection();
+        // hide moe example effect
+        _context.MoeExampleAnimator.SetBool("Pulse", false);
+        _context.MoeExampleAnimator.gameObject.SetActive(false);
 
         // play moe effect
         _context.MoeEffectAnimator.SetTrigger(MOE1_ANIM);
 
-        // hide moe example effect
-        _context.MoeExampleAnimator.SetBool("Pulse", false);
-        _context.MoeExampleAnimator.gameObject.SetActive(false);
+        // start voice detection
+        // _context.SpeechDetector.StartDetection();
     }
 
     private void OnRecordingCompleted(int score, string message)

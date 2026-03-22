@@ -83,6 +83,8 @@ public class SpeechToText : MonoBehaviour
 
         _voiceProcessor.StartRecording();
 
+        // foreach (string device in Microphone.devices) Debug.Log(device);
+
         Debug.Log("🎤 Started recording");
 
         // stop recording after specified duration

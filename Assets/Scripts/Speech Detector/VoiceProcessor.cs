@@ -280,6 +280,7 @@ public class VoiceProcessor : MonoBehaviour
                 _audioClip.GetData(sampleBuffer, startReadPos);
             }
 
+            // if (_audioClip.samples != 0) startReadPos = endReadPos % _audioClip.samples;
             startReadPos = endReadPos % _audioClip.samples;
             if (_autoDetect == false)
             {

@@ -65,7 +65,7 @@ public class HandDetection : MonoBehaviour
     // チェック開始
     public void StartCheck()
     {
-        Debug.Log("************************* チェック開始 *************************");
+        // Debug.Log("************************* チェック開始 *************************");
         Initalize();
         nowCheckTime = 0;
         receiver.gameObject.SetActive(true);

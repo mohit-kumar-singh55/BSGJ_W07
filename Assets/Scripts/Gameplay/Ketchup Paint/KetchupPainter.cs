@@ -143,16 +143,20 @@ public class KetchupPainter : MonoBehaviour
                 // スコアを送る
                 OnFinishedDrawing?.Invoke(Mathf.RoundToInt(score));
             }
-            else Debug.Log("書いた回数:" + currentDrawCount + "/" + maxDrawCount);
-
-            // update ui
-            _uiManager.UpdateRemainingStokes(maxDrawCount - currentDrawCount);
+            // else Debug.Log("書いた回数:" + currentDrawCount + "/" + maxDrawCount);
 
             isDrawing = false;
             lastUV = null;
         }
 
         wasPressing = pressing;
+    }
+
+    void FixedUpdate()
+    {
+        // update ui
+        if (_allowToDraw)
+            _uiManager.UpdateRemainingStokes(maxDrawCount - currentDrawCount);
     }
 
     private void SetAllowToDraw() => _allowToDraw = !_allowToDraw;

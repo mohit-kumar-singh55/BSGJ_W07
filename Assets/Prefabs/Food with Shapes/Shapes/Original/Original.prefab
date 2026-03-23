@@ -52,7 +52,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 952149494162460012}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -131,11 +131,11 @@ MonoBehaviour:
   brushTexture: {fileID: 2800000, guid: 6b2004705d4c44447971c003a0788e21, type: 3}
   brushSize: 20
   paintColor: {r: 1, g: 0, b: 0, a: 1}
-  backgroundColor: {r: 1, g: 0.8, b: 0, a: 1}
   sampleGuideTexture: {fileID: 2800000, guid: 609f3b9e72a5d43a2a33d5e5f7fc0ec0, type: 3}
   sampleRT: {fileID: 8400000, guid: 6ce1de56f351d41c7af40fba9e5241d3, type: 2}
   sampleColor: {r: 1, g: 1, b: 1, a: 0.5}
   maxDrawCount: 1
+  scoreMultiplier: 1
 --- !u!1 &953767491347338990
 GameObject:
   m_ObjectHideFlags: 0

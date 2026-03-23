@@ -4,8 +4,10 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 {
     private PlayerStateContext _context;
     private int _currentPhase = 0;      // 2 = moe1, 3 = moe2, 4 = kyun
+    private int _totalScore = 0;        // voice + hand
     private bool _voiceDetectionFinished = false;
     private bool _handDetectionFinished = false;
+    private bool _isFeverMode = false;
 
     private const string MOE1_ANIM = "Moe1";
     private const string MOE2_ANIM = "Moe2";
@@ -20,6 +22,8 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     public override void EnterState()
     {
+        // reset
+        _totalScore = 0;
         _voiceDetectionFinished = false;
         _handDetectionFinished = false;
 
@@ -46,6 +50,18 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     public override void ExitState()
     {
+        // save score
+        if (PlayerDataManager.Instance != null)
+        {
+            Debug.Log("Total Score: " + _totalScore);
+            // apply fever score multiplier
+            float scoreMultiplier = (FeverMode.Instance != null && FeverMode.Instance.IsFeverMode) ? FeverMode.Instance.FeverScoreMultiplier : 1f;
+            Debug.Log("After Score Multiplier: " + Mathf.RoundToInt(_totalScore * scoreMultiplier));
+            PlayerDataManager.Instance.AddPlayerScore(Mathf.RoundToInt(_totalScore * scoreMultiplier));
+        }
+        // check for fever mode
+        if (FeverMode.Instance != null) FeverMode.Instance.CheckIfPerfect(_totalScore);
+
         // reset
         _currentPhase = 0;
 
@@ -83,7 +99,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
     private void OnRecordingCompleted(int score, string message)
     {
         Debug.Log(_currentPhase + ", Score: " + score + ", Message: " + message);
-        if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(score);
+        _totalScore += score;
         _voiceDetectionFinished = true;
     }
 
@@ -118,7 +134,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
         Debug.Log("Hand Detection Over, Score: " + handScore);
 
-        if (PlayerDataManager.Instance != null) PlayerDataManager.Instance.AddPlayerScore(handScore);
+        _totalScore += handScore;
         _handDetectionFinished = true;
     }
 }

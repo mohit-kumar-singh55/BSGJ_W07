@@ -19,7 +19,7 @@ public class PlayerStateManager : StateManager<PlayerStateManager.PlayerState>
 
     [Space(10)]
     [Header("MISC")]
-    [SerializeField] private VFXCountdown _vfxCountdown;    // TODO: make this to be always in front and center of the camera like billboard
+    [SerializeField] private VFXCountdown _vfxCountdown;
 
     private PlayerStateContext _context;
 

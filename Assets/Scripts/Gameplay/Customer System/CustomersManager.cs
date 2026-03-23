@@ -4,19 +4,44 @@ using UnityEngine;
 // responsible for:
 // randomly selecting the next customer
 // giving the selected customer detail to camaramanager for camera change
-public class CustomersManager : MonoBehaviour
+public class CustomersManager : Singleton<CustomersManager>
 {
     [SerializeField] private Customer[] customers;
 
     private Customer _currentCustomer;
 
+    public Customer CurrentCustomer => _currentCustomer;
+
+    void OnEnable()
+    {
+        PlayerDoingMoeMoe.OnMoeMoeCompleted += SelectNextCustomer;
+    }
+
+    void OnDisable()
+    {
+        PlayerDoingMoeMoe.OnMoeMoeCompleted -= SelectNextCustomer;
+    }
+
+    private void Start()
+    {
+        // select random first customer and set camera on
+        _currentCustomer = GetRandomCustomer();
+        _currentCustomer.TurnCamera(true);
+    }
+
+    private Customer GetRandomCustomer() => customers[Random.Range(0, customers.Length)];
+
     public void SelectNextCustomer()
     {
         // TODO: check if customer is in ready state
-        Customer nextCustomer = customers[Random.Range(0, customers.Length)];
-        // TODO: set current customer's camera off
+        Customer nextCustomer = GetRandomCustomer();
+        // make sure next customer is different
+        while (nextCustomer == _currentCustomer) nextCustomer = GetRandomCustomer();
+
+        // set current customer's camera off
         _currentCustomer.TurnCamera(false);
-        // TODO: set next customer's camera on
+
+        // set next customer's camera on
         _currentCustomer = nextCustomer;
         _currentCustomer.TurnCamera(true);
     }

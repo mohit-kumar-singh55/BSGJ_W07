@@ -11,6 +11,8 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
     private const string MOE2_ANIM = "Moe2";
     private const string KYUN_ANIM = "Kyun";
 
+    public static event System.Action OnMoeMoeCompleted = delegate { };
+
     public PlayerDoingMoeMoe(PlayerStateContext context, PlayerStateManager.PlayerState stateKey) : base(stateKey)
     {
         _context = context;
@@ -23,7 +25,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
         // TODO: wait for some seconds, play some sound
 
-        // events
+        // subscribe to events
         _context.SpeechDetector.OnRecordingCompleted += OnRecordingCompleted;
         _context.HandDetection.OnHandCheckStart += OnHandCheckStart;
         _context.HandDetection.OnHandDetectionProceed += OnHandDetectionProceed;
@@ -48,7 +50,10 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         _currentPhase = 0;
 
         // remove current spawned food
-        FoodManager.Instance.DestroyFood();
+        // go to next customer
+        OnMoeMoeCompleted?.Invoke();
+
+        // unsubscribe from events
         _context.SpeechDetector.OnRecordingCompleted -= OnRecordingCompleted;
         _context.HandDetection.OnHandCheckStart -= OnHandCheckStart;
         _context.HandDetection.OnHandDetectionProceed -= OnHandDetectionProceed;

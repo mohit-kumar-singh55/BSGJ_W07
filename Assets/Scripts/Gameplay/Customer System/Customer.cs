@@ -13,9 +13,14 @@ using UnityEngine;
 // in-service -> currently getting served by player, give feedback reaction and set state to idle
 public class Customer : MonoBehaviour
 {
+    [Tooltip("The point where the food will be spawned")]
+    [SerializeField] private Transform _foodSpawnPoint;
+
     private CinemachineStateDrivenCamera _stateCamera;
 
-    private void Start()
+    public Transform FoodPoint => _foodSpawnPoint;
+
+    private void Awake()
     {
         _stateCamera = GetComponentInChildren<CinemachineStateDrivenCamera>();
 
@@ -25,6 +30,10 @@ public class Customer : MonoBehaviour
             enabled = false;
             return;
         }
+
+        // camera is off by default
+        // _stateCamera.enabled = false;
+        TurnCamera(false);
 
         // _stateCamera.Instructions = new CinemachineStateDrivenCamera.Instruction[]
         // {
@@ -41,6 +50,7 @@ public class Customer : MonoBehaviour
     /// <param name="on"></param>
     public void TurnCamera(bool on = true)
     {
-        _stateCamera.enabled = on;
+        // _stateCamera.enabled = on;
+        _stateCamera.gameObject.SetActive(on);
     }
 }

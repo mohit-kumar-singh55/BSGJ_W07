@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4516571200585976819}
   - component: {fileID: 3121492364542157261}
   m_Layer: 0
-  m_Name: CM_KETCHUP_CAM
+  m_Name: CM_PAINTING_CAM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -159,11 +159,7 @@ MonoBehaviour:
     Camera: {fileID: 3121492364542157261}
     ActivateAfter: 0
     MinDuration: 0
-  HashOfParent:
-  - Hash: 1432961145
-    HashOfParent: 756556552
-  - Hash: -446498423
-    HashOfParent: 756556552
+  HashOfParent: []
   m_LegacyLookAt: {fileID: 0}
   m_LegacyFollow: {fileID: 0}
 --- !u!1 &9153119314352367939
@@ -256,6 +252,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineBasicMultiChannelPerlin
   NoiseProfile: {fileID: 11400000, guid: 46965f9cbaf525742a6da4c2172a99cd, type: 2}
   PivotOffset: {x: 0, y: 0, z: 0}
-  AmplitudeGain: 0.8
+  AmplitudeGain: 1
   FrequencyGain: 0.5
   m_NoiseOffsets: {x: 68.035034, y: -558.27185, z: 789.59393}

@@ -20,9 +20,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: CFXR3 _1_ Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 2883797502249945402, guid: 1e54877675f6e4a46ad7ca7c4d7a5bf6, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3356239116250685704, guid: 1e54877675f6e4a46ad7ca7c4d7a5bf6, type: 3}
       propertyPath: m_Name
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3356239116250685704, guid: 1e54877675f6e4a46ad7ca7c4d7a5bf6, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4675197623242139266, guid: 1e54877675f6e4a46ad7ca7c4d7a5bf6, type: 3}
       propertyPath: UVModule.sprites.Array.data[0].sprite

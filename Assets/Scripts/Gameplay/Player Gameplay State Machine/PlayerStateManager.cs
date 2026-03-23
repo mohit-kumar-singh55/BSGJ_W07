@@ -5,11 +5,21 @@ public class PlayerStateManager : StateManager<PlayerStateManager.PlayerState>
 {
     public enum PlayerState { Idle, Painting, DoingMoeMoe }
 
+    [Header("Speech Detection")]
     [SerializeField] private SpeechDetector _speechDetector;
+
+    [Space(10)]
+    [Header("Hand Detection")]
     [SerializeField] private HandDetection _handDetection;
+
+    [Space(10)]
+    [Header("Animation")]
     [SerializeField] private Animator _moeEffectAnimator;
-    [SerializeField] private VFXCountdown _vfxCountdown;
     [SerializeField] private Animator _moeExampleAnimator;
+
+    [Space(10)]
+    [Header("MISC")]
+    [SerializeField] private VFXCountdown _vfxCountdown;    // TODO: make this to be always in front and center of the camera like billboard
 
     private PlayerStateContext _context;
 

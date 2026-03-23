@@ -34,11 +34,28 @@ public class KetchupPainter : MonoBehaviour
     //一度描き終えたかどうか覚えるフラグ
     private bool hasFinishedDrawing = false;
     private bool wasPressing = false;
-
     private bool isDrawing = false;
     private int currentDrawCount = 0;
 
+    private bool _allowToDraw = false;
+
+    private UIManager _uiManager;
+
     public static event System.Action<int> OnFinishedDrawing = delegate { };
+
+    void OnEnable()
+    {
+        // allow to draw
+        PlayerPainting.OnPlayerEnterPainting += SetAllowToDraw;
+        PlayerPainting.OnPlayerExitPainting += SetAllowToDraw;
+    }
+
+    void OnDisable()
+    {
+        // disallow to draw
+        PlayerPainting.OnPlayerEnterPainting -= SetAllowToDraw;
+        PlayerPainting.OnPlayerExitPainting -= SetAllowToDraw;
+    }
 
     private void Awake() => Validate();
 
@@ -47,6 +64,7 @@ public class KetchupPainter : MonoBehaviour
         currentDrawCount = 0;
         InitializeTexture();
         InitializeSampleFromImage();
+        _uiManager = UIManager.Instance;
     }
 
     private void InitializeTexture()
@@ -79,6 +97,9 @@ public class KetchupPainter : MonoBehaviour
 
     private void Update()
     {
+        // not allow to draw when player is not in painting state
+        if (!_allowToDraw) return;
+
         var pointer = Pointer.current;
         bool pressing = pointer != null && pointer.press.isPressed;
 
@@ -124,12 +145,17 @@ public class KetchupPainter : MonoBehaviour
             }
             else Debug.Log("書いた回数:" + currentDrawCount + "/" + maxDrawCount);
 
+            // update ui
+            _uiManager.UpdateRemainingStokes(maxDrawCount - currentDrawCount);
+
             isDrawing = false;
             lastUV = null;
         }
 
         wasPressing = pressing;
     }
+
+    private void SetAllowToDraw() => _allowToDraw = !_allowToDraw;
 
     private bool IsPointerOverGameObject(out RaycastHit hit)
     {

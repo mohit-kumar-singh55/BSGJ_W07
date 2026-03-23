@@ -5,6 +5,9 @@ public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
     private PlayerStateContext _context;
     private bool _canTransition = false;
 
+    public static event System.Action OnPlayerEnterPainting = delegate { };
+    public static event System.Action OnPlayerExitPainting = delegate { };
+
     public PlayerPainting(PlayerStateContext context, PlayerStateManager.PlayerState stateKey) : base(stateKey)
     {
         _context = context;
@@ -13,7 +16,12 @@ public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
     public override void EnterState()
     {
         _canTransition = false;
-        _context.Animator.SetBool("Painting", true);
+        OnPlayerEnterPainting?.Invoke();
+
+        // camera transition
+        _context.Animator.SetBool(_context.PAINTING_ANIM, true);
+
+        // events 
         KetchupPainter.OnFinishedDrawing += OnDrawingFinished;
     }
 
@@ -21,7 +29,12 @@ public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
 
     public override void ExitState()
     {
-        _context.Animator.SetBool("Painting", false);
+        OnPlayerExitPainting?.Invoke();
+
+        // camera transition
+        _context.Animator.SetBool(_context.PAINTING_ANIM, false);
+
+        // unsubscribe
         KetchupPainter.OnFinishedDrawing -= OnDrawingFinished;
     }
 

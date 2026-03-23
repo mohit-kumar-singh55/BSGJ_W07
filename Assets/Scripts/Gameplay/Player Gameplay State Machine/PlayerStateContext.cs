@@ -17,6 +17,9 @@ public class PlayerStateContext
     public HandDetection HandDetection => _handDetection;
     public Animator MoeExampleAnimator => _moeExampleAnimator;
 
+    // player animator params
+    public string PAINTING_ANIM { get { return "Painting"; } }
+
     public PlayerStateContext(Animator animator, SpeechDetector speechDetector, Animator moeEffectAnimator, VFXCountdown vfxCountdown, HandDetection handDetection, Animator moeExampleAnimator)
     {
         _animator = animator;

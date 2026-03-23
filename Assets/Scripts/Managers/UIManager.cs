@@ -12,14 +12,22 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private TMP_Text _scoreText;
     [SerializeField] private float _timeToCount = 3f;
 
+    [Space(10)]
+    [Header("Remaining Stokes UI Settings")]
+    [SerializeField] private TMP_Text _remainingStokesText;
+
     private void OnEnable()
     {
         PlayerDataManager.OnPlayerScoreChanged += UpdateScoreUpto;
+        PlayerPainting.OnPlayerEnterPainting += ShowRemainingStokesText;
+        PlayerPainting.OnPlayerExitPainting += ShowRemainingStokesText;
     }
 
     private void OnDisable()
     {
         PlayerDataManager.OnPlayerScoreChanged -= UpdateScoreUpto;
+        PlayerPainting.OnPlayerEnterPainting -= ShowRemainingStokesText;
+        PlayerPainting.OnPlayerExitPainting -= ShowRemainingStokesText;
     }
 
     // rotate needle of clock ui
@@ -42,5 +50,15 @@ public class UIManager : Singleton<UIManager>
             (score) => _scoreText.text = score.ToString(),
             (score) => _scoreText.text = newScore.ToString()
         ));
+    }
+
+    private void ShowRemainingStokesText()
+    {
+        _remainingStokesText.gameObject.SetActive(!_remainingStokesText.gameObject.activeSelf);
+    }
+
+    public void UpdateRemainingStokes(int remainingStokes)
+    {
+        _remainingStokesText.text = "< " + remainingStokes.ToString() + " >";
     }
 }

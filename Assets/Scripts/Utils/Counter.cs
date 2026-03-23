@@ -13,8 +13,7 @@ public class Counter
         {
             t += Time.deltaTime / countTimeLimit;
 
-            // current = Mathf.RoundToInt(t * to);
-            current = (int)Mathf.Lerp(from, to, t);
+            current = Mathf.RoundToInt(Mathf.Lerp(from, to, t));
             onUpdate?.Invoke(current);
             yield return null;
         }

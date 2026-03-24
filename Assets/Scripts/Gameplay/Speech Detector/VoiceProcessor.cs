@@ -121,6 +121,14 @@ public class VoiceProcessor : MonoBehaviour
         UpdateDevices();
     }
 
+    void Start()
+    {
+        // change mic to use based on playerprefs
+        int indexOfMicToUse = PlayerPrefs.GetInt(PLAYER_PREFS.CURRENT_MIC_IN_USE, 0);
+        MicrophoneIndex = indexOfMicToUse;
+        ChangeDevice(indexOfMicToUse);
+    }
+
 #if UNITY_EDITOR
     void Update()
     {

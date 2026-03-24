@@ -1,4 +1,4 @@
 public class PLAYER_PREFS
 {
-    public const string TOTAL_SCORE = "TOTAL_SCORE";
+    public const string CURRENT_MIC_IN_USE = "CURRENT_MIC_IN_USE";
 }

@@ -14,9 +14,6 @@ public class TitleSceneController : MonoBehaviour
 
     void Start()
     {
-        QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = -1;
-        Screen.SetResolution(2560, 1440, true);
         VisualElement root = _titleUIPanel.rootVisualElement;
 
         Button startButton = root.Q<Button>(_startButton);

@@ -25,6 +25,12 @@ public class UIManager : Singleton<UIManager>
     // ! temp
     [SerializeField] private TMP_Text _feverGaugeText;
 
+    [Space(10)]
+    [Header("Score Popup UI Settings")]
+    [SerializeField] private Transform _scorePopupParent;
+    [SerializeField] private GameObject _scorePopupPrefab;
+    [SerializeField] private float _destroyScorePopupDelay = 1f;
+
     private void OnEnable()
     {
         PlayerDataManager.OnPlayerScoreChanged += UpdateScoreUpto;
@@ -59,6 +65,20 @@ public class UIManager : Singleton<UIManager>
             (score) => _scoreText.text = score.ToString(),
             (score) => _scoreText.text = newScore.ToString()
         ));
+
+        // Spawn score popup
+        int scoreDifference = newScore - currentScore;
+        if (scoreDifference > 0) SpawnScorePopup(scoreDifference);
+    }
+
+    private void SpawnScorePopup(int score)
+    {
+        GameObject popup = Instantiate(_scorePopupPrefab, _scorePopupParent);
+        if (popup.TryGetComponent(out TMP_Text popupText))
+            popupText.text = "+" + score.ToString();
+
+        // Destroy the popup after a delay
+        Destroy(popup, _destroyScorePopupDelay);
     }
 
     private void ShowRemainingStokesText()

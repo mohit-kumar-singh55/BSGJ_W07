@@ -1,76 +1,130 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PhraseType { MOE, KYUN }
+
 // it starts the speech detection process, checks the timing of the speech we are looking for, and score based on the timing accuracy
 [RequireComponent(typeof(SpeechToText))]
 public class SpeechDetector : MonoBehaviour
 {
-    [Tooltip("Time window (in seconds), if speech detected in-between this time, will be considered as Good. Should be in format (min, max) where min < max")]
-    [SerializeField] private Vector2 _detectionWindow = new(1f, 2f);
-    [SerializeField] private List<string> _keyPhrases = new();
+	[Tooltip("Time window (in seconds), if speech detected in-between this time, will be considered as Good. Should be in format (min, max) where min < max")]
+	[SerializeField] private Vector2 _detectionWindow = new(1f, 2f);
 
-    private float _startTime;
-    private SpeechToText _speechToText;
-    private enum DetectionStage { Early = 80, Good = 100, Late = 60, Miss = 50 }
+	[Space(10)]
+	[Header("Key Phrases")]
+	[SerializeField] private List<string> _moePhrases = new();
+	[SerializeField] private List<string> _kyunPhrases = new();
+	[SerializeField] private List<string> _extraPhrases = new();
 
-    public event System.Action<int, string> OnRecordingCompleted = delegate { };
+	private List<string> _keyPhrases = new();   // ! can be made local variable in start method to save memory
+	private float _startTime;
+	private SpeechToText _speechToText;
+	private enum DetectionStage { Early = 80, Good = 100, Late = 60, Miss = 50 }
 
-    void OnDestroy()
-    {
-        _speechToText.OnKeyPhraseDetected -= OnKeyPhraseDetected;
-        _speechToText.OnKeyPhraseUnDetected -= OnKeyPhraseUnDetected;
-    }
+	public event System.Action<int, string> OnRecordingCompleted = delegate { };
+	public static event System.Action<Dictionary<PhraseType, int>> OnFoundPhraseOccurrence = delegate { };
 
-    private void Start()
-    {
-        _speechToText = FindAnyObjectByType<SpeechToText>();
-        if (_speechToText == null)
-        {
-            Debug.LogError("One or more required components not found in the scene. Please add them.");
-            enabled = false;
-            return;
-        }
+	void OnDestroy()
+	{
+		_speechToText.OnKeyPhraseDetected -= OnKeyPhraseDetected;
+		_speechToText.OnKeyPhraseUnDetected -= OnKeyPhraseUnDetected;
+	}
 
-        // set key phrases to search for
-        _speechToText.KeyPhrases = _keyPhrases;
+	private void Awake()
+	{
+		// joining all the phrases into one list
+		_keyPhrases.AddRange(_moePhrases);
+		_keyPhrases.AddRange(_kyunPhrases);
+		_keyPhrases.AddRange(_extraPhrases);
+	}
 
-        // bind to get know whether key phrase is detected or not
-        _speechToText.OnKeyPhraseDetected += OnKeyPhraseDetected;
-        _speechToText.OnKeyPhraseUnDetected += OnKeyPhraseUnDetected;
-    }
+	private void Start()
+	{
+		_speechToText = FindAnyObjectByType<SpeechToText>();
+		if (_speechToText == null)
+		{
+			Debug.LogError("One or more required components not found in the scene. Please add them.");
+			enabled = false;
+			return;
+		}
 
-    public void StartDetection()
-    {
-        // start rec
-        _speechToText.StartRecording(_detectionWindow.y);
+		// set key phrases to search for
+		_speechToText.KeyPhrases = _keyPhrases;
 
-        // record the start time
-        _startTime = Time.time;
-    }
+		// bind to get know whether key phrase is detected or not
+		_speechToText.OnKeyPhraseDetected += OnKeyPhraseDetected;
+		_speechToText.OnKeyPhraseUnDetected += OnKeyPhraseUnDetected;
+	}
 
-    private void OnKeyPhraseDetected(string keyphrase, int volume)
-    {
-        float elapsedTime = Time.time - _startTime;
+	public void StartDetection()
+	{
+		// start rec
+		_speechToText.StartRecording(_detectionWindow.y);
 
-        // score based on the elapsed time and volume
-        DetectionStage stage;
+		// record the start time
+		_startTime = Time.time;
+	}
 
-        //  score as Early
-        if (elapsedTime < _detectionWindow.x) stage = DetectionStage.Early;
-        // score as Good
-        else if (elapsedTime <= _detectionWindow.y) stage = DetectionStage.Good;
-        // score as Late
-        else stage = DetectionStage.Late;
+	private void OnKeyPhraseDetected(string resultPhrase, int volume)
+	{
+		float elapsedTime = Time.time - _startTime;
 
-        // sending score
-        OnRecordingCompleted?.Invoke(CalculateScore((int)stage, volume), keyphrase);
-    }
+		// score based on the elapsed time and volume
+		DetectionStage stage;
 
-    private void OnKeyPhraseUnDetected(string message, int volume)
-    {
-        // score as Miss
-        OnRecordingCompleted?.Invoke(CalculateScore((int)DetectionStage.Miss, volume), message + " Score: Miss");
-    }
+		//  score as Early
+		if (elapsedTime < _detectionWindow.x) stage = DetectionStage.Early;
+		// score as Good
+		else if (elapsedTime <= _detectionWindow.y) stage = DetectionStage.Good;
+		// score as Late
+		else stage = DetectionStage.Late;
 
-    private int CalculateScore(int stageScore, int volumeScore) => Mathf.RoundToInt((stageScore + volumeScore) / 2f);
+		// sending score
+		OnRecordingCompleted?.Invoke(CalculateScore((int)stage, volume), resultPhrase);
+
+		// updating ui
+		OnFoundPhraseOccurrence?.Invoke(OrganizeOccurrence(resultPhrase));
+	}
+
+	private void OnKeyPhraseUnDetected(string message, int volume)
+	{
+		// score as Miss
+		OnRecordingCompleted?.Invoke(CalculateScore((int)DetectionStage.Miss, volume), message + " Score: Miss");
+	}
+
+	private int CalculateScore(int stageScore, int volumeScore) => Mathf.RoundToInt((stageScore + volumeScore) / 2f);
+
+	private Dictionary<PhraseType, int> OrganizeOccurrence(string keyPhrase)
+	{
+		Dictionary<PhraseType, int> occurredPhrase = new()
+		{
+			{ PhraseType.MOE, 0 },
+			{ PhraseType.KYUN, 0 }
+		};
+
+		occurredPhrase[PhraseType.MOE] = CountPhraseOccurrence(keyPhrase, _moePhrases);
+		occurredPhrase[PhraseType.KYUN] = CountPhraseOccurrence(keyPhrase, _kyunPhrases);
+
+		return occurredPhrase;
+	}
+
+	private int CountPhraseOccurrence(string phrase, List<string> list)
+	{
+		int occurringTimes = 0;
+
+		phrase = phrase.ToLower();
+
+		foreach (string word in list)
+		{
+			if (!phrase.Contains(word)) continue;
+
+			occurringTimes++;
+
+			// removing already found word
+			phrase = phrase.Remove(phrase.IndexOf(word), word.Length);
+			// phrase = phrase[(phrase.IndexOf(word[^1]) + 1)..];
+		}
+
+		return occurringTimes;
+	}
 }

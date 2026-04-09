@@ -8,8 +8,8 @@
     - オムライスパートなしで萌えキュンのみできるボーナスタイム
     - 点数が1.2倍で入るように調整 -->
 
-- 「萌え萌えキュン」 on below of the screen as subtitle
-    - need to change the color of the 文字 that is recognised
+<!-- - 「萌え萌えキュン」 on below of the screen as subtitle
+    - need to change the color of the 文字 that is recognised -->
 
 - create customer system
 

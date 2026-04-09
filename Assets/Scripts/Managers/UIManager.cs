@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,18 +32,31 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private GameObject _scorePopupPrefab;
     [SerializeField] private float _destroyScorePopupDelay = 1f;
 
+    [Space(10)]
+    [Header("Subtitle Moe Kyun UI Settings")]
+    [SerializeField] private GameObject _subtitleMoeKyunParent;
+    [SerializeField] private Image[] _subtitleMoeKyunImages = new Image[3]; // 0, 1, 2 = moe1, moe2, kyun
+    [SerializeField] private Color _subtitleHighlightColor = Color.green;
+    [SerializeField] private float _subtitleMoeKyunHideDelay = 1f;
+
     private void OnEnable()
     {
         PlayerDataManager.OnPlayerScoreChanged += UpdateScoreUpto;
-        PlayerPainting.OnPlayerEnterPainting += ShowRemainingStokesText;
-        PlayerPainting.OnPlayerExitPainting += ShowRemainingStokesText;
+        PlayerPainting.OnPlayerEnterPainting += ShowHideRemainingStokesText;
+        PlayerPainting.OnPlayerExitPainting += ShowHideRemainingStokesText;
+        SpeechDetector.OnFoundPhraseOccurrence += ChangeSubtitleColorOnOccurrence;
+        PlayerDoingMoeMoe.OnMoeMoeStarted += ShowHideSubtitleMoeKyun;
+        PlayerDoingMoeMoe.OnMoeMoeCompleted += ShowHideSubtitleMoeKyun;
     }
 
     private void OnDisable()
     {
         PlayerDataManager.OnPlayerScoreChanged -= UpdateScoreUpto;
-        PlayerPainting.OnPlayerEnterPainting -= ShowRemainingStokesText;
-        PlayerPainting.OnPlayerExitPainting -= ShowRemainingStokesText;
+        PlayerPainting.OnPlayerEnterPainting -= ShowHideRemainingStokesText;
+        PlayerPainting.OnPlayerExitPainting -= ShowHideRemainingStokesText;
+        SpeechDetector.OnFoundPhraseOccurrence -= ChangeSubtitleColorOnOccurrence;
+        PlayerDoingMoeMoe.OnMoeMoeStarted -= ShowHideSubtitleMoeKyun;
+        PlayerDoingMoeMoe.OnMoeMoeCompleted -= ShowHideSubtitleMoeKyun;
     }
 
     // rotate needle of clock ui
@@ -81,7 +95,7 @@ public class UIManager : Singleton<UIManager>
         Destroy(popup, _destroyScorePopupDelay);
     }
 
-    private void ShowRemainingStokesText()
+    private void ShowHideRemainingStokesText()
     {
         _remainingStokesText.gameObject.SetActive(!_remainingStokesText.gameObject.activeSelf);
     }
@@ -103,6 +117,49 @@ public class UIManager : Singleton<UIManager>
         StartCoroutine(LerpFeverGauge(_feverGaugeInnerImage.fillAmount, feverGaugeValue, _feverGaugeValueLerpDuration));
     }
 
+    public void ShowHideSubtitleMoeKyun()
+    {
+        bool show = !_subtitleMoeKyunParent.activeSelf;
+
+        if (show) _subtitleMoeKyunParent.SetActive(show);
+        else
+        {
+            // hide after delay
+            StartCoroutine(WaitFor(_subtitleMoeKyunHideDelay, () =>
+            {
+                ResetSubtitleColors();  // reset colors when hiding
+                _subtitleMoeKyunParent.SetActive(show);
+            }));
+        }
+    }
+
+    private void ChangeSubtitleColorOnOccurrence(Dictionary<PhraseType, int> occurrencedPhrase)
+    {
+        if (_subtitleMoeKyunImages.Length < 3) return;
+
+        // moe1, moe2
+        if (occurrencedPhrase.TryGetValue(PhraseType.MOE, out int moeCount))
+        {
+            _subtitleMoeKyunImages[0].color = moeCount > 0 ? _subtitleHighlightColor : Color.white;
+            _subtitleMoeKyunImages[1].color = moeCount > 1 ? _subtitleHighlightColor : Color.white;
+        }
+
+        // kyun
+        if (occurrencedPhrase.TryGetValue(PhraseType.KYUN, out int kyunCount))
+        {
+            _subtitleMoeKyunImages[2].color = kyunCount > 0 ? _subtitleHighlightColor : Color.white;
+        }
+
+        Debug.LogWarning("MOE Count: " + moeCount + ", KYUN Count: " + kyunCount);
+        // Debug.Break();
+    }
+
+    private void ResetSubtitleColors()
+    {
+        foreach (var image in _subtitleMoeKyunImages)
+            image.color = Color.white;
+    }
+
     private IEnumerator LerpFeverGauge(float startValue, float endValue, float duration)
     {
         float t = 0f;
@@ -112,5 +169,11 @@ public class UIManager : Singleton<UIManager>
             _feverGaugeInnerImage.fillAmount = Mathf.Lerp(startValue, endValue, t);
             yield return null;
         }
+    }
+
+    private IEnumerator WaitFor(float delay, System.Action onComplete)
+    {
+        yield return new WaitForSeconds(delay);
+        onComplete?.Invoke();
     }
 }

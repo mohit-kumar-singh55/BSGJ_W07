@@ -25,7 +25,7 @@ public class OptionsController : TitleController
         if (Microphone.devices.Length <= 0) return;
 
         // mic selection
-        _micDropdown.value = Microphone.devices[PlayerPrefs.GetInt(PLAYER_PREFS.CURRENT_MIC_IN_USE, 0)];
+        _micDropdown.value = Microphone.devices[GetMicIndex()];   // set default value to current mic in use
         _micDropdown.RegisterValueChangedCallback(SetMicToUse);
 
         // populate mic list
@@ -35,5 +35,16 @@ public class OptionsController : TitleController
     private void SetMicToUse(ChangeEvent<string> evt)
     {
         PlayerPrefs.SetInt(PLAYER_PREFS.CURRENT_MIC_IN_USE, _micDropdown.index);
+    }
+
+    private int GetMicIndex()
+    {
+        int micIndex = PlayerPrefs.GetInt(PLAYER_PREFS.CURRENT_MIC_IN_USE, 0);
+        micIndex = Mathf.Clamp(micIndex, 0, Microphone.devices.Length - 1);    // clamp to avoid error
+
+        // resave clamped value to player prefs to avoid error in future
+        PlayerPrefs.SetInt(PLAYER_PREFS.CURRENT_MIC_IN_USE, micIndex);
+
+        return micIndex;
     }
 }

@@ -7,12 +7,12 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
     private int _totalScore = 0;        // voice + hand
     private bool _voiceDetectionFinished = false;
     private bool _handDetectionFinished = false;
-    private bool _isFeverMode = false;
 
     private const string MOE1_ANIM = "Moe1";
     private const string MOE2_ANIM = "Moe2";
     private const string KYUN_ANIM = "Kyun";
 
+    public static event System.Action OnMoeMoeStarted = delegate { };
     public static event System.Action OnMoeMoeCompleted = delegate { };
 
     public PlayerDoingMoeMoe(PlayerStateContext context, PlayerStateManager.PlayerState stateKey) : base(stateKey)
@@ -43,6 +43,9 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
             // show moe example effect
             _context.MoeExampleAnimator.gameObject.SetActive(true);
             _context.MoeExampleAnimator.SetBool("Pulse", true);
+
+            // moe moe started
+            OnMoeMoeStarted?.Invoke();
         });
     }
 

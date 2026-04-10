@@ -4,9 +4,14 @@ using UnityEngine;
 // responsible for:
 // randomly selecting the next customer
 // giving the selected customer detail to camaramanager for camera change
+
+// TODO: seperate customer from (table + chair + camera set + food point)
+// TODO: take list of all the customer prefabs & list of all table set
+// TODO: select random table set, then spawn random customer and when the customer is in ready state, assign the food point and camera set to that customer
 public class CustomersManager : Singleton<CustomersManager>
 {
     [SerializeField] private Customer[] customers;
+    [SerializeField] private int _maxCustomerCount = 3;
 
     private Customer _currentCustomer;
 

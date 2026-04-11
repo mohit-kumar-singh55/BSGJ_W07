@@ -21,7 +21,7 @@ public class HandDataReceiver : MonoBehaviour
     public HandLandmarkerResult result { get; private set; }
 
     // 止まり続けたフレーム
-    public int[] isFleezCount { get; private set; }
+    public int[] isFleezCount;
 
     // 手と手の距離
     public float handsDistance { get; private set; }
@@ -38,6 +38,12 @@ public class HandDataReceiver : MonoBehaviour
     // 手のスケール
     public float handScale;
 
+    // 手の消失からのカウント
+    private int[] lostCount;
+
+    [SerializeField] private float smoothFactor = 0.2f;
+
+
     private void Start()
     {
         Initalize();
@@ -49,6 +55,7 @@ public class HandDataReceiver : MonoBehaviour
         runner.OnHandResultOutput += OnHandResult;
         runner.config.NumHands = numHands;
 
+        lostCount = new int[numHands];
         isFleezCount = new int[numHands];
         handPos = new Vector3[numHands];
         prevHandPos = new Vector3[numHands];
@@ -95,9 +102,20 @@ public class HandDataReceiver : MonoBehaviour
         this.result = result;
 
         if (result.handLandmarks == null || result.handLandmarks.Count == 0)
+        {
+            for (int i = 0; i < numHands; i++)
+                lostCount[i]++;
+
             return;
+        }
+
+        for (int i = 0; i < result.handLandmarks.Count; i++)
+        {
+            lostCount[i] = 0;
+        }
 
         int count = Mathf.Min(result.handLandmarks.Count, numHands);
+
 
         for (int i = 0; i < count; i++)
         {
@@ -105,15 +123,25 @@ public class HandDataReceiver : MonoBehaviour
 
             // 手首の座標
             var wrist = lm[0];
-            handPos[i] = new Vector3(wrist.x, wrist.y, wrist.z);
+            handPos[i] = Smooth(handPos[i], new Vector3(wrist.x, wrist.y, wrist.z));
 
             float dx = lm[12].x - lm[0].x;
             float dy = lm[12].y - lm[0].y;
             float dz = lm[12].z - lm[0].z;
 
-            float scale = Mathf.Sqrt(dx * dx + dy * dy + dz * dz);
+            // スケールの計算
+            Vector3 p0 = new Vector3(lm[0].x, lm[0].y, lm[0].z);
+            Vector3 p9 = new Vector3(lm[9].x, lm[9].y, lm[9].z);
+            Vector3 p17 = new Vector3(lm[17].x, lm[17].y, lm[17].z);
+            Vector3 p5 = new Vector3(lm[5].x, lm[5].y, lm[5].z);
 
+            float s1 = Vector3.Distance(p0, p9);
+            float s2 = Vector3.Distance(p0, p17);
+            float s3 = Vector3.Distance(p0, p5);
+
+            float scale = (s1 + s2 + s3) / 3f;
             handScale = scale * scaleMultiPlier;
+
         }
     }
 
@@ -123,7 +151,7 @@ public class HandDataReceiver : MonoBehaviour
     /// <param name="index">手の番号</param>
     private void IsSlowHand(int index)
     {
-        if (IsHandMovingSlow(index, 0.01f))
+        if (IsHandMovingSlow(index, 0.9f * handScale) && AreTwoHandsPresent(result))
         {
             isFleezCount[index]++;
         }
@@ -153,9 +181,10 @@ public class HandDataReceiver : MonoBehaviour
         if (index < 0 || index >= handPos.Length)
             return false;
 
-        float distance = Vector3.Distance(handPos[index], prevHandPos[index]);
+        // 距離 → 速度に変更
+        float speed = Vector3.Distance(handPos[index], prevHandPos[index]) / Time.fixedDeltaTime;
 
-        return distance <= threshold;
+        return speed <= threshold;
     }
 
     /// <summary>
@@ -211,11 +240,12 @@ public class HandDataReceiver : MonoBehaviour
         { 17, 20 }  // 小指
         };
 
-        int handCount = result.handLandmarks.Count;
-
-        for (int h = 0; h < handCount; h++)
+        for (int h = 0; h < result.handLandmarks.Count; h++)
         {
             var lm = result.handLandmarks[h].landmarks;
+
+            if (lm == null || lm.Count < 21)
+                return false;
 
             for (int i = 0; i < fingerPairs.GetLength(0); i++)
             {
@@ -226,14 +256,13 @@ public class HandDataReceiver : MonoBehaviour
                 float tipY = lm[tipId].y;
 
                 if (tipY >= baseY)
-                {
                     return false;
-                }
             }
         }
 
         return true;
     }
+
 
     /// <summary>
     /// 全ての指が中心に向かっているかのチェック
@@ -254,11 +283,12 @@ public class HandDataReceiver : MonoBehaviour
         { 17, 20 }  // 小指
         };
 
-        int handCount = result.handLandmarks.Count;
-
-        for (int h = 0; h < handCount; h++)
+        for (int h = 0; h < result.handLandmarks.Count; h++)
         {
             var lm = result.handLandmarks[h].landmarks;
+
+            if (lm == null || lm.Count < 21)
+                return false;
 
             float direction = (result.handedness[h].categories[0].categoryName == "Right") ? 1f : -1f;
 
@@ -271,14 +301,13 @@ public class HandDataReceiver : MonoBehaviour
                 float tipX = lm[tipId].x * direction;
 
                 if (tipX >= baseX)
-                {
                     return false;
-                }
             }
         }
 
         return true;
     }
+
 
     /// <summary>
     /// 親指が全ての指の中で一番低いかのチェック
@@ -328,5 +357,15 @@ public class HandDataReceiver : MonoBehaviour
         return result.handLandmarks != null && result.handLandmarks.Count >= 2;
     }
 
+    /// <summary>
+    /// 座標のスムージング化
+    /// </summary>
+    /// <param name="prev">前の座標</param>
+    /// <param name="current">現在の座標</param>
+    /// <returns></returns>
+    private Vector3 Smooth(Vector3 prev, Vector3 current)
+    {
+        return Vector3.Lerp(prev, current, smoothFactor);
+    }
 
 }

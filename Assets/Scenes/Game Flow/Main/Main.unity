@@ -7972,7 +7972,7 @@ MonoBehaviour:
   _customerPrefab: {fileID: 4671563733811116627, guid: 9ccbde58dbdb9424eb9d2128b9eef72b, type: 3}
   _customerSpawnPoint: {fileID: 457676393}
   _maxCustomerCount: 6
-  _customerSpawnInterval: 20
+  _customerSpawnInterval: 15
   _retryCustomerSelectionAfter: 5
 --- !u!1 &1979127346
 GameObject:

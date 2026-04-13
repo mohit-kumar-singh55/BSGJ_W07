@@ -82,14 +82,14 @@ public class UIManager : Singleton<UIManager>
 
         // Spawn score popup
         int scoreDifference = newScore - currentScore;
-        if (scoreDifference > 0) SpawnScorePopup(scoreDifference);
+        if (scoreDifference != 0) SpawnScorePopup(Mathf.Abs(scoreDifference), scoreDifference < 0);
     }
 
-    private void SpawnScorePopup(int score)
+    private void SpawnScorePopup(int score, bool isDeduction = false)
     {
         GameObject popup = Instantiate(_scorePopupPrefab, _scorePopupParent);
         if (popup.TryGetComponent(out TMP_Text popupText))
-            popupText.text = "+" + score.ToString();
+            popupText.text = (isDeduction ? "-" : "+") + score.ToString();
 
         // Destroy the popup after a delay
         Destroy(popup, _destroyScorePopupDelay);

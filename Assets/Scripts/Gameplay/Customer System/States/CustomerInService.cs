@@ -30,6 +30,10 @@ public class CustomerInService : BaseState<Customer.CustomerState>
 
         // spawn food
         _foodManager.SpawnFood(_context.FoodPoint);
+
+
+        // dont show mood when started servicing
+        _context.MoodSetter.SetMood(CustomerMood.None);
     }
 
     public override void UpdateState() { }

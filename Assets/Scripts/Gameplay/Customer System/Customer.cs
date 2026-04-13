@@ -20,18 +20,25 @@ public class Customer : StateManager<Customer.CustomerState>
 
     [Tooltip("Customer's Waiting Time")]
     [SerializeField] private float _waitingTime = 20f;
+    [Tooltip("Score deduction value when customer leaves due to waiting times up")]
+    [SerializeField] private int _scoreToDeductOnTimesUp = 50;
 
     private NavMeshAgent _customerAgent;
     private CustomerStateContext _context;
     private Transform _customerDestroyPoint;
+    private MoodSetter _moodSetter;
 
     private void Awake()
     {
         _customerAgent = GetComponent<NavMeshAgent>();
+        _moodSetter = GetComponentInChildren<MoodSetter>();
         // Point where customer will go back when in out-going state to get destroyed
         _customerDestroyPoint = FindAnyObjectByType<CustomerDestroyer>().transform;
 
-        _context = new CustomerStateContext(this, _customerAgent, _waitingTime, _customerDestroyPoint);
+        if (_moodSetter == null)
+            Debug.LogError("MoodSetter component not found in children of Customer!");
+
+        _context = new CustomerStateContext(this, _customerAgent, _waitingTime, _customerDestroyPoint, _moodSetter, _scoreToDeductOnTimesUp);
         InitializeStates();
     }
 

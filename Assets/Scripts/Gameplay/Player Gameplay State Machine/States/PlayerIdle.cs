@@ -23,14 +23,15 @@ public class PlayerIdle : BaseState<PlayerStateManager.PlayerState>
         _idleTimer = 5f;
         _canTransition = false;
 
-        // spawn food
         OnPlayerEnterIdle?.Invoke();
-
-        // TODO: stop player from painting while in idle
     }
 
     public override void UpdateState()
     {
+        // stop timer if there is no customer in service, as player cannot paint without customer
+        if (CustomersManager.Instance == null || CustomersManager.Instance.CurrentCustomer == null)
+            return;
+
         if (_idleTimer <= 0) _canTransition = true;
         else _idleTimer -= Time.deltaTime;
     }
@@ -43,9 +44,12 @@ public class PlayerIdle : BaseState<PlayerStateManager.PlayerState>
 
     public override PlayerStateManager.PlayerState GetNextState()
     {
-        return _isFeverMode ?
+        // not allow to transition to painting state if there is no customer in service
+        bool customerReady = CustomersManager.Instance != null && CustomersManager.Instance.CurrentCustomer != null;
+
+        return _isFeverMode && customerReady ?
         PlayerStateManager.PlayerState.DoingMoeMoe :
-        _canTransition ?
+        _canTransition && customerReady ?
         PlayerStateManager.PlayerState.Painting :
         PlayerStateManager.PlayerState.Idle;
     }

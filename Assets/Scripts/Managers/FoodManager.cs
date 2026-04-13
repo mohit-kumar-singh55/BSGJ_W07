@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class FoodManager : Singleton<FoodManager>
@@ -9,18 +8,6 @@ public class FoodManager : Singleton<FoodManager>
     private GameObject _lastSpawnedFood;
     private CustomersManager _customersManager;
 
-    void OnEnable()
-    {
-        PlayerIdle.OnPlayerEnterIdle += SpawnFood;
-        PlayerDoingMoeMoe.OnMoeMoeCompleted += DestroyFood;
-    }
-
-    void OnDisable()
-    {
-        PlayerIdle.OnPlayerEnterIdle -= SpawnFood;
-        PlayerDoingMoeMoe.OnMoeMoeCompleted -= DestroyFood;
-    }
-
     void Start()
     {
         _customersManager = CustomersManager.Instance;
@@ -29,18 +16,17 @@ public class FoodManager : Singleton<FoodManager>
         {
             Debug.LogError("FoodManager: CustomersManager is null");
         }
-
-        // _customersManager.OnCustomerReady += SpawnFood;
     }
 
-    public void SpawnFood()
+    public void SpawnFood(Transform foodSpawnPoint)
     {
         if (CustomersManager.Instance.CurrentCustomer == null) return;
 
         StopAllCoroutines();
-
-        Transform foodSpawnTrans = CustomersManager.Instance.CurrentCustomer.FoodPoint;
-        StartCoroutine(SpawnFoodDelayed(GetRandomFood(), foodSpawnTrans, _spawnFoodDelay));
+        StartCoroutine(WaitTimer.WaitFor(_spawnFoodDelay, () =>
+        {
+            _lastSpawnedFood = Instantiate(GetRandomFood(), foodSpawnPoint.position, foodSpawnPoint.rotation);
+        }));
     }
 
     public void DestroyFood()
@@ -52,10 +38,4 @@ public class FoodManager : Singleton<FoodManager>
     }
 
     private GameObject GetRandomFood() => _foodPrefabs[Random.Range(0, _foodPrefabs.Length)];
-
-    private IEnumerator SpawnFoodDelayed(GameObject food, Transform foodTransform, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        _lastSpawnedFood = Instantiate(GetRandomFood(), foodTransform.position, foodTransform.rotation);
-    }
 }

@@ -1,5 +1,6 @@
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.AI;
 
 // Represents a customer
 // responsible for:
@@ -12,44 +13,33 @@ using UnityEngine;
 // ready -> run a timer for customer waiting, timeout -> set state to idle (bad reaction and decrease in score)
 // in-service -> currently getting served by player, give feedback reaction and set state to idle
 // out-going -> customer is leaving the restaurant, destroy customer (or reuse as pooling) after animation is done
+[RequireComponent(typeof(NavMeshAgent))]
 public class Customer : StateManager<Customer.CustomerState>
 {
     public enum CustomerState { InComing, Ready, InService, OutGoing }
 
-    [Tooltip("The point where the food will be spawned")]
-    [SerializeField] private Transform _foodSpawnPoint;
+    [Tooltip("Customer's Waiting Time")]
+    [SerializeField] private float _waitingTime = 20f;
 
-    private CinemachineStateDrivenCamera _stateCamera;
-
-    public Transform FoodPoint => _foodSpawnPoint;
-
+    private NavMeshAgent _customerAgent;
     private CustomerStateContext _context;
+    private Transform _customerDestroyPoint;
 
     private void Awake()
     {
-        _stateCamera = GetComponentInChildren<CinemachineStateDrivenCamera>();
+        _customerAgent = GetComponent<NavMeshAgent>();
+        // Point where customer will go back when in out-going state to get destroyed
+        _customerDestroyPoint = FindAnyObjectByType<CustomerDestroyer>().transform;
 
-        if (_stateCamera == null)
-        {
-            Debug.LogError("No state camera found in customer!");
-            enabled = false;
-            return;
-        }
-
-        // camera is off by default
-        // _stateCamera.enabled = false;
-        TurnCamera(false);
-
-        // _stateCamera.Instructions = new CinemachineStateDrivenCamera.Instruction[]
-        // {
-        //     new() {
-        //         Camera = "Idle",
-        //         m_Weight = 1f
-        //     }
-        // };
-
-        _context = new CustomerStateContext();
+        _context = new CustomerStateContext(this, _customerAgent, _waitingTime, _customerDestroyPoint);
         InitializeStates();
+    }
+
+    public void InitializeCustomer(Transform foodSpawnPoint, CinemachineStateDrivenCamera stateCamera, Transform customerStandPoint)
+    {
+        _context.FoodPoint = foodSpawnPoint;
+        _context.StateCamera = stateCamera;
+        _context.CustomerStandPoint = customerStandPoint;
     }
 
     private void InitializeStates()
@@ -62,15 +52,5 @@ public class Customer : StateManager<Customer.CustomerState>
 
         // always start in idle
         CurrentState = States[CustomerState.InComing];
-    }
-
-    /// <summary>
-    /// Turns on or off the camera
-    /// </summary>
-    /// <param name="on"></param>
-    public void TurnCamera(bool on = true)
-    {
-        // _stateCamera.enabled = on;
-        _stateCamera.gameObject.SetActive(on);
     }
 }

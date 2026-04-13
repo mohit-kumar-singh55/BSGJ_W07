@@ -32,4 +32,9 @@ public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
         CurrentState.EnterState();
         IsTransitioningState = false;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        CurrentState.OnTriggerEnter(other);
+    }
 }

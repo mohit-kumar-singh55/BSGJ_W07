@@ -1,10 +1,21 @@
+/// <summary>
+/// go to the customer destroy point
+/// and it will be destroyed automatically as it enters the trigger collider
+/// </summary>
 public class CustomerOutGoing : BaseState<Customer.CustomerState>
 {
+    private CustomerStateContext _context;
     private bool _canTransition = false;
 
-    public CustomerOutGoing(CustomerStateContext context, Customer.CustomerState stateKey) : base(stateKey) { }
+    public CustomerOutGoing(CustomerStateContext context, Customer.CustomerState stateKey) : base(stateKey)
+    {
+        _context = context;
+    }
 
-    public override void EnterState() { }
+    public override void EnterState()
+    {
+        _context.CustomerAgent.SetDestination(_context.CustomerDestroyPoint.position);
+    }
 
     public override void UpdateState() { }
 
@@ -12,7 +23,7 @@ public class CustomerOutGoing : BaseState<Customer.CustomerState>
 
     public override Customer.CustomerState GetNextState()
     {
-        // ! need to remove this incoming state, because the customer will be destroyed after this state, so it will never transition back to incoming
+        // ! this never gonna run as customer will be destroyed as soon as it goes out of the resturant
         return _canTransition ? Customer.CustomerState.InComing : Customer.CustomerState.OutGoing;
     }
 }

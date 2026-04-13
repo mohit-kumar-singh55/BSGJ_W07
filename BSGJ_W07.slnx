@@ -1,12 +1,17 @@
 ﻿<Solution>
+  <Project Path="MoreMountains.Tools.csproj" />
   <Project Path="KinoBloom.Runtime.csproj" />
   <Project Path="Boxophobic.Utils.Scripts.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="MoreMountains.Tools.Editor.csproj" />
+  <Project Path="Lofelt.NiceVibrations.csproj" />
   <Project Path="CFXR.WelcomeScreen.csproj" />
   <Project Path="Boxophobic.Utils.Editor.csproj" />
   <Project Path="CFXREditor.csproj" />
   <Project Path="ToonyColorsPro.Demo.Editor.csproj" />
   <Project Path="CFXRDemo.csproj" />
+  <Project Path="Lofelt.NiceVibrations.Demo.csproj" />
+  <Project Path="Lofelt.NiceVibrations.Editor.csproj" />
   <Project Path="CFXRRuntime.csproj" />
   <Project Path="Boxophobic.SkyboxCubemapExtended.Editor.csproj" />
 </Solution>

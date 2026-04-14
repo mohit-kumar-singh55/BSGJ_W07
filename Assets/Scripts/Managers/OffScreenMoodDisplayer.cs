@@ -24,24 +24,19 @@ public class OffScreenMoodDisplayer : MonoBehaviour
         CustomerDestroyer.OnCustomerDestroy -= RemoveMoodSetter;
     }
 
-    private void Start()
-    {
-        _mainCam = Camera.main;
-    }
+    private void Start() => _mainCam = Camera.main;
 
-    private void LateUpdate()
+    // updating mood display ui after camera and customer movement
+    private void LateUpdate() => UpdateMoodDisplays();
+
+    private void UpdateMoodDisplays()
     {
         foreach (MoodSetter moodSetter in _moodSetters)
         {
             // remove if no mood
             if (moodSetter.CurrentMood == CustomerMood.None)
             {
-                // if (!_moodDisplays.ContainsKey(moodSetter)) continue;
-
-                // Destroy(_moodDisplays[moodSetter]);
-                // _moodDisplays.Remove(moodSetter);
                 DestroyMoodDisplayAndRemoveFromDic(moodSetter);
-
                 continue;
             }
 
@@ -51,13 +46,7 @@ public class OffScreenMoodDisplayer : MonoBehaviour
             if (isInView)
             {
                 // skip if this is not spawned
-                // if (!_moodDisplays.ContainsKey(moodSetter)) continue;
-
-                // // destroy mood ui image if in the camera view
-                // Destroy(_moodDisplays[moodSetter]);
-                // _moodDisplays.Remove(moodSetter);
                 DestroyMoodDisplayAndRemoveFromDic(moodSetter);
-
                 continue;
             }
 
@@ -91,12 +80,6 @@ public class OffScreenMoodDisplayer : MonoBehaviour
     {
         if (_moodSetters.Contains(removedCustomerMoodSetter))
             _moodSetters.Remove(removedCustomerMoodSetter);
-
-        // if (_moodDisplays.ContainsKey(removedCustomerMoodSetter))
-        // {
-        //     Destroy(_moodDisplays[removedCustomerMoodSetter]);
-        //     _moodDisplays.Remove(removedCustomerMoodSetter);
-        // }
 
         DestroyMoodDisplayAndRemoveFromDic(removedCustomerMoodSetter);
     }

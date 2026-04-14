@@ -1,16 +1,29 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // Manages all the customers
 // responsible for:
 // randomly selecting the next customer
 // giving the selected customer detail to camaramanager for camera change
+
+// TODO: seperate customer from (table + chair + camera set + food point)
+// TODO: take list of all the customer prefabs & list of all table set
+// TODO: select random table set, then spawn random customer and when the customer is in in-service state, assign the food point and camera set to that customer
 public class CustomersManager : Singleton<CustomersManager>
 {
-    [SerializeField] private Customer[] customers;
+    [SerializeField] private GameObject _customerPrefab;
+    [SerializeField] private Transform _customerSpawnPoint; // outside the resturant
+    [SerializeField] private int _maxCustomerCount = 3; // max number of customers that can be in the resturant at the same time, that are occupying the seats (in-coming, ready, in-service), not including the customers that are out-going
+    [SerializeField] private float _customerSpawnInterval = 20f;
+    [SerializeField] private float _retryCustomerSelectionAfter = 5f;
 
-    private Customer _currentCustomer;
+    private Customer _currentInServiceCustomer; // customer that is being served right now
+    private PerCustomerData[] _customerSeatDatas;   // total seats in the resturant
+    private List<Customer> _currentActiveCustomers = new(); // customers that are in in-coming/ready state
+    private int _currentNoOfCustomers = 0;
+    private bool _waitingToSpawnNextCustomer = true;
 
-    public Customer CurrentCustomer => _currentCustomer;
+    public Customer CurrentCustomer => _currentInServiceCustomer;
 
     void OnEnable()
     {
@@ -24,25 +37,152 @@ public class CustomersManager : Singleton<CustomersManager>
 
     private void Start()
     {
-        // select random first customer and set camera on
-        _currentCustomer = GetRandomCustomer();
-        _currentCustomer.TurnCamera(true);
+        // get all the seats datas
+        _customerSeatDatas = FindObjectsByType<PerCustomerData>(FindObjectsSortMode.None);
+
+        // spawn first customer 
+        SpawnCustomer();
+        SelectNextCustomer();
     }
 
-    private Customer GetRandomCustomer() => customers[Random.Range(0, customers.Length)];
+    private void Update()
+    {
+        if (!_waitingToSpawnNextCustomer && _currentNoOfCustomers < _maxCustomerCount)
+        {
+            // spawn next customer
+            SpawnCustomer();
+        }
+    }
+
+    private PerCustomerData GetRandomCustomerData()
+    {
+        return _customerSeatDatas.Length > 0 ? _customerSeatDatas[Random.Range(0, _customerSeatDatas.Length)] : null;
+    }
+
+    private Customer GetRandomCustomer()
+    {
+        return _currentActiveCustomers.Count > 0 ? _currentActiveCustomers[Random.Range(0, _currentActiveCustomers.Count)] : null;
+    }
+
+    private void SpawnCustomer()
+    {
+        int maxTries = _customerSeatDatas.Length;
+        PerCustomerData currentCustomerData = GetRandomCustomerData();
+
+        // make sure the seat is unoccupied
+        while (maxTries >= 0 && currentCustomerData != null && currentCustomerData.IsOccupied)
+        {
+            maxTries--;
+            currentCustomerData = GetRandomCustomerData();
+        }
+
+        // cannot find unoccupied seat
+        if (maxTries < 0 || currentCustomerData == null || currentCustomerData.IsOccupied)
+        {
+            // Debug.LogWarning("Cannot Find a Seat for Customer!");
+
+            // again to into waiting period
+            _waitingToSpawnNextCustomer = true;
+            StartCoroutine(WaitTimer.WaitFor(_customerSpawnInterval, () => _waitingToSpawnNextCustomer = false));
+            return;
+        }
+
+        // spawn customer outside the resturant
+        GameObject customerObj = Instantiate(_customerPrefab, _customerSpawnPoint.position, Quaternion.identity, _customerSpawnPoint);
+        if (customerObj.TryGetComponent(out Customer customer))
+        {
+            // add into the active customers list
+            _currentActiveCustomers.Add(customer);
+            // add to keep track of the customer with its seat
+            currentCustomerData.CustomerAllocated = customer;
+            currentCustomerData.IsOccupied = true;
+
+            // TODO: assign currentCustomerData to customer
+            customer.InitializeCustomer(
+                currentCustomerData.FoodSpawnPoint,
+                currentCustomerData.StateCamera,
+                currentCustomerData.CustomerStandPoint
+            );
+
+            // keep track & wait to spawn next customer
+            _currentNoOfCustomers++;
+            _waitingToSpawnNextCustomer = true;
+            StartCoroutine(WaitTimer.WaitFor(_customerSpawnInterval, () => _waitingToSpawnNextCustomer = false));
+        }
+        else Destroy(customerObj);
+    }
 
     public void SelectNextCustomer()
     {
-        // TODO: check if customer is in ready state
+        // if there is currently in-service customer, make them out-going first
+        if (_currentInServiceCustomer != null)
+        {
+            // change current customer's in-service state to outgoing
+            _currentInServiceCustomer.TransitionToState(Customer.CustomerState.OutGoing);
+            // unoccupie this seat
+            UnoccupieSeat(_currentInServiceCustomer);
+            // reset current in-service customer
+            _currentInServiceCustomer = null;
+        }
+
+        // select next customer from the active customers list
+        int maxTries = _currentActiveCustomers.Count;
         Customer nextCustomer = GetRandomCustomer();
-        // make sure next customer is different
-        while (nextCustomer == _currentCustomer) nextCustomer = GetRandomCustomer();
 
-        // set current customer's camera off
-        _currentCustomer.TurnCamera(false);
+        // make sure next customer is in ready state
+        while (maxTries >= 0 && nextCustomer != null && !nextCustomer.CurrentState.StateKey.Equals(Customer.CustomerState.Ready))
+        {
+            maxTries--;
+            nextCustomer = GetRandomCustomer();
+        }
 
-        // set next customer's camera on
-        _currentCustomer = nextCustomer;
-        _currentCustomer.TurnCamera(true);
+        // cannot find any customer in ready state
+        if (maxTries < 0 || nextCustomer == null || !nextCustomer.CurrentState.StateKey.Equals(Customer.CustomerState.Ready))
+        {
+            // Debug.LogWarning("Cannot find next random customer");
+
+            // retry after sometime
+            StartCoroutine(WaitTimer.WaitFor(_retryCustomerSelectionAfter, () => SelectNextCustomer()));
+            return;
+        }
+
+        // remove next customer from the active customer list as it will be in-service
+        _currentActiveCustomers.Remove(nextCustomer);
+
+        // if (_currentInServiceCustomer != null)
+        // {
+        //     // change current customer's in-service state to outgoing
+        //     _currentInServiceCustomer.TransitionToState(Customer.CustomerState.OutGoing);
+        //     // unoccupie this seat
+        //     UnoccupieSeat(_currentInServiceCustomer);
+        // }
+
+        // set next customer to current customer
+        _currentInServiceCustomer = nextCustomer;
+        // change state to in-service
+        _currentInServiceCustomer.TransitionToState(Customer.CustomerState.InService);
+    }
+
+    // removes the customer from that seat & mark it unoccupied for next use
+    public void UnoccupieSeat(Customer customerHavingThisSeat)
+    {
+        // decrease current number of customers in the restaurant
+        _currentNoOfCustomers--;
+
+        // remove from active customers list in case the customer's waiting time is up & it transitioned into out-going state
+        if (_currentActiveCustomers.Contains(customerHavingThisSeat))
+            _currentActiveCustomers.Remove(customerHavingThisSeat);
+
+        // reset data
+        foreach (PerCustomerData data in _customerSeatDatas)
+        {
+            if (data.CustomerAllocated == null || !data.CustomerAllocated.Equals(customerHavingThisSeat)) continue;
+
+            data.CustomerAllocated = null;
+            data.IsOccupied = false;
+            return;
+        }
+
+        // Debug.LogWarning("Cannot find the specified customer in the seats allocated!");
     }
 }

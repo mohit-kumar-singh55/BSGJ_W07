@@ -10,7 +10,6 @@ public class CustomerInService : BaseState<Customer.CustomerState>
     private FoodManager _foodManager;
     private CustomerStateContext _context;
 
-
     public CustomerInService(CustomerStateContext context, Customer.CustomerState stateKey) : base(stateKey)
     {
         _context = context;
@@ -30,7 +29,6 @@ public class CustomerInService : BaseState<Customer.CustomerState>
 
         // spawn food
         _foodManager.SpawnFood(_context.FoodPoint);
-
 
         // dont show mood when started servicing
         _context.MoodSetter.SetMood(CustomerMood.None);

@@ -28,6 +28,8 @@ public class Customer : StateManager<Customer.CustomerState>
     private Transform _customerDestroyPoint;
     private MoodSetter _moodSetter;
 
+    public static event System.Action<MoodSetter> OnCustomerSpawn = delegate { };
+
     private void Awake()
     {
         _customerAgent = GetComponent<NavMeshAgent>();
@@ -40,6 +42,9 @@ public class Customer : StateManager<Customer.CustomerState>
 
         _context = new CustomerStateContext(this, _customerAgent, _waitingTime, _customerDestroyPoint, _moodSetter, _scoreToDeductOnTimesUp);
         InitializeStates();
+
+        // updating mood display ui
+        OnCustomerSpawn?.Invoke(_moodSetter);
     }
 
     public void InitializeCustomer(Transform foodSpawnPoint, CinemachineStateDrivenCamera stateCamera, Transform customerStandPoint)

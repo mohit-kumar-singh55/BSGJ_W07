@@ -307,3 +307,5 @@ MonoBehaviour:
     _happyMoodSprite: {fileID: 21300000, guid: e1cf674e1f8682f438c964f5ca320e8e, type: 3}
     _sadMoodSprite: {fileID: 21300000, guid: 63734f58aac6d4f4b93fbe60b75415df, type: 3}
     _angryMoodSprite: {fileID: 21300000, guid: 8489a15e3d3c13b4f971228c3763acc1, type: 3}
+  _zOffsetFromCamera: 0.5
+  _scaleWhenNotInView: {x: 0.15, y: 0.15, z: 0.15}

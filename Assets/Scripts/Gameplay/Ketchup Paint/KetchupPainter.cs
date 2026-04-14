@@ -36,10 +36,22 @@ public class KetchupPainter : MonoBehaviour
     private bool wasPressing = false;
     private bool isDrawing = false;
     private int currentDrawCount = 0;
-
+    private bool allowedToDraw = false;
     private UIManager _uiManager;
 
     public static event System.Action<int> OnFinishedDrawing = delegate { };
+
+    void OnEnable()
+    {
+        PlayerPainting.OnPlayerEnterPainting += AllowDrawing;
+        PlayerPainting.OnPlayerExitPainting += DisallowDrawing;
+    }
+
+    void OnDisable()
+    {
+        PlayerPainting.OnPlayerEnterPainting -= AllowDrawing;
+        PlayerPainting.OnPlayerExitPainting -= DisallowDrawing;
+    }
 
     private void Awake() => Validate();
 
@@ -81,6 +93,8 @@ public class KetchupPainter : MonoBehaviour
 
     private void Update()
     {
+        if (!allowedToDraw) return;
+
         var pointer = Pointer.current;
         bool pressing = pointer != null && pointer.press.isPressed;
 
@@ -138,6 +152,10 @@ public class KetchupPainter : MonoBehaviour
         // update ui
         _uiManager.UpdateRemainingStokes(maxDrawCount - currentDrawCount);
     }
+
+    private void AllowDrawing() => allowedToDraw = true;
+
+    private void DisallowDrawing() => allowedToDraw = false;
 
     private bool IsPointerOverGameObject(out RaycastHit hit)
     {

@@ -11,7 +11,7 @@
 <!-- - 「萌え萌えキュン」 on below of the screen as subtitle
     - need to change the color of the 文字 that is recognised -->
 
-- create customer system
+<!-- - create customer system -->
 
 - In the End BEFORE Tutorial
     - version that doesn't uses hand detection, just proceed with voice

@@ -1,5 +1,6 @@
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.AI;
 
 // Represents a customer
 // responsible for:
@@ -8,49 +9,60 @@ using UnityEngine;
 // if time is up, the customer leaves (state to idle) (giving a bad reaction and decrease in score)
 
 // create state machine with states:
-// idle -> run a timer, after which set state to ready
+// in-coming -> going inside the restaurant, to its seat, then set state to ready
 // ready -> run a timer for customer waiting, timeout -> set state to idle (bad reaction and decrease in score)
 // in-service -> currently getting served by player, give feedback reaction and set state to idle
-public class Customer : MonoBehaviour
+// out-going -> customer is leaving the restaurant, destroy customer (or reuse as pooling) after animation is done
+[RequireComponent(typeof(NavMeshAgent))]
+public class Customer : StateManager<Customer.CustomerState>
 {
-    [Tooltip("The point where the food will be spawned")]
-    [SerializeField] private Transform _foodSpawnPoint;
+    public enum CustomerState { InComing, Ready, InService, OutGoing }
 
-    private CinemachineStateDrivenCamera _stateCamera;
+    [Tooltip("Customer's Waiting Time")]
+    [SerializeField] private float _waitingTime = 20f;
+    [Tooltip("Score deduction value when customer leaves due to waiting times up")]
+    [SerializeField] private int _scoreToDeductOnTimesUp = 50;
 
-    public Transform FoodPoint => _foodSpawnPoint;
+    private NavMeshAgent _customerAgent;
+    private CustomerStateContext _context;
+    private Transform _customerDestroyPoint;
+    private MoodSetter _moodSetter;
+
+    public static event System.Action<MoodSetter> OnCustomerSpawn = delegate { };
 
     private void Awake()
     {
-        _stateCamera = GetComponentInChildren<CinemachineStateDrivenCamera>();
+        _customerAgent = GetComponent<NavMeshAgent>();
+        _moodSetter = GetComponentInChildren<MoodSetter>();
+        // Point where customer will go back when in out-going state to get destroyed
+        _customerDestroyPoint = FindAnyObjectByType<CustomerDestroyer>().transform;
 
-        if (_stateCamera == null)
-        {
-            Debug.LogError("No state camera found in customer!");
-            enabled = false;
-            return;
-        }
+        if (_moodSetter == null)
+            Debug.LogError("MoodSetter component not found in children of Customer!");
 
-        // camera is off by default
-        // _stateCamera.enabled = false;
-        TurnCamera(false);
+        _context = new CustomerStateContext(this, _customerAgent, _waitingTime, _customerDestroyPoint, _moodSetter, _scoreToDeductOnTimesUp);
+        InitializeStates();
 
-        // _stateCamera.Instructions = new CinemachineStateDrivenCamera.Instruction[]
-        // {
-        //     new() {
-        //         Camera = "Idle",
-        //         m_Weight = 1f
-        //     }
-        // };
+        // updating mood display ui
+        OnCustomerSpawn?.Invoke(_moodSetter);
     }
 
-    /// <summary>
-    /// Turns on or off the camera
-    /// </summary>
-    /// <param name="on"></param>
-    public void TurnCamera(bool on = true)
+    public void InitializeCustomer(Transform foodSpawnPoint, CinemachineStateDrivenCamera stateCamera, Transform customerStandPoint)
     {
-        // _stateCamera.enabled = on;
-        _stateCamera.gameObject.SetActive(on);
+        _context.FoodPoint = foodSpawnPoint;
+        _context.StateCamera = stateCamera;
+        _context.CustomerStandPoint = customerStandPoint;
+    }
+
+    private void InitializeStates()
+    {
+        // Add states to inherited StateManager "States" dictionary and set Initial State
+        States.Add(CustomerState.InComing, new CustomerInComing(_context, CustomerState.InComing));
+        States.Add(CustomerState.Ready, new CustomerReady(_context, CustomerState.Ready));
+        States.Add(CustomerState.InService, new CustomerInService(_context, CustomerState.InService));
+        States.Add(CustomerState.OutGoing, new CustomerOutGoing(_context, CustomerState.OutGoing));
+
+        // always start in idle
+        CurrentState = States[CustomerState.InComing];
     }
 }

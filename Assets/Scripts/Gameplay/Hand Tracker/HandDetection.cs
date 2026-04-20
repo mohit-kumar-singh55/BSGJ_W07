@@ -37,6 +37,9 @@ public class HandDetection : MonoBehaviour
 
     private bool isDetecting = false;
 
+    // 手がハートになってからのカウント
+    public float HeartTimeCount;
+
     public event System.Action OnHandCheckStart = delegate { };
     public event System.Action<int> OnHandDetectionProceed = delegate { }; // phase
     public event System.Action<int> OnHandDetectionOver = delegate { }; // point
@@ -61,7 +64,13 @@ public class HandDetection : MonoBehaviour
         point = 0;
         checkTime = new float[4] { 0, 1, 1, 1 };
     }
-
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            StartCheck();
+        }
+    }
     // チェック開始
     public void StartCheck()
     {
@@ -93,6 +102,8 @@ public class HandDetection : MonoBehaviour
     private void FixedUpdate()
     {
         if (!isDetecting) return;
+
+
 
         if (isInitializing)
         {
@@ -127,6 +138,7 @@ public class HandDetection : MonoBehaviour
         if (!receiver.AreTwoHandsPresent(receiver.result))
         {
             // Debug.Log("手が2つ無い");
+            HeartTimeCount = 0;
             return;
         }
 
@@ -134,17 +146,21 @@ public class HandDetection : MonoBehaviour
         if (receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result))
         {
             // Debug.Log("手の形がハートではない");
+            HeartTimeCount = 0;
             return;
         }
 
+        HeartTimeCount += Time.deltaTime;
+
         // 手がしばらく止まっている
-        if (receiver.isFleezCount[0] > 1 && receiver.isFleezCount[1] > 1)
+        if (receiver.isFleezCount[0] > 3 && receiver.isFleezCount[1] > 3 && HeartTimeCount > 0.4f)
         {
             // フェーズ移行処理
             SetStartHandDistance();
 
             point = 0;
             NextPhase();
+            HeartTimeCount = 0;
             Debug.Log("チェックスタート");
 
             // on check start (show moe1 anim)

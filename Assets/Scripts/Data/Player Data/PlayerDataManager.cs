@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 // singleton which holds and manages player data for a single player
@@ -31,9 +32,16 @@ public class PlayerDataManager : Singleton<PlayerDataManager>
 
     public void SetPlayerName(string name) => _playerData.Name = name;
 
-    public void AddPlayerScore(int score)
+    public void AddPlayerScore(int scoreToAdd)
     {
-        int newScore = _playerData.Score + score;
+        int newScore = _playerData.Score + scoreToAdd;
+        OnPlayerScoreChanged?.Invoke(_playerData.Score, newScore); // (current, new)
+        _playerData.Score = newScore;
+    }
+
+    public void DeduceScore(int scoreToDeduce)
+    {
+        int newScore = Mathf.Max(0, _playerData.Score - scoreToDeduce); // score cannot be negative
         OnPlayerScoreChanged?.Invoke(_playerData.Score, newScore); // (current, new)
         _playerData.Score = newScore;
     }

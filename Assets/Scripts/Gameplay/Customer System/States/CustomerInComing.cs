@@ -24,7 +24,13 @@ public class CustomerInComing : BaseState<Customer.CustomerState>
 
     public override Customer.CustomerState GetNextState()
     {
-        _canTransition = Mathf.Approximately(_context.CustomerAgent.remainingDistance, 0);
+        // _canTransition = Mathf.Approximately(_context.CustomerAgent.remainingDistance, 0);
+        _canTransition = _context.CustomerAgent.remainingDistance <= _context.CustomerAgent.stoppingDistance;
+
+        // set final rotation towards the table
+        if (_canTransition) _context.ThisCustomer.transform.rotation = _context.CustomerStandPoint.rotation;
+
+        // transition to ready
         return _canTransition ? Customer.CustomerState.Ready : Customer.CustomerState.InComing;
     }
 }

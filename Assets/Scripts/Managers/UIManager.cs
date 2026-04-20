@@ -45,8 +45,8 @@ public class UIManager : Singleton<UIManager>
         PlayerPainting.OnPlayerEnterPainting += ShowHideRemainingStokesText;
         PlayerPainting.OnPlayerExitPainting += ShowHideRemainingStokesText;
         SpeechDetector.OnFoundPhraseOccurrence += ChangeSubtitleColorOnOccurrence;
-        PlayerDoingMoeMoe.OnMoeMoeStarted += ShowHideSubtitleMoeKyun;
-        PlayerDoingMoeMoe.OnMoeMoeCompleted += ShowHideSubtitleMoeKyun;
+        PlayerDoingMoeMoe.OnMoeMoeStarted += ShowSubtitleMoeKyun;
+        PlayerDoingMoeMoe.OnMoeMoeCompleted += HideSubtitleMoeKyun;
     }
 
     private void OnDisable()
@@ -55,8 +55,8 @@ public class UIManager : Singleton<UIManager>
         PlayerPainting.OnPlayerEnterPainting -= ShowHideRemainingStokesText;
         PlayerPainting.OnPlayerExitPainting -= ShowHideRemainingStokesText;
         SpeechDetector.OnFoundPhraseOccurrence -= ChangeSubtitleColorOnOccurrence;
-        PlayerDoingMoeMoe.OnMoeMoeStarted -= ShowHideSubtitleMoeKyun;
-        PlayerDoingMoeMoe.OnMoeMoeCompleted -= ShowHideSubtitleMoeKyun;
+        PlayerDoingMoeMoe.OnMoeMoeStarted -= ShowSubtitleMoeKyun;
+        PlayerDoingMoeMoe.OnMoeMoeCompleted -= HideSubtitleMoeKyun;
     }
 
     // rotate needle of clock ui
@@ -117,25 +117,24 @@ public class UIManager : Singleton<UIManager>
         StartCoroutine(LerpFeverGauge(_feverGaugeInnerImage.fillAmount, feverGaugeValue, _feverGaugeValueLerpDuration));
     }
 
-    public void ShowHideSubtitleMoeKyun()
+    public void ShowSubtitleMoeKyun()
     {
-        bool show = !_subtitleMoeKyunParent.activeSelf;
+        _subtitleMoeKyunParent.SetActive(true);
+    }
 
-        if (show) _subtitleMoeKyunParent.SetActive(show);
-        else
+    public void HideSubtitleMoeKyun()
+    {
+        // hide after delay
+        StartCoroutine(WaitFor(_subtitleMoeKyunHideDelay, () =>
         {
-            // hide after delay
-            StartCoroutine(WaitFor(_subtitleMoeKyunHideDelay, () =>
-            {
-                ResetSubtitleColors();  // reset colors when hiding
-                _subtitleMoeKyunParent.SetActive(show);
-            }));
-        }
+            ResetSubtitleColors();  // reset colors when hiding
+            _subtitleMoeKyunParent.SetActive(false);
+        }));
     }
 
     private void ChangeSubtitleColorOnOccurrence(Dictionary<PhraseType, int> occurrencedPhrase)
     {
-        if (_subtitleMoeKyunImages.Length < 3) return;
+        if (!_subtitleMoeKyunParent.activeSelf || _subtitleMoeKyunImages.Length < 3) return;
 
         // moe1, moe2
         if (occurrencedPhrase.TryGetValue(PhraseType.MOE, out int moeCount))
@@ -150,7 +149,7 @@ public class UIManager : Singleton<UIManager>
             _subtitleMoeKyunImages[2].color = kyunCount > 0 ? _subtitleHighlightColor : Color.white;
         }
 
-        Debug.LogWarning("MOE Count: " + moeCount + ", KYUN Count: " + kyunCount);
+        // Debug.LogWarning("MOE Count: " + moeCount + ", KYUN Count: " + kyunCount);
         // Debug.Break();
     }
 

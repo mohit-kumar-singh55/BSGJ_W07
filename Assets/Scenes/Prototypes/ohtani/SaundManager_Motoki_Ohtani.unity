@@ -471,6 +471,7 @@ MonoBehaviour:
   SFXSource: {fileID: 214418192}
   background: {fileID: 0}
   SE_Burst01: {fileID: 8300000, guid: b8525997d6b8c46e1b475497d5961581, type: 3}
+  FeverBurst01: {fileID: 8300000, guid: d995bbd8e15df488e976e24c3595c561, type: 3}
   SE_GuestComing02: {fileID: 8300000, guid: 7b045a487468e44f5802ae432195d717, type: 3}
   SE_Ketchup08: {fileID: 8300000, guid: 6f166321661144e08a9db6fcdb35b473, type: 3}
   SE_MoeKyun02: {fileID: 8300000, guid: d2948d4e9d900481c845a5325c85c0b9, type: 3}

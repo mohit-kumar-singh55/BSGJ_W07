@@ -17,6 +17,7 @@ public class AudioManager : Singleton<AudioManager>
     public AudioClip background;
     //SE
     public AudioClip SE_Burst01;
+    public AudioClip FeverBurst01;
     public AudioClip SE_GuestComing02;
     public AudioClip SE_Ketchup08;
     public AudioClip SE_MoeKyun02;

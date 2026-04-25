@@ -1,8 +1,11 @@
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
+
+
     void OnEnable()
     {
         Timer.OnTimesUp += OnTimesUp;
@@ -18,6 +21,12 @@ public class GameManager : Singleton<GameManager>
         base.Awake();
         DontDestroyOnLoad(gameObject);
     }
+
+    // ! TEMP
+    // void Start()
+    // {
+    //     Time.timeScale = 2f;
+    // }
 
     // ** Input System Callbacks
     private void OnGoNextScene(InputValue val) => GoNextScene();

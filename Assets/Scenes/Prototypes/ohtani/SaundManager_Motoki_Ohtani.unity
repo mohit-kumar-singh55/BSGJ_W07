@@ -290,7 +290,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -233789127260733353, guid: bc625e437fb9a4f06992aa3b25972f15, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -375,51 +375,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!1 &240465846
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 240465848}
-  - component: {fileID: 240465847}
-  m_Layer: 0
-  m_Name: SoundTest
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &240465847
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 240465846}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ba47ccba74b646d68d4b72f23a89e78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Soundtest
-  audioManager: {fileID: 736691495}
---- !u!4 &240465848
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 240465846}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2531.7815, y: 0.00005, z: 1011.86346}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &736691493
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,7 +386,7 @@ GameObject:
   - component: {fileID: 736691494}
   - component: {fileID: 736691495}
   m_Layer: 0
-  m_Name: Saund_Manager
+  m_Name: Audio Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -466,22 +421,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d66d686a8784149889a2161daee80f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
-  Master: {fileID: 0}
-  musicSource: {fileID: 1821584132}
-  SFXSource: {fileID: 214418192}
-  background: {fileID: 0}
-  SE_Burst01: {fileID: 8300000, guid: b8525997d6b8c46e1b475497d5961581, type: 3}
-  FeverBurst01: {fileID: 8300000, guid: d995bbd8e15df488e976e24c3595c561, type: 3}
-  SE_GuestComing02: {fileID: 8300000, guid: 7b045a487468e44f5802ae432195d717, type: 3}
-  SE_Ketchup08: {fileID: 8300000, guid: 6f166321661144e08a9db6fcdb35b473, type: 3}
-  SE_MoeKyun02: {fileID: 8300000, guid: d2948d4e9d900481c845a5325c85c0b9, type: 3}
-  SE_Option02: {fileID: 8300000, guid: 70fc2632874824777a3fd47820c66b66, type: 3}
-  SE_Satisfied1: {fileID: 8300000, guid: cc84059d5434b4cf390c3a2f1eeace5f, type: 3}
-  SE_Satisfied2: {fileID: 8300000, guid: 81c579bfbf3564397a7920e282811456, type: 3}
-  SE_Satisfied3: {fileID: 8300000, guid: ff49eb9ec0d2c436889c9d3259bdafbc, type: 3}
-  SE_Score01: {fileID: 8300000, guid: 80a8c05b468ef4319aa3ccd5226ec0d2, type: 3}
-  SE_Select02: {fileID: 8300000, guid: 1387de26186fe40a3a1e48123f63d826, type: 3}
-  SE_Start01: {fileID: 8300000, guid: 5fb23bb8a40ab40e99b9aafaf007c4b5, type: 3}
+  _bgmSource: {fileID: 1821584132}
+  _sfxSource: {fileID: 214418192}
+  _allAudios:
+  - {fileID: 11400000, guid: 758cc4417efe93b4e974a2e04af4303b, type: 2}
+  - {fileID: 11400000, guid: faeba5353ce710f40902066d43f1df7d, type: 2}
+  - {fileID: 11400000, guid: de32000244ff6eb4889446116883c84b, type: 2}
+  - {fileID: 11400000, guid: 0d50f320fcfc93944ab783ad8edb5b0c, type: 2}
+  - {fileID: 11400000, guid: a7cae4b565c980f448482205dcf682a7, type: 2}
 --- !u!1 &979954223
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,7 +665,7 @@ GameObject:
   - component: {fileID: 1821584131}
   - component: {fileID: 1821584132}
   m_Layer: 0
-  m_Name: Music
+  m_Name: BGM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1038,4 +985,3 @@ SceneRoots:
   - {fileID: 1870546403}
   - {fileID: 1570599769}
   - {fileID: 736691494}
-  - {fileID: 240465848}

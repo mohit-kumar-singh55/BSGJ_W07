@@ -44,4 +44,11 @@ public class AudioManager : Singleton<AudioManager>
         if (_sfxSource.isPlaying) return;
         _sfxSource.PlayOneShot(clip);
     }
+
+    public void PlaySFX(AudioSource audioSource, SFX sfxType)
+    {
+        if (!_sfxDictionary.TryGetValue(sfxType, out AudioClip clip)) return;
+        if (_sfxSource.isPlaying) return;
+        _sfxSource.PlayOneShot(clip);
+    }
 }

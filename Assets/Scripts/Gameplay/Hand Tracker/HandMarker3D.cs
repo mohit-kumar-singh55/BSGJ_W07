@@ -34,59 +34,100 @@ public class HandMarker3D : MonoBehaviour
     {
         if (receiver == null ||
             receiver.result.handLandmarks == null ||
-            receiver.result.handLandmarks.Count == 0 || isFleezCount >= 30)
+            receiver.result.handLandmarks.Count == 0 ||
+            isFleezCount >= 30)
         {
-            handSpheres[0].gameObject.SetActive(false);
-            handSpheres[1].gameObject.SetActive(false);
-            heartObject.gameObject.SetActive(false);
-
+            DisableAll();
             if (isFleezCount >= 30 && !CheckFleez())
-            {
                 isFleezCount = 0;
-            }
-
             return;
         }
 
-
-
         CheckFleez();
 
-        // 手の球の更新
-        for (int i = 0; i < handSpheres.Length; i++)
-        {
-            if (i >= receiver.result.handLandmarks.Count)
-            {
-                handSpheres[i].gameObject.SetActive(false);
-                continue;
-            }
+        // 左右の手インデックス取得
+        var (left, right) = GetHandIndices();
 
-            handSpheres[i].gameObject.SetActive(true);
+        // 左手
+        if (left != -1)
+            UpdateHandSphere(0, left);
+        else
+            handSpheres[0].gameObject.SetActive(false);
 
-            Vector3 hand = GetHandCenter(i);
+        // 右手
+        if (right != -1)
+            UpdateHandSphere(1, right);
+        else
+            handSpheres[1].gameObject.SetActive(false);
 
-            Vector3 screenPos = new Vector3(
-                hand.x * Screen.width,
-                (1f - hand.y) * Screen.height,
-                1.0f
-            );
-
-            Vector3 worldPos = cam.ScreenToWorldPoint(screenPos);
-
-            handSpheres[i].position = worldPos + posOffset;
-
-            float scale = 0.1f;
-            handSpheres[i].localScale = new Vector3(scale, scale, scale);
-        }
-
-        // 手がハートであるかのチェック
+        // ハート判定
         UpdateIsHeart();
 
-        // ハート表示処理
-        UpdateHeart();
+        // ハート表示
+        UpdateHeart(left, right);
+    }
+
+    private void DisableAll()
+    {
+        foreach (var s in handSpheres)
+            s.gameObject.SetActive(false);
+
+        if (heartObject != null)
+            heartObject.gameObject.SetActive(false);
+    }
+
+    private (int left, int right) GetHandIndices()
+    {
+        int leftIndex = -1;
+        int rightIndex = -1;
+
+        for (int i = 0; i < receiver.result.handedness.Count; i++)
+        {
+            string handName = receiver.result.handedness[i]
+                .categories[0].categoryName;
+
+            if (handName == "Left")
+                leftIndex = i;
+            else if (handName == "Right")
+                rightIndex = i;
+        }
+
+        if (IsCameraRotated180())
+        {
+            int tmp = leftIndex;
+            leftIndex = rightIndex;
+            rightIndex = tmp;
+        }
+
+        return (leftIndex, rightIndex);
     }
 
 
+    bool IsCameraRotated180()
+    {
+        float y = cam.transform.eulerAngles.y;
+
+        return Mathf.Abs(Mathf.DeltaAngle(y, 180f)) < 20f;
+    }
+
+
+    private void UpdateHandSphere(int sphereIndex, int handIndex)
+    {
+        handSpheres[sphereIndex].gameObject.SetActive(true);
+
+        Vector3 hand = GetHandCenter(handIndex);
+
+        Vector3 screenPos = new Vector3(
+            hand.x * Screen.width,
+            (1f - hand.y) * Screen.height,
+            1.0f
+        );
+
+        Vector3 worldPos = cam.ScreenToWorldPoint(screenPos);
+
+        handSpheres[sphereIndex].position = worldPos + posOffset;
+        handSpheres[sphereIndex].localScale = Vector3.one * 0.1f;
+    }
 
     /// <summary>
     /// 小指付け根・人差し指付け根・手首の3点から
@@ -105,53 +146,46 @@ public class HandMarker3D : MonoBehaviour
         Vector3 indexBase = new Vector3(lm[5].x, lm[5].y, lm[5].z);
         Vector3 pinkyBase = new Vector3(lm[17].x, lm[17].y, lm[17].z);
 
-        // 重心（3点の平均）
-        Vector3 center = (wrist + indexBase + pinkyBase) / 3f;
-
-        return center;
+        return (wrist + indexBase + pinkyBase) / 3f;
     }
 
-    private void UpdateHeart()
+    private void UpdateHeart(int leftIndex, int rightIndex)
     {
         if (!isHeart || heartObject == null)
         {
-            if (heartObject != null)
-                heartObject.gameObject.SetActive(false);
+            heartObject?.gameObject.SetActive(false);
             return;
         }
 
-        // 両手が存在しない場合は非表示
-        if (receiver.result.handLandmarks.Count < 2)
+        if (leftIndex == -1 || rightIndex == -1)
         {
             heartObject.gameObject.SetActive(false);
             return;
         }
 
-        // 両手の中心を計算
-        Vector3 left = GetHandCenter(0);
-        Vector3 right = GetHandCenter(1);
+        Vector3 left = GetHandCenter(leftIndex);
+        Vector3 right = GetHandCenter(rightIndex);
 
-        // スクリーン座標へ
         Vector3 leftScreen = new Vector3(left.x * Screen.width, (1f - left.y) * Screen.height, 1f);
         Vector3 rightScreen = new Vector3(right.x * Screen.width, (1f - right.y) * Screen.height, 1f);
 
-        // ワールド座標へ
         Vector3 leftWorld = cam.ScreenToWorldPoint(leftScreen);
         Vector3 rightWorld = cam.ScreenToWorldPoint(rightScreen);
 
-        // 中心位置
         Vector3 center = (leftWorld + rightWorld) * 0.5f;
 
-        // ハートを表示
         heartObject.gameObject.SetActive(true);
         heartObject.position = center + posOffset;
     }
+
     /// <summary>
     /// IsHeartの更新
     /// </summary>
     private void UpdateIsHeart()
     {
-        isHeart = !(receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result));
+        isHeart = !(receiver.AreAllFingertipsHigherThanBase(receiver.result)
+                 || receiver.AreFingertipsBentInward(receiver.result)
+                 || receiver.IsThumbTipHighest(receiver.result));
     }
 
     private bool CheckFleez()

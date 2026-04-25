@@ -43,10 +43,11 @@ public class HandDataReceiver : MonoBehaviour
 
     [SerializeField] private float smoothFactor = 0.2f;
 
-
     private void Start()
     {
         Initalize();
+
+
     }
     // 初期化
     private void Initalize()

@@ -33,6 +33,8 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
            // imageSource?.Stop();   // ���S��~�iWebCamTexture ���j�������j
         }
 
+
+
         public new IEnumerator Resume()
         {
             if (!isPaused) yield break;

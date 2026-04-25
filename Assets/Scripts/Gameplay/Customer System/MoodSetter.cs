@@ -26,14 +26,8 @@ public class MoodSetter : MonoBehaviour
 {
     [SerializeField] private MoodSpritePair _moodSpritePair;
 
-    [Space(10)]
-    [Header("Always show on screen settings")]
-    [SerializeField] private float _zOffsetFromCamera = 0.1f; // z offset from the camera to avoid being culled by the camera
-    [SerializeField] private Vector3 _scaleWhenNotInView = new(0.5f, 0.5f, 0.5f); // scale of the mood sprite when not in view (to make it smaller and less obtrusive)
-
     private CustomerMood _currentMood = CustomerMood.None;
     private SpriteRenderer _spriteRenderer;
-    private Transform _originalTransform; // Store the original transform of the mood sprite
     private Camera _mainCam;
 
     public CustomerMood CurrentMood => _currentMood;
@@ -47,19 +41,7 @@ public class MoodSetter : MonoBehaviour
     {
         // reset (remove mood sprite) when start
         SetMood(CustomerMood.None);
-        _originalTransform = transform;
         _mainCam = Camera.main;
-    }
-
-    private void FixedUpdate()
-    {
-        if (_currentMood == CustomerMood.None) return;
-
-        // check if this object is in the camera view
-        Vector3 viewportPos = _mainCam.WorldToViewportPoint(transform.position);
-        bool isInView = viewportPos.x >= 0 && viewportPos.x <= 1 && viewportPos.y >= 0 && viewportPos.y <= 1 && viewportPos.z > 0;
-
-        // TODO: instead of doing all this, just create multiple mood ui images as per the customers & loop through them and for those which are not in the camera view, show them in the ui image
     }
 
     public void SetMood(CustomerMood mood = CustomerMood.None)

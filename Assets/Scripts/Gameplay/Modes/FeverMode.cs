@@ -11,7 +11,7 @@ public class FeverMode : Singleton<FeverMode>
     [Header("Conditions To Activate Fever Mode")]
     [Tooltip("Number of consecutive perfect 萌えキュン to activate fever mode")]
     [SerializeField] private int _perfectCountToActivateFever = 3;
-    [Tooltip("Minimum score to count as perfect 萌えキュン out of 200 (Vocie: 100, Hand: 100, not including the Paint)")]
+    [Tooltip("Minimum score to count as perfect 萌えキュン out of 200 (Voice: 100, Hand: 100, not including the Paint)")]
     [SerializeField] private int _minScoreToCountAsPerfect = 120;
 
     [Space(10)]
@@ -22,13 +22,12 @@ public class FeverMode : Singleton<FeverMode>
     private bool _isFeverMode = false;
     private int _currentPerfectCount = 0;
     private float _feverTimer = 0f;
-    // private bool __wasLastOnePerfect = false;
     private UIManager _uiManager;
 
     public bool IsFeverMode => _isFeverMode;
     public float FeverScoreMultiplier => _feverScoreMultiplier;
 
-    void Start()
+    private void Start()
     {
         _uiManager = UIManager.Instance;
 
@@ -38,9 +37,11 @@ public class FeverMode : Singleton<FeverMode>
             enabled = false;
             return;
         }
+
+        InitializeData();
     }
 
-    void Update()
+    private void Update()
     {
         // reset fever mode
         if (_isFeverMode)
@@ -56,6 +57,19 @@ public class FeverMode : Singleton<FeverMode>
                 _uiManager.UpdateFeverGaugeText(false);
             }
         }
+    }
+
+    // ** initialize data from GlobalData **
+    private void InitializeData()
+    {
+        if (GlobalData.Instance == null) return;
+
+        FeverModeSettings fms = GlobalData.Instance.FeverModeData;
+
+        _perfectCountToActivateFever = fms.perfectCountToActivateFever;
+        _minScoreToCountAsPerfect = fms.minScoreToCountAsPerfect;
+        _feverDuration = fms.feverDuration;
+        _feverScoreMultiplier = fms.feverScoreMultiplier;
     }
 
     public void CheckIfPerfect(int score)

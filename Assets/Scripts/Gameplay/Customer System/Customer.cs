@@ -28,6 +28,8 @@ public class Customer : StateManager<Customer.CustomerState>
     private Transform _customerDestroyPoint;
     private MoodSetter _moodSetter;
 
+    public bool IsInBadMood { get; private set; }
+
     public static event System.Action<MoodSetter> OnCustomerSpawn = delegate { };
 
     private void Awake()
@@ -45,6 +47,15 @@ public class Customer : StateManager<Customer.CustomerState>
 
         // updating mood display ui
         OnCustomerSpawn?.Invoke(_moodSetter);
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        // check if customer is in bad mood
+        if (_moodSetter.CurrentMood == CustomerMood.Sad)
+            IsInBadMood = true;
     }
 
     public void InitializeCustomer(Transform foodSpawnPoint, CinemachineStateDrivenCamera stateCamera, Transform customerStandPoint)

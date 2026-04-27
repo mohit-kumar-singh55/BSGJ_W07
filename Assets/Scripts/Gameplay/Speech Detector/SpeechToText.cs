@@ -65,7 +65,7 @@ public class SpeechToText : MonoBehaviour
 
     private void OnRecordingStop()
     {
-        Debug.Log("Recording stopped.");
+        // Debug.Log("Recording stopped.");
     }
 
     public void StartRecording(float duration = 3f)
@@ -83,10 +83,6 @@ public class SpeechToText : MonoBehaviour
 
         _voiceProcessor.StartRecording();
 
-        // foreach (string device in Microphone.devices) Debug.Log(device);
-
-        Debug.Log("🎤 Started recording");
-
         // stop recording after specified duration
         Invoke(nameof(StopRecording), duration);
     }
@@ -102,8 +98,6 @@ public class SpeechToText : MonoBehaviour
 
         _rec?.Dispose();
         _rec = null;
-
-        Debug.Log("🛑 Stopped recording");
 
         // when recording stops without detecting key phrase by timeout, invoke un-detected event
         if (!_phraseDetected) OnKeyPhraseUnDetected?.Invoke("Not detected & Recording stopped because of timeout", NormalizedVolume());
@@ -121,8 +115,6 @@ public class SpeechToText : MonoBehaviour
 
         foreach (string keyphrase in _keyPhrases)
             phrases.Add($"\"{keyphrase}\"");
-
-        // phrases.Add("\"[unk]\"");
 
         _grammar = "[" + string.Join(",", phrases) + "]";
     }

@@ -122,6 +122,7 @@ public class KetchupPainter : MonoBehaviour
 
                 lastUV = currentUV;// 今回の位置を保存
 
+                // play sfx
                 AudioManager.Instance.PlaySFX(SFX.Ketchup);
             }
         }

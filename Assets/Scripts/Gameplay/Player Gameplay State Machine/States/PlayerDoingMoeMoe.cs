@@ -3,7 +3,6 @@ using UnityEngine;
 public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 {
     private PlayerStateContext _context;
-    private int _currentPhase = 0;      // 2 = moe1, 3 = moe2, 4 = kyun
     private int _totalScore = 0;        // voice + hand
     private bool _voiceDetectionFinished = false;
     private bool _handDetectionFinished = false;
@@ -59,15 +58,25 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         // save score
         if (PlayerDataManager.Instance != null)
         {
+            float scoreMultiplier = 1f;
+
             // apply fever score multiplier
-            float scoreMultiplier = (FeverMode.Instance != null && FeverMode.Instance.IsFeverMode) ? FeverMode.Instance.FeverScoreMultiplier : 1f;
+            if (FeverMode.Instance != null && FeverMode.Instance.IsFeverMode)
+                scoreMultiplier *= FeverMode.Instance.FeverScoreMultiplier;
+
+            // apply customer's bad mood score multiplier
+            if (GlobalData.Instance != null && CustomersManager.Instance.CurrentCustomer.IsInBadMood)
+            {
+                CustomerMoodSettings customerMoodSettings = GlobalData.Instance.CustomerData.customerMoodSettings;
+                if (_totalScore >= customerMoodSettings.minScoreRequiredInBadMood)
+                    scoreMultiplier *= customerMoodSettings.badMoodScoreMultiplier;
+            }
+
+            // addup all scores
             PlayerDataManager.Instance.AddPlayerScore(Mathf.RoundToInt(_totalScore * scoreMultiplier));
         }
         // check for fever mode
         if (FeverMode.Instance != null) FeverMode.Instance.CheckIfPerfect(_totalScore);
-
-        // reset
-        _currentPhase = 0;
 
         // remove current spawned food
         // go to next customer
@@ -96,8 +105,6 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     private void OnHandCheckStart()
     {
-        _currentPhase = 2;
-
         // hide moe example effect
         _context.MoeExampleAnimator.SetBool(_heartPulseAnimHash, false);
         _context.MoeExampleAnimator.gameObject.SetActive(false);
@@ -120,14 +127,10 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         switch (phase)
         {
             case 3:
-                _currentPhase = 3;
-
                 // play moe effect
                 _context.MoeEffectAnimator.SetTrigger(MOE2_ANIM);
                 break;
             case 4:
-                _currentPhase = 4;
-
                 // play kyun effect
                 _context.MoeEffectAnimator.SetTrigger(KYUN_ANIM);
                 break;

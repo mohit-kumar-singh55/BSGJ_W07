@@ -44,9 +44,7 @@ public class HandDetection : MonoBehaviour
     public event System.Action<int> OnHandDetectionProceed = delegate { }; // phase
     public event System.Action<int> OnHandDetectionOver = delegate { }; // point
 
-    private
-
-    void Start()
+    private void Start()
     {
         isInitializing = true;
         initializeTimer = 0;
@@ -74,20 +72,17 @@ public class HandDetection : MonoBehaviour
     // チェック開始
     public void StartCheck()
     {
-        // Debug.Log("************************* チェック開始 *************************");
         Initalize();
         nowCheckTime = 0;
         receiver.gameObject.SetActive(true);
         StartCoroutine(handLandmarker.Resume());
 
-        // if (!isInitializing) isDetecting = true;
         isDetecting = true;
     }
 
     // チェック終了
     public void EndCheck()
     {
-        // if (!isInitializing) isDetecting = false;
         isDetecting = false;
 
         // on check over
@@ -102,8 +97,6 @@ public class HandDetection : MonoBehaviour
     private void FixedUpdate()
     {
         if (!isDetecting) return;
-
-
 
         if (isInitializing)
         {
@@ -161,7 +154,7 @@ public class HandDetection : MonoBehaviour
             point = 0;
             NextPhase();
             HeartTimeCount = 0;
-            Debug.Log("チェックスタート");
+            // Debug.Log("チェックスタート");
 
             // on check start (show moe1 anim)
             OnHandCheckStart?.Invoke();
@@ -183,7 +176,7 @@ public class HandDetection : MonoBehaviour
             // 一定量横に移動したかのチェック
             if (Mathf.Abs(HandMoveDirX) > 0.09f) point++;
             NextPhase();
-            Debug.Log("萌え");
+            // Debug.Log("萌え");
 
             // on check proceed (show moe2 anim)
             OnHandDetectionProceed?.Invoke(phase);
@@ -204,7 +197,7 @@ public class HandDetection : MonoBehaviour
             // 一定量横に移動したかのチェック
             if (Mathf.Abs(HandMoveDirX) > 0.09f) point++;
             NextPhase();
-            Debug.Log("萌え");
+            // Debug.Log("萌え");
 
             // on check proceed (show kyun anim)
             OnHandDetectionProceed?.Invoke(phase);
@@ -224,7 +217,7 @@ public class HandDetection : MonoBehaviour
         {
             // 一定量横に移動したかのチェック
             if (Mathf.Abs(HandMoveDirX) > 0.04f) point++;
-            Debug.Log("キュン");
+            // Debug.Log("キュン");
             EndCheck();
         }
     }

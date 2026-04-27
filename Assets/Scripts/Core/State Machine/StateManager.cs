@@ -8,12 +8,12 @@ public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
     protected bool IsTransitioningState = false;
     public BaseState<EState> CurrentState { get; protected set; }
 
-    void Start()
+    protected virtual void Start()
     {
         CurrentState.EnterState();
     }
 
-    void Update()
+    protected virtual void Update()
     {
         EState nextStateKey = CurrentState.GetNextState();
 

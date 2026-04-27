@@ -37,8 +37,8 @@ public class CustomerReady : BaseState<Customer.CustomerState>
                 CustomersManager.Instance.UnoccupieSeat(_context.ThisCustomer);
             _transitionByTimesUp = true;
 
-            // TODO: deduce score
-            _context.MoodSetter.SetMood(CustomerMood.Angry);    // angry mood when goting outside due to times up
+            // deduce score
+            _context.MoodSetter.SetMood(CustomerMood.Angry);    // angry mood when going outside due to times up
             if (PlayerDataManager.Instance != null)
                 PlayerDataManager.Instance.DeduceScore(_context.ScoreToDeductOnTimesUp);
             return;

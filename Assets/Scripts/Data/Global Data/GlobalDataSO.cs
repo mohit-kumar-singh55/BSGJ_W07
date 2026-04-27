@@ -27,6 +27,12 @@ public struct FeverModeSettings
 [Serializable]
 public struct CustomerSettings
 {
+    [Tooltip("Customer's Waiting Time")]
+    public float waitingTime;
+    [Tooltip("Score deduction value when customer leaves due to waiting times up")]
+    public int scoreToDeductOnTimesUp;
+
+    [Space(10)]
     public CustomerMoodSettings customerMoodSettings;
 }
 

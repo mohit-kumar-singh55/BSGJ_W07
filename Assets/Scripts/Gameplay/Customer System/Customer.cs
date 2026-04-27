@@ -21,7 +21,7 @@ public class Customer : StateManager<Customer.CustomerState>
     [Tooltip("Customer's Waiting Time")]
     [SerializeField] private float _waitingTime = 20f;
     [Tooltip("Score deduction value when customer leaves due to waiting times up")]
-    [SerializeField] private int _scoreToDeductOnTimesUp = 50;
+    [SerializeField] private int _scoreToDeductOnTimesUp = 20;
 
     private NavMeshAgent _customerAgent;
     private CustomerStateContext _context;
@@ -47,6 +47,14 @@ public class Customer : StateManager<Customer.CustomerState>
 
         // updating mood display ui
         OnCustomerSpawn?.Invoke(_moodSetter);
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
+        // initialize data
+        InitializeData();
     }
 
     protected override void Update()
@@ -75,5 +83,16 @@ public class Customer : StateManager<Customer.CustomerState>
 
         // always start in idle
         CurrentState = States[CustomerState.InComing];
+    }
+
+    // ** initialize data from GlobalData **
+    private void InitializeData()
+    {
+        if (GlobalData.Instance == null) return;
+
+        CustomerSettings cs = GlobalData.Instance.CustomerData;
+
+        _waitingTime = cs.waitingTime;
+        _scoreToDeductOnTimesUp = cs.scoreToDeductOnTimesUp;
     }
 }

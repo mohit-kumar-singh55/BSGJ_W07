@@ -7,10 +7,12 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
     private int _totalScore = 0;        // voice + hand
     private bool _voiceDetectionFinished = false;
     private bool _handDetectionFinished = false;
+    private int _heartPulseAnimHash;
 
     private const string MOE1_ANIM = "Moe1";
     private const string MOE2_ANIM = "Moe2";
     private const string KYUN_ANIM = "Kyun";
+    private const string HEART_PULSE = "Pulse";
 
     public static event System.Action OnMoeMoeStarted = delegate { };
     public static event System.Action OnMoeMoeCompleted = delegate { };
@@ -18,6 +20,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
     public PlayerDoingMoeMoe(PlayerStateContext context, PlayerStateManager.PlayerState stateKey) : base(stateKey)
     {
         _context = context;
+        _heartPulseAnimHash = Animator.StringToHash(HEART_PULSE);
     }
 
     public override void EnterState()
@@ -42,7 +45,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
             // show moe example effect
             _context.MoeExampleAnimator.gameObject.SetActive(true);
-            _context.MoeExampleAnimator.SetBool("Pulse", true);
+            _context.MoeExampleAnimator.SetBool(_heartPulseAnimHash, true);
 
             // moe moe started
             OnMoeMoeStarted?.Invoke();
@@ -56,10 +59,8 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         // save score
         if (PlayerDataManager.Instance != null)
         {
-            Debug.Log("Total Score: " + _totalScore);
             // apply fever score multiplier
             float scoreMultiplier = (FeverMode.Instance != null && FeverMode.Instance.IsFeverMode) ? FeverMode.Instance.FeverScoreMultiplier : 1f;
-            Debug.Log("After Score Multiplier: " + Mathf.RoundToInt(_totalScore * scoreMultiplier));
             PlayerDataManager.Instance.AddPlayerScore(Mathf.RoundToInt(_totalScore * scoreMultiplier));
         }
         // check for fever mode
@@ -77,6 +78,15 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         _context.HandDetection.OnHandCheckStart -= OnHandCheckStart;
         _context.HandDetection.OnHandDetectionProceed -= OnHandDetectionProceed;
         _context.HandDetection.OnHandDetectionOver -= OnHandDetectionOver;
+
+        // playing sfx
+        if (AudioManager.Instance != null)
+        {
+            if (FeverMode.Instance != null && FeverMode.Instance.IsFeverMode)
+                AudioManager.Instance.PlaySFX(SFX.FeverScoreUp);
+            else
+                AudioManager.Instance.PlaySFX(SFX.ScoreUp);
+        }
     }
 
     public override PlayerStateManager.PlayerState GetNextState()
@@ -89,7 +99,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         _currentPhase = 2;
 
         // hide moe example effect
-        _context.MoeExampleAnimator.SetBool("Pulse", false);
+        _context.MoeExampleAnimator.SetBool(_heartPulseAnimHash, false);
         _context.MoeExampleAnimator.gameObject.SetActive(false);
 
         // play moe effect
@@ -101,7 +111,6 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     private void OnRecordingCompleted(int score, string message)
     {
-        Debug.Log(_currentPhase + ", Score: " + score + ", Message: " + message);
         _totalScore += score;
         _voiceDetectionFinished = true;
     }
@@ -134,8 +143,6 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
             3 => 100,
             _ => 25,
         };
-
-        Debug.Log("Hand Detection Over, Score: " + handScore);
 
         _totalScore += handScore;
         _handDetectionFinished = true;

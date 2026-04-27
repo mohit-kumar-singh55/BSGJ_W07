@@ -29,6 +29,12 @@ public class AudioManager : Singleton<AudioManager>
         }
     }
 
+    private void Start()
+    {
+        // playing main bgm on start
+        PlayBGM(BGM.Mainbgm);
+    }
+
     public void PlayBGM(BGM bgmType)
     {
         if (!_bgmDictionary.TryGetValue(bgmType, out AudioClip clip)) return;

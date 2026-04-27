@@ -60,30 +60,18 @@ public class FeverMode : Singleton<FeverMode>
 
     public void CheckIfPerfect(int score)
     {
-        Debug.Log("************* Score: " + score + " *************");
-
         // return if already in fever mode
         if (_isFeverMode) return;
 
         // decrement perfect count, if not enough score
         if (score < _minScoreToCountAsPerfect)
-        {
             _currentPerfectCount = 0;
-            // __wasLastOnePerfect = false;
-            // return;
-        }
         else _currentPerfectCount++;
-
-        // 
-        // if (_currentPerfectCount <= 0 || __wasLastOnePerfect)
-        //     _currentPerfectCount++;
-        // __wasLastOnePerfect = true;
 
         // activate fever mode
         if (_currentPerfectCount >= _perfectCountToActivateFever)
         {
             _isFeverMode = true;
-            // Debug.Log("Fever Mode Activated!");
             // ! temp
             _uiManager.UpdateFeverGaugeText(true);
         }

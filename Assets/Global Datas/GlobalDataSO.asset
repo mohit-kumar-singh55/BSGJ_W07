@@ -15,7 +15,7 @@ MonoBehaviour:
   feverModeSettings:
     perfectCountToActivateFever: 3
     minScoreToCountAsPerfect: 120
-    feverDuration: 30
+    feverDuration: 40
     feverScoreMultiplier: 1.2
   customerSettings:
     waitingTime: 20

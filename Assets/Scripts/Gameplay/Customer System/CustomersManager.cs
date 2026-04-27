@@ -3,12 +3,11 @@ using UnityEngine;
 
 // Manages all the customers
 // responsible for:
-// randomly selecting the next customer
-// giving the selected customer detail to camaramanager for camera change
-
-// TODO: seperate customer from (table + chair + camera set + food point)
-// TODO: take list of all the customer prefabs & list of all table set
-// TODO: select random table set, then spawn random customer and when the customer is in in-service state, assign the food point and camera set to that customer
+// - spawning customers
+// - unoccupying the seats of the customers that are leaving the resturant
+// - selecting next customer
+// - keeping track of active customers
+// - keeping track of current in-service customer
 public class CustomersManager : Singleton<CustomersManager>
 {
     [SerializeField] private GameObject _customerPrefab;
@@ -79,8 +78,6 @@ public class CustomersManager : Singleton<CustomersManager>
         // cannot find unoccupied seat
         if (maxTries < 0 || currentCustomerData == null || currentCustomerData.IsOccupied)
         {
-            // Debug.LogWarning("Cannot Find a Seat for Customer!");
-
             // again to into waiting period
             _waitingToSpawnNextCustomer = true;
             StartCoroutine(WaitTimer.WaitFor(_customerSpawnInterval, () => _waitingToSpawnNextCustomer = false));
@@ -139,8 +136,6 @@ public class CustomersManager : Singleton<CustomersManager>
         // cannot find any customer in ready state
         if (maxTries < 0 || nextCustomer == null || !nextCustomer.CurrentState.StateKey.Equals(Customer.CustomerState.Ready))
         {
-            // Debug.LogWarning("Cannot find next random customer");
-
             // retry after sometime
             StartCoroutine(WaitTimer.WaitFor(_retryCustomerSelectionAfter, () => SelectNextCustomer()));
             return;
@@ -148,14 +143,6 @@ public class CustomersManager : Singleton<CustomersManager>
 
         // remove next customer from the active customer list as it will be in-service
         _currentActiveCustomers.Remove(nextCustomer);
-
-        // if (_currentInServiceCustomer != null)
-        // {
-        //     // change current customer's in-service state to outgoing
-        //     _currentInServiceCustomer.TransitionToState(Customer.CustomerState.OutGoing);
-        //     // unoccupie this seat
-        //     UnoccupieSeat(_currentInServiceCustomer);
-        // }
 
         // set next customer to current customer
         _currentInServiceCustomer = nextCustomer;
@@ -182,7 +169,5 @@ public class CustomersManager : Singleton<CustomersManager>
             data.IsOccupied = false;
             return;
         }
-
-        // Debug.LogWarning("Cannot find the specified customer in the seats allocated!");
     }
 }

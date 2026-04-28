@@ -8,6 +8,7 @@ public class Timer : MonoBehaviour
     private bool _isRunning = true;
     private UIManager _uiManager;
 
+    public float TimeLimit => _timeLimit;
     public float CurrentTime => _currentTime;
 
     public static event System.Action OnTimesUp = delegate { };

@@ -14,6 +14,7 @@ public class CustomersManager : Singleton<CustomersManager>
     [SerializeField] private Transform _customerSpawnPoint; // outside the resturant
     [SerializeField] private int _maxCustomerCount = 3; // max number of customers that can be in the resturant at the same time, that are occupying the seats (in-coming, ready, in-service), not including the customers that are out-going
     [SerializeField] private float _customerSpawnInterval = 20f;
+    [SerializeField] private AnimationCurve _customerSpawnCurve;
     [SerializeField] private float _retryCustomerSelectionAfter = 5f;
 
     private Customer _currentInServiceCustomer; // customer that is being served right now
@@ -21,6 +22,7 @@ public class CustomersManager : Singleton<CustomersManager>
     private List<Customer> _currentActiveCustomers = new(); // customers that are in in-coming/ready state
     private int _currentNoOfCustomers = 0;
     private bool _waitingToSpawnNextCustomer = true;
+    private Timer _timer;
 
     public Customer CurrentCustomer => _currentInServiceCustomer;
 
@@ -36,6 +38,8 @@ public class CustomersManager : Singleton<CustomersManager>
 
     private void Start()
     {
+        // get timer
+        _timer = FindAnyObjectByType<Timer>();
         // get all the seats datas
         _customerSeatDatas = FindObjectsByType<PerCustomerData>(FindObjectsSortMode.None);
 
@@ -75,7 +79,7 @@ public class CustomersManager : Singleton<CustomersManager>
         {
             // again to into waiting period
             _waitingToSpawnNextCustomer = true;
-            StartCoroutine(WaitTimer.WaitFor(_customerSpawnInterval, () => _waitingToSpawnNextCustomer = false));
+            StartCoroutine(WaitTimer.WaitFor(GetNextCustomerSelectionTime(), () => _waitingToSpawnNextCustomer = false));
             return;
         }
 
@@ -99,7 +103,7 @@ public class CustomersManager : Singleton<CustomersManager>
             // keep track & wait to spawn next customer
             _currentNoOfCustomers++;
             _waitingToSpawnNextCustomer = true;
-            StartCoroutine(WaitTimer.WaitFor(_customerSpawnInterval, () => _waitingToSpawnNextCustomer = false));
+            StartCoroutine(WaitTimer.WaitFor(GetNextCustomerSelectionTime(), () => _waitingToSpawnNextCustomer = false));
         }
         else Destroy(customerObj);
     }
@@ -156,5 +160,11 @@ public class CustomersManager : Singleton<CustomersManager>
             data.IsOccupied = false;
             return;
         }
+    }
+
+    private float GetNextCustomerSelectionTime()
+    {
+        float clampedTime = (_timer.TimeLimit - _timer.CurrentTime) / _timer.TimeLimit;
+        return _customerSpawnCurve.Evaluate(clampedTime) * _customerSpawnInterval;
     }
 }

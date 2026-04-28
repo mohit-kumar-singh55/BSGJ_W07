@@ -8246,7 +8246,7 @@ GameObject:
   m_Layer: 0
   m_Name: Customer Manager
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -8280,7 +8280,31 @@ MonoBehaviour:
   _customerPrefab: {fileID: 6420253099570971165, guid: 9955150654bd6244290ad7f7792f47af, type: 3}
   _customerSpawnPoint: {fileID: 457676393}
   _maxCustomerCount: 20
-  _customerSpawnInterval: 5
+  _customerSpawnInterval: 20
+  _customerSpawnCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -2.2989254
+      outSlope: -2.2989254
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.043112513
+    - serializedVersion: 3
+      time: 1
+      value: 0.3
+      inSlope: 0.013086424
+      outSlope: 0.013086424
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.090431154
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _retryCustomerSelectionAfter: 2
 --- !u!1 &1979127346
 GameObject:

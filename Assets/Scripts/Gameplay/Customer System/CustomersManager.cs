@@ -58,11 +58,6 @@ public class CustomersManager : Singleton<CustomersManager>
         return _customerSeatDatas.Length > 0 ? _customerSeatDatas[Random.Range(0, _customerSeatDatas.Length)] : null;
     }
 
-    private Customer GetRandomCustomer()
-    {
-        return _currentActiveCustomers.Count > 0 ? _currentActiveCustomers[Random.Range(0, _currentActiveCustomers.Count)] : null;
-    }
-
     private void SpawnCustomer()
     {
         int maxTries = _customerSeatDatas.Length;
@@ -122,24 +117,16 @@ public class CustomersManager : Singleton<CustomersManager>
             _currentInServiceCustomer = null;
         }
 
-        // select next customer from the active customers list
-        int maxTries = _currentActiveCustomers.Count;
-        Customer nextCustomer = GetRandomCustomer();
-
-        // make sure next customer is in ready state
-        while (maxTries >= 0 && nextCustomer != null && !nextCustomer.CurrentState.StateKey.Equals(Customer.CustomerState.Ready))
-        {
-            maxTries--;
-            nextCustomer = GetRandomCustomer();
-        }
-
         // cannot find any customer in ready state
-        if (maxTries < 0 || nextCustomer == null || !nextCustomer.CurrentState.StateKey.Equals(Customer.CustomerState.Ready))
+        if (_currentActiveCustomers.Count == 0 || !_currentActiveCustomers[0].CurrentState.StateKey.Equals(Customer.CustomerState.Ready))
         {
             // retry after sometime
             StartCoroutine(WaitTimer.WaitFor(_retryCustomerSelectionAfter, () => SelectNextCustomer()));
             return;
         }
+
+        // select next customer from the active customers list
+        Customer nextCustomer = _currentActiveCustomers[0];
 
         // remove next customer from the active customer list as it will be in-service
         _currentActiveCustomers.Remove(nextCustomer);

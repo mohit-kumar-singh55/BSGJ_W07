@@ -23,7 +23,7 @@ MonoBehaviour:
     waitingTime: 20
     scoreToDeductOnTimesUp: 20
     customerMoodSettings:
-      minScoreRequiredInBadMood: 100
+      minScoreRequiredInBadMood: 120
       badMoodScoreMultiplier: 1.8
   customerManagerSettings:
     maxCustomerCount: 20

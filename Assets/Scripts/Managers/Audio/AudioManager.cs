@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,13 +37,16 @@ public class AudioManager : Singleton<AudioManager>
         PlayBGM(BGM.Mainbgm);
     }
 
-    public void PlayBGM(BGM bgmType)
+    public void PlayBGM(BGM bgmType, float fadeTime = 1f)
     {
         if (!_bgmDictionary.TryGetValue(bgmType, out AudioClip clip)) return;
-        if (_bgmSource.clip == clip && _bgmSource.isPlaying) return;
+        if (_bgmSource.clip == clip) return;
 
-        _bgmSource.clip = clip;
-        _bgmSource.Play();
+        StartCoroutine(FadeOut(_bgmSource, fadeTime, () =>
+       {
+           _bgmSource.clip = clip;
+           _bgmSource.Play();
+       }));
     }
 
     public void PlaySFX(SFX sfxType)
@@ -56,5 +61,18 @@ public class AudioManager : Singleton<AudioManager>
         if (!_sfxDictionary.TryGetValue(sfxType, out AudioClip clip)) return;
         if (audioSource.isPlaying) return;
         audioSource.PlayOneShot(clip);
+    }
+
+    private IEnumerator FadeOut(AudioSource audioSource, float fadeTime, Action callback)
+    {
+        float startVolume = audioSource.volume;
+        while (audioSource.volume > 0)
+        {
+            audioSource.volume -= startVolume * Time.unscaledDeltaTime / fadeTime;
+            yield return null;
+        }
+        audioSource.Stop();
+        audioSource.volume = startVolume;
+        callback?.Invoke();
     }
 }

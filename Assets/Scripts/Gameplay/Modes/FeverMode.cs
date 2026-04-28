@@ -23,6 +23,7 @@ public class FeverMode : Singleton<FeverMode>
     private int _currentPerfectCount = 0;
     private float _feverTimer = 0f;
     private UIManager _uiManager;
+    private AudioManager _audioManager;
 
     public bool IsFeverMode => _isFeverMode;
     public float FeverScoreMultiplier => _feverScoreMultiplier;
@@ -30,6 +31,7 @@ public class FeverMode : Singleton<FeverMode>
     private void Start()
     {
         _uiManager = UIManager.Instance;
+        _audioManager = AudioManager.Instance;
 
         if (_uiManager == null)
         {
@@ -53,8 +55,10 @@ public class FeverMode : Singleton<FeverMode>
                 _currentPerfectCount = 0;
                 _feverTimer = 0f;
                 _uiManager.UpdateFeverGauge(0f);
+
                 // ! temp
                 _uiManager.UpdateFeverGaugeText(false);
+                _audioManager.PlayBGM(BGM.Mainbgm, 0.5f);   // reset to main bgm
             }
         }
     }
@@ -86,8 +90,10 @@ public class FeverMode : Singleton<FeverMode>
         if (_currentPerfectCount >= _perfectCountToActivateFever)
         {
             _isFeverMode = true;
+
             // ! temp
             _uiManager.UpdateFeverGaugeText(true);
+            _audioManager.PlayBGM(BGM.FeverMode, 0.5f); // play fever mode bgm
         }
 
         // update fever gauge ui

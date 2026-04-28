@@ -4,10 +4,23 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GlobalDataSO", menuName = "GlobalDataSO", order = 0)]
 public class GlobalDataSO : ScriptableObject
 {
+    public TimerSettings timerSettings;
+
+    [Space(10)]
     public FeverModeSettings feverModeSettings;
 
     [Space(10)]
     public CustomerSettings customerSettings;
+
+    [Space(10)]
+    public CustomerManagerSettings customerManagerSettings;
+}
+
+[Serializable]
+public struct TimerSettings
+{
+    [Tooltip("Time limit of the main gameplay")]
+    public float timeLimit;
 }
 
 [Serializable]
@@ -43,4 +56,17 @@ public struct CustomerMoodSettings
     public float minScoreRequiredInBadMood;
     [Tooltip("Score to be multiplied when customer is in bad mood")]
     public float badMoodScoreMultiplier;
+}
+
+[Serializable]
+public struct CustomerManagerSettings
+{
+    [Tooltip("max number of customers that can be in the resturant at the same time, that are occupying the seats (in-coming, ready, in-service), not including the customers that are out-going")]
+    public int maxCustomerCount;
+    [Tooltip("Interval between customer spawn")]
+    public float customerSpawnInterval;
+    [Tooltip("How Customer spawn interval will change with time")]
+    public AnimationCurve customerSpawnCurve;
+    [Tooltip("How long to wait before retrying to select next customer (If failed before)")]
+    public float retryCustomerSelectionAfter;
 }

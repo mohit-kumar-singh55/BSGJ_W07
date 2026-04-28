@@ -38,6 +38,9 @@ public class CustomersManager : Singleton<CustomersManager>
 
     private void Start()
     {
+        // initialize data
+        InitializeData();
+
         // get timer
         _timer = FindAnyObjectByType<Timer>();
         // get all the seats datas
@@ -55,6 +58,19 @@ public class CustomersManager : Singleton<CustomersManager>
             // spawn next customer
             SpawnCustomer();
         }
+    }
+
+    // ** initialize data from GlobalData **
+    private void InitializeData()
+    {
+        if (GlobalData.Instance == null) return;
+
+        CustomerManagerSettings cms = GlobalData.Instance.CustomerManagerData;
+
+        _maxCustomerCount = cms.maxCustomerCount;
+        _customerSpawnInterval = cms.customerSpawnInterval;
+        _customerSpawnCurve = cms.customerSpawnCurve;
+        _retryCustomerSelectionAfter = cms.retryCustomerSelectionAfter;
     }
 
     private PerCustomerData GetRandomCustomerData()

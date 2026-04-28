@@ -15,6 +15,9 @@ public class Timer : MonoBehaviour
 
     private void Start()
     {
+        // initialize data
+        InitializeData();
+
         _currentTime = _timeLimit;
         _uiManager = UIManager.Instance;
     }
@@ -43,5 +46,15 @@ public class Timer : MonoBehaviour
         // UI更新
         // _timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         _uiManager.RotateNeedle(_currentTime / _timeLimit);
+    }
+
+    // ** initialize data from GlobalData **
+    private void InitializeData()
+    {
+        if (GlobalData.Instance == null) return;
+
+        TimerSettings cs = GlobalData.Instance.TimerData;
+
+        _timeLimit = cs.timeLimit;
     }
 }

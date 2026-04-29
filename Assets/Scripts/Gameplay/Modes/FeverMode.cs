@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 /*
 - フィーバーの条件を一度
@@ -18,6 +19,10 @@ public class FeverMode : Singleton<FeverMode>
     [Header("Fever Mode")]
     [SerializeField] private float _feverDuration = 30f;
     [SerializeField] private float _feverScoreMultiplier = 1.2f;
+
+    [Space(10)]
+    [Header("Fever Mode Effects")]
+    [SerializeField] private Volume _feverModeLensFlareVolume;
 
     private bool _isFeverMode = false;
     private int _currentPerfectCount = 0;
@@ -41,6 +46,9 @@ public class FeverMode : Singleton<FeverMode>
         }
 
         InitializeData();
+
+        // reset
+        ShowFeverModeLensFlare(false);
     }
 
     private void Update()
@@ -57,6 +65,7 @@ public class FeverMode : Singleton<FeverMode>
                 _uiManager.UpdateFeverGauge(0f);
 
                 // ! temp
+                ShowFeverModeLensFlare(false);
                 _uiManager.UpdateFeverGaugeText(false);
                 _audioManager.PlayBGM(BGM.Mainbgm, 0.5f);   // reset to main bgm
             }
@@ -92,6 +101,7 @@ public class FeverMode : Singleton<FeverMode>
             _isFeverMode = true;
 
             // ! temp
+            ShowFeverModeLensFlare(true);
             _uiManager.UpdateFeverGaugeText(true);
             _audioManager.PlayBGM(BGM.FeverMode, 0.5f); // play fever mode bgm
         }
@@ -99,4 +109,6 @@ public class FeverMode : Singleton<FeverMode>
         // update fever gauge ui
         _uiManager.UpdateFeverGauge((float)_currentPerfectCount / _perfectCountToActivateFever);
     }
+
+    private void ShowFeverModeLensFlare(bool show = true) => _feverModeLensFlareVolume.enabled = show;
 }

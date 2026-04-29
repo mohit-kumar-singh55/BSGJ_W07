@@ -91,13 +91,14 @@ public class HandMarker3D : MonoBehaviour
             else if (handName == "Right")
                 rightIndex = i;
         }
-
+        /*
         if (IsCameraRotated180())
         {
             int tmp = leftIndex;
             leftIndex = rightIndex;
             rightIndex = tmp;
         }
+        */
 
         return (leftIndex, rightIndex);
     }

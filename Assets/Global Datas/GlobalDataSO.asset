@@ -27,7 +27,7 @@ MonoBehaviour:
       badMoodScoreMultiplier: 1.8
   customerManagerSettings:
     maxCustomerCount: 20
-    customerSpawnInterval: 20
+    customerSpawnInterval: 12
     customerSpawnCurve:
       serializedVersion: 2
       m_Curve:

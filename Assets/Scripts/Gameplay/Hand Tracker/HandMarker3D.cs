@@ -1,4 +1,3 @@
-using Mediapipe.Tasks.Vision.HandLandmarker;
 using UnityEngine;
 
 public class HandMarker3D : MonoBehaviour
@@ -9,14 +8,8 @@ public class HandMarker3D : MonoBehaviour
     // 手の位置に表示する球
     [SerializeField] private Transform[] handSpheres;
 
-    // ハート表示用オブジェクト
-    [SerializeField] private Transform heartObject;
-
     // 座標オフセット
     [SerializeField] private Vector3 posOffset;
-
-    // 手の形がハートであるか
-    [SerializeField] private bool isHeart;
 
     private Vector3 prevHandPos;
 
@@ -59,21 +52,12 @@ public class HandMarker3D : MonoBehaviour
             UpdateHandSphere(1, right);
         else
             handSpheres[1].gameObject.SetActive(false);
-
-        // ハート判定
-        UpdateIsHeart();
-
-        // ハート表示
-        UpdateHeart(left, right);
     }
 
     private void DisableAll()
     {
         foreach (var s in handSpheres)
             s.gameObject.SetActive(false);
-
-        if (heartObject != null)
-            heartObject.gameObject.SetActive(false);
     }
 
     private (int left, int right) GetHandIndices()
@@ -91,26 +75,9 @@ public class HandMarker3D : MonoBehaviour
             else if (handName == "Right")
                 rightIndex = i;
         }
-        /*
-        if (IsCameraRotated180())
-        {
-            int tmp = leftIndex;
-            leftIndex = rightIndex;
-            rightIndex = tmp;
-        }
-        */
 
         return (leftIndex, rightIndex);
     }
-
-
-    bool IsCameraRotated180()
-    {
-        float y = cam.transform.eulerAngles.y;
-
-        return Mathf.Abs(Mathf.DeltaAngle(y, 180f)) < 20f;
-    }
-
 
     private void UpdateHandSphere(int sphereIndex, int handIndex)
     {
@@ -118,7 +85,7 @@ public class HandMarker3D : MonoBehaviour
 
         Vector3 hand = GetHandCenter(handIndex);
 
-        Vector3 screenPos = new Vector3(
+        Vector3 screenPos = new(
             hand.x * Screen.width,
             (1f - hand.y) * Screen.height,
             1.0f
@@ -143,50 +110,11 @@ public class HandMarker3D : MonoBehaviour
 
         var lm = receiver.result.handLandmarks[handIndex].landmarks;
 
-        Vector3 wrist = new Vector3(lm[0].x, lm[0].y, lm[0].z);
-        Vector3 indexBase = new Vector3(lm[5].x, lm[5].y, lm[5].z);
-        Vector3 pinkyBase = new Vector3(lm[17].x, lm[17].y, lm[17].z);
+        Vector3 wrist = new(lm[0].x, lm[0].y, lm[0].z);
+        Vector3 indexBase = new(lm[5].x, lm[5].y, lm[5].z);
+        Vector3 pinkyBase = new(lm[17].x, lm[17].y, lm[17].z);
 
         return (wrist + indexBase + pinkyBase) / 3f;
-    }
-
-    private void UpdateHeart(int leftIndex, int rightIndex)
-    {
-        if (!isHeart || heartObject == null)
-        {
-            heartObject?.gameObject.SetActive(false);
-            return;
-        }
-
-        if (leftIndex == -1 || rightIndex == -1)
-        {
-            heartObject.gameObject.SetActive(false);
-            return;
-        }
-
-        Vector3 left = GetHandCenter(leftIndex);
-        Vector3 right = GetHandCenter(rightIndex);
-
-        Vector3 leftScreen = new Vector3(left.x * Screen.width, (1f - left.y) * Screen.height, 1f);
-        Vector3 rightScreen = new Vector3(right.x * Screen.width, (1f - right.y) * Screen.height, 1f);
-
-        Vector3 leftWorld = cam.ScreenToWorldPoint(leftScreen);
-        Vector3 rightWorld = cam.ScreenToWorldPoint(rightScreen);
-
-        Vector3 center = (leftWorld + rightWorld) * 0.5f;
-
-        heartObject.gameObject.SetActive(true);
-        heartObject.position = center + posOffset;
-    }
-
-    /// <summary>
-    /// IsHeartの更新
-    /// </summary>
-    private void UpdateIsHeart()
-    {
-        isHeart = !(receiver.AreAllFingertipsHigherThanBase(receiver.result)
-                 || receiver.AreFingertipsBentInward(receiver.result)
-                 || receiver.IsThumbTipHighest(receiver.result));
     }
 
     private bool CheckFleez()

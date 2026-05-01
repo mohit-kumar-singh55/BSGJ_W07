@@ -109,8 +109,6 @@ MonoBehaviour:
     _happyMoodSprite: {fileID: 21300000, guid: e1cf674e1f8682f438c964f5ca320e8e, type: 3}
     _sadMoodSprite: {fileID: 21300000, guid: 63734f58aac6d4f4b93fbe60b75415df, type: 3}
     _angryMoodSprite: {fileID: 21300000, guid: 8489a15e3d3c13b4f971228c3763acc1, type: 3}
-  _zOffsetFromCamera: 0.5
-  _scaleWhenNotInView: {x: 0.15, y: 0.15, z: 0.15}
 --- !u!114 &546564726652925366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,7 +284,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -1640815112056973819, guid: 851d240700e2a634eb21d018debb04a2, type: 3}
+  - {fileID: 2100000, guid: 3b5b73fe98f6368419a5acbd991edd5c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -705,7 +703,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -1640815112056973819, guid: 851d240700e2a634eb21d018debb04a2, type: 3}
+  - {fileID: 2100000, guid: 121c09f5ad9a5d647a8e384bb8a69344, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

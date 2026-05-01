@@ -42,19 +42,14 @@ public class Customer : StateManager<Customer.CustomerState>
         if (_moodSetter == null)
             Debug.LogError("MoodSetter component not found in children of Customer!");
 
+        // initialize data
+        InitializeData();
+
         _context = new CustomerStateContext(this, _customerAgent, _waitingTime, _customerDestroyPoint, _moodSetter, _scoreToDeductOnTimesUp);
         InitializeStates();
 
         // updating mood display ui
         OnCustomerSpawn?.Invoke(_moodSetter);
-    }
-
-    protected override void Start()
-    {
-        base.Start();
-
-        // initialize data
-        InitializeData();
     }
 
     protected override void Update()

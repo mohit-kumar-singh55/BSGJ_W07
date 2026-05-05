@@ -9,6 +9,9 @@ public class UIManager : Singleton<UIManager>
     [Header("Clock UI Settings")]
     [SerializeField] private GameObject _needleUI;
     [SerializeField] private float _rotationOffset = -211f;     // current rotation of needle ui
+    [SerializeField] private Image _clockRemainingMask;
+    [SerializeField] private Color _clockRemainingMaskNormalColor;
+    [SerializeField] private Color _clockRemainingMaskCriticalColor;
 
     [Space(10)]
     [Header("Score UI Settings")]
@@ -62,8 +65,10 @@ public class UIManager : Singleton<UIManager>
     public void RotateNeedle(float time)
     {
         float t = Mathf.Clamp01(time);
-        float angle = t * -360f + _rotationOffset;
-        _needleUI.transform.localEulerAngles = new Vector3(0, 0, angle);
+        float angle = t * 360f + _rotationOffset;
+        _needleUI.transform.localEulerAngles = new Vector3(0, 0, angle);    // rotate needle ui
+        _clockRemainingMask.fillAmount = t;   // rotate remaining mask together with needle
+        _clockRemainingMask.color = t <= 0.25f ? _clockRemainingMaskCriticalColor : _clockRemainingMaskNormalColor;   // change color when time is critical 
     }
 
     public void UpdateScoreUpto(int currentScore, int newScore)
@@ -117,7 +122,7 @@ public class UIManager : Singleton<UIManager>
     public void HideSubtitleMoeKyun()
     {
         // hide after delay
-        StartCoroutine(WaitFor(_subtitleMoeKyunHideDelay, () =>
+        StartCoroutine(WaitTimer.WaitFor(_subtitleMoeKyunHideDelay, () =>
         {
             ResetSubtitleColors();  // reset colors when hiding
             _subtitleMoeKyunParent.SetActive(false);
@@ -140,9 +145,6 @@ public class UIManager : Singleton<UIManager>
         {
             _subtitleMoeKyunImages[2].color = kyunCount > 0 ? _subtitleHighlightColor : Color.white;
         }
-
-        // Debug.LogWarning("MOE Count: " + moeCount + ", KYUN Count: " + kyunCount);
-        // Debug.Break();
     }
 
     private void ResetSubtitleColors()
@@ -160,11 +162,5 @@ public class UIManager : Singleton<UIManager>
             _feverGaugeInnerImage.fillAmount = Mathf.Lerp(startValue, endValue, t);
             yield return null;
         }
-    }
-
-    private IEnumerator WaitFor(float delay, System.Action onComplete)
-    {
-        yield return new WaitForSeconds(delay);
-        onComplete?.Invoke();
     }
 }

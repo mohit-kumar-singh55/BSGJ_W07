@@ -13,6 +13,18 @@ public class Timer : MonoBehaviour
 
     public static event System.Action OnTimesUp = delegate { };
 
+    private void OnEnable()
+    {
+        FeverMode.OnFeverModeActivated += PauseTimer;
+        FeverMode.OnFeverModeDeactivated += ResumeTimer;
+    }
+
+    private void OnDisable()
+    {
+        FeverMode.OnFeverModeActivated -= PauseTimer;
+        FeverMode.OnFeverModeDeactivated -= ResumeTimer;
+    }
+
     private void Start()
     {
         // initialize data
@@ -57,4 +69,8 @@ public class Timer : MonoBehaviour
 
         _timeLimit = cs.timeLimit;
     }
+
+    private void PauseTimer() => _isRunning = false;
+
+    private void ResumeTimer() => _isRunning = true;
 }

@@ -33,6 +33,9 @@ public class FeverMode : Singleton<FeverMode>
     public bool IsFeverMode => _isFeverMode;
     public float FeverScoreMultiplier => _feverScoreMultiplier;
 
+    public static event System.Action OnFeverModeActivated = delegate { };
+    public static event System.Action OnFeverModeDeactivated = delegate { };
+
     private void Start()
     {
         _uiManager = UIManager.Instance;
@@ -60,13 +63,13 @@ public class FeverMode : Singleton<FeverMode>
             if (_feverTimer >= _feverDuration)
             {
                 _isFeverMode = false;
+                OnFeverModeDeactivated?.Invoke();
                 _currentPerfectCount = 0;
                 _feverTimer = 0f;
                 _uiManager.UpdateFeverGauge(0f);
 
-                // ! temp
+                // effects
                 ShowFeverModeLensFlare(false);
-                _uiManager.UpdateFeverGaugeText(false);
                 _audioManager.PlayBGM(BGM.Mainbgm, 0.5f);   // reset to main bgm
             }
         }
@@ -99,10 +102,10 @@ public class FeverMode : Singleton<FeverMode>
         if (_currentPerfectCount >= _perfectCountToActivateFever)
         {
             _isFeverMode = true;
+            OnFeverModeActivated?.Invoke();
 
-            // ! temp
+            // effects
             ShowFeverModeLensFlare(true);
-            _uiManager.UpdateFeverGaugeText(true);
             _audioManager.PlayBGM(BGM.FeverMode, 0.5f); // play fever mode bgm
         }
 

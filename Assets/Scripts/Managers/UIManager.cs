@@ -23,8 +23,6 @@ public class UIManager : Singleton<UIManager>
     [Header("Fever Gauge UI Settings")]
     [SerializeField] private Image _feverGaugeInnerImage;
     [SerializeField] private float _feverGaugeValueLerpDuration = 1f;
-    // ! temp
-    [SerializeField] private TMP_Text _feverGaugeText;
 
     [Space(10)]
     [Header("Score Popup UI Settings")]
@@ -103,12 +101,6 @@ public class UIManager : Singleton<UIManager>
     public void UpdateRemainingStokes(int remainingStokes)
     {
         _remainingStokesText.text = "< " + remainingStokes.ToString() + " >";
-    }
-
-    // ! temp
-    public void UpdateFeverGaugeText(bool isFeverMode = true)
-    {
-        _feverGaugeText.text = "FEVER MODE : " + (isFeverMode ? "ON" : "OFF");
     }
 
     // feverGaugeValue: [0, 1]

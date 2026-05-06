@@ -5525,6 +5525,8 @@ MonoBehaviour:
   _bgImage: {fileID: 444964885}
   _explainationImage: {fileID: 1313242433}
   _tutorialPlayer: {fileID: 58270596}
+  _tutorialTextParentBG: {fileID: 639644019}
+  _tutorialText: {fileID: 910741497}
   _bgUiFadeTime: 0.2
   _bgUiMaxAlpha: 0.6
   _explainationUiZoomTime: 0.6

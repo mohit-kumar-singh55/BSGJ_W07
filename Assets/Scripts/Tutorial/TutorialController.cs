@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -8,6 +9,8 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private Image _bgImage;
     [SerializeField] private Image _explainationImage;
     [SerializeField] private Image _tutorialPlayer;
+    [SerializeField] private Image _tutorialTextParentBG;
+    [SerializeField] private TMP_Text _tutorialText;
 
     [Header("Tutorial UI Animation Settings")]
     [SerializeField] private float _bgUiFadeTime = .2f;
@@ -23,6 +26,7 @@ public class TutorialController : MonoBehaviour
         _bgImage.gameObject.SetActive(false);
         _explainationImage.gameObject.SetActive(false);
         _tutorialPlayer.gameObject.SetActive(false);
+        _tutorialTextParentBG.gameObject.SetActive(false);
     }
 
     void Start()
@@ -52,6 +56,9 @@ public class TutorialController : MonoBehaviour
 
         _tutorialPlayer.gameObject.SetActive(true);
         StartCoroutine(UIAnimation.FadeIn(_playerUiFadeTime, 1f, _tutorialPlayer));
+
+        _tutorialTextParentBG.gameObject.SetActive(true);
+        StartCoroutine(UIAnimation.ZoomIn(_explainationUiZoomTime, _tutorialTextParentBG, _explainationUiZoomInCurve));
     }
 
     private void OnExitTutorial()
@@ -62,5 +69,6 @@ public class TutorialController : MonoBehaviour
         StartCoroutine(UIAnimation.FadeOut(_bgUiFadeTime, _bgUiMaxAlpha, _bgImage, () => _bgImage.gameObject.SetActive(false)));
         StartCoroutine(UIAnimation.ZoomOut(_explainationUiZoomTime, _explainationImage, _explainationUiZoomOutCurve, () => _explainationImage.gameObject.SetActive(false)));
         StartCoroutine(UIAnimation.FadeOut(_playerUiFadeTime, 1f, _tutorialPlayer, () => _tutorialPlayer.gameObject.SetActive(false)));
+        StartCoroutine(UIAnimation.ZoomOut(_explainationUiZoomTime, _tutorialTextParentBG, _explainationUiZoomOutCurve, () => _tutorialTextParentBG.gameObject.SetActive(false)));
     }
 }

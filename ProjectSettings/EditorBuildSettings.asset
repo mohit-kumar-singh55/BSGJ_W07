@@ -21,5 +21,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Game Flow/Ranking/Ranking.unity
     guid: 8f645c86443233144b58337bd3d3a38b
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 8b05f33387ce2ac4392ca72698bf0ef6, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

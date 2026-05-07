@@ -58,14 +58,14 @@ public class TutorialController : MonoBehaviour
     private void OnEnable()
     {
         CustomerInService.OnCustomerEnterInService += OnMaidTrainingStart;
-        PlayerDoingMoeMoe.OnPlayerEnteredMoeMoe += OnMoeKyunExplainationStart;
+        PlayerDoingMoeMoe.OnMoeMoeStarted += OnMoeKyunExplainationStart;
         PlayerDoingMoeMoe.OnMoeMoeCompleted += OnFeverModeExplainationStart;
     }
 
     private void OnDisable()
     {
         CustomerInService.OnCustomerEnterInService -= OnMaidTrainingStart;
-        PlayerDoingMoeMoe.OnPlayerEnteredMoeMoe -= OnMoeKyunExplainationStart;
+        PlayerDoingMoeMoe.OnMoeMoeStarted -= OnMoeKyunExplainationStart;
         PlayerDoingMoeMoe.OnMoeMoeCompleted -= OnFeverModeExplainationStart;
     }
 

@@ -12,7 +12,7 @@ public class GameManager : Singleton<GameManager>
 {
     private ScreenFader _screenFader;
 
-    public LANG CurrentLanguage { get; set; } = LANG.JAPANESE;
+    public LANG CurrentLanguage { get; set; }
 
     private void OnEnable()
     {
@@ -30,8 +30,6 @@ public class GameManager : Singleton<GameManager>
     {
         base.Awake();
         DontDestroyOnLoad(gameObject);
-
-        CurrentLanguage = LANG.JAPANESE;
     }
 
     // ! TEMP

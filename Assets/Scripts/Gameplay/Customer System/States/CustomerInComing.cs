@@ -24,9 +24,6 @@ public class CustomerInComing : BaseState<Customer.CustomerState>
 
     public override Customer.CustomerState GetNextState()
     {
-        // _canTransition = Mathf.Approximately(_context.CustomerAgent.remainingDistance, 0);
-        // _canTransition = _context.CustomerAgent.remainingDistance <= _context.CustomerAgent.stoppingDistance;
-        // _canTransition = !_context.CustomerAgent.pathPending;
         NavMeshAgent agent = _context.CustomerAgent;
 
         bool reached = !agent.pathPending &&

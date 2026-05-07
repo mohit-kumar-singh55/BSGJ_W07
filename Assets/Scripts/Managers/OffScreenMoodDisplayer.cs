@@ -40,7 +40,7 @@ public class OffScreenMoodDisplayer : MonoBehaviour
                 continue;
             }
 
-            Vector3 viewportPos = _mainCam.WorldToViewportPoint(transform.position);
+            Vector3 viewportPos = _mainCam.WorldToViewportPoint(moodSetter.transform.position);
             bool isInView = viewportPos.x >= 0 && viewportPos.x <= 1 && viewportPos.y >= 0 && viewportPos.y <= 1 && viewportPos.z > 0;
 
             if (isInView)

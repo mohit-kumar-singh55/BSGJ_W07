@@ -11,7 +11,7 @@
         <ui:VisualElement name="Options" style="flex-grow: 1; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; -unity-text-align: upper-left; align-items: flex-start; justify-content: flex-start; color: rgb(255, 255, 255); text-shadow: 2px 2px 5px rgb(202, 85, 85); width: 900px;">
             <ui:DropdownField label="Mic" name="Mic" style="-unity-font-style: bold; font-size: 80px; margin-right: 2px; -unity-text-align: middle-center; width: 100%; white-space: nowrap; position: relative; right: auto; left: auto; top: auto; height: auto;"/>
             <ui:DropdownField label="Language" name="Language" choices="ENGLISH,JAPANESE" style="font-size: 80px; width: 100%; top: auto; -unity-font-style: bold;"/>
-            <ui:Slider label="Sound" value="50" high-value="100" name="Sound" style="-unity-font-style: bold; width: 100%; font-size: 80px; top: auto; left: auto; height: auto;"/>
+            <ui:Slider label="Sound" value="-80" high-value="20" name="Sound" low-value="-80" fill="true" show-input-field="false" inverted="false" style="-unity-font-style: bold; width: 100%; font-size: 80px; top: auto; left: auto; height: auto;"/>
             <ui:Button text="Back" name="BackButton" double-click-selects-word="false" triple-click-selects-line="false" enabled="true" tooltip="" focusable="true" style="margin-top: 200px; width: 100%; height: 135px; font-size: 100px; background-color: rgb(218, 83, 87); -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Examples%20&amp;%20Extras/Fonts/Bangers.ttf?fileID=12800000&amp;guid=5dd49b3eacc540408c98eee0de38e0f1&amp;type=3#Bangers&quot;);"/>
         </ui:VisualElement>
     </ui:VisualElement>

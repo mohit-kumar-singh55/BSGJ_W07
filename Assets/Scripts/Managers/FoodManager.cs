@@ -4,6 +4,7 @@ public class FoodManager : Singleton<FoodManager>
 {
     [SerializeField] private float _spawnFoodDelay = 2f;
     [SerializeField] private GameObject[] _foodPrefabs;
+    [SerializeField] private bool _isTutorialMode = false;
 
     private GameObject _lastSpawnedFood;
     private CustomersManager _customersManager;
@@ -21,6 +22,13 @@ public class FoodManager : Singleton<FoodManager>
     public void SpawnFood(Transform foodSpawnPoint)
     {
         if (CustomersManager.Instance.CurrentCustomer == null) return;
+
+        // in tutorial mode, always spawn the heart food prefab
+        if (_isTutorialMode)
+        {
+            _lastSpawnedFood = Instantiate(_foodPrefabs[0], foodSpawnPoint.position, foodSpawnPoint.rotation);
+            return;
+        }
 
         StopAllCoroutines();
         StartCoroutine(WaitTimer.WaitFor(_spawnFoodDelay, () =>

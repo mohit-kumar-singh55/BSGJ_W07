@@ -13,6 +13,7 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
     private const string KYUN_ANIM = "Kyun";
     private const string HEART_PULSE = "Pulse";
 
+    public static event System.Action OnPlayerEnteredMoeMoe = delegate { };
     public static event System.Action OnMoeMoeStarted = delegate { };
     public static event System.Action OnMoeMoeCompleted = delegate { };
 
@@ -49,6 +50,8 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
             // moe moe started
             OnMoeMoeStarted?.Invoke();
         });
+
+        OnPlayerEnteredMoeMoe?.Invoke();
     }
 
     public override void UpdateState() { }

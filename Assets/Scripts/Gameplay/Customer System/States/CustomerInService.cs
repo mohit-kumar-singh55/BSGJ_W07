@@ -10,6 +10,8 @@ public class CustomerInService : BaseState<Customer.CustomerState>
     private FoodManager _foodManager;
     private CustomerStateContext _context;
 
+    public static event System.Action OnCustomerEnterInService = delegate { };
+
     public CustomerInService(CustomerStateContext context, Customer.CustomerState stateKey) : base(stateKey)
     {
         _context = context;
@@ -32,6 +34,8 @@ public class CustomerInService : BaseState<Customer.CustomerState>
 
         // dont show mood when started servicing
         _context.MoodSetter.SetMood(CustomerMood.None);
+
+        OnCustomerEnterInService?.Invoke();
     }
 
     public override void UpdateState() { }

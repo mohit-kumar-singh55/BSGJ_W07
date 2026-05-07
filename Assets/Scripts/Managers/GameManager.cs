@@ -2,9 +2,17 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
+public enum LANG
+{
+    ENGLISH,
+    JAPANESE
+}
+
 public class GameManager : Singleton<GameManager>
 {
     private ScreenFader _screenFader;
+
+    public LANG CurrentLanguage { get; set; } = LANG.JAPANESE;
 
     private void OnEnable()
     {
@@ -22,6 +30,8 @@ public class GameManager : Singleton<GameManager>
     {
         base.Awake();
         DontDestroyOnLoad(gameObject);
+
+        CurrentLanguage = LANG.JAPANESE;
     }
 
     // ! TEMP

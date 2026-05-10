@@ -11,6 +11,7 @@ public enum SFX
 
 public enum BGM
 {
+    Title,     //title bgm
     FeverMode, // fever mode bgm
     Mainbgm,   // main game bgm
 }

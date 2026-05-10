@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioSO
   _audioType: 1
   _sfxType: 0
-  _bgmType: 0
-  _audioClip: {fileID: 8300000, guid: d8b9c4e4aabc14635b048c2d2a264440, type: 3}
+  _bgmType: 1
+  _audioClip: {fileID: 8300000, guid: bbc6ad6de594441da945be76b2a311fa, type: 3}

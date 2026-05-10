@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: decb114c58d34e748b810764c0892292, type: 3}
-  m_Name: Main BGM
+  m_Name: Title
   m_EditorClassIdentifier: Assembly-CSharp::AudioSO
   _audioType: 1
   _sfxType: 0
-  _bgmType: 2
-  _audioClip: {fileID: 8300000, guid: 68596cf5a70fc40f7aabb10cdac56fca, type: 3}
+  _bgmType: 0
+  _audioClip: {fileID: 8300000, guid: cdb1837c8cec942bbb5576d9d9efe7d6, type: 3}

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : Singleton<AudioManager>
 {
@@ -15,6 +16,16 @@ public class AudioManager : Singleton<AudioManager>
 
     private Dictionary<SFX, AudioClip> _sfxDictionary = new();
     private Dictionary<BGM, AudioClip> _bgmDictionary = new();
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
     protected override void Awake()
     {
@@ -33,8 +44,16 @@ public class AudioManager : Singleton<AudioManager>
 
     private void Start()
     {
-        // playing main bgm on start
-        PlayBGM(BGM.Mainbgm);
+        // playing title on start
+        PlayBGM(BGM.Title);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.buildIndex == SCENES.TITLE)
+            PlayBGM(BGM.Title);
+        else
+            PlayBGM(BGM.Mainbgm);
     }
 
     public void PlayBGM(BGM bgmType, float fadeTime = 1f)

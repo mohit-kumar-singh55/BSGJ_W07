@@ -1,7 +1,6 @@
 using Mediapipe.Tasks.Vision.HandLandmarker;
 using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using UnityEngine;
-using UnityEngine.InputSystem.Utilities;
 
 public class HandDataReceiver : MonoBehaviour
 {
@@ -131,10 +130,10 @@ public class HandDataReceiver : MonoBehaviour
             float dz = lm[12].z - lm[0].z;
 
             // スケールの計算
-            Vector3 p0 = new Vector3(lm[0].x, lm[0].y, lm[0].z);
-            Vector3 p9 = new Vector3(lm[9].x, lm[9].y, lm[9].z);
-            Vector3 p17 = new Vector3(lm[17].x, lm[17].y, lm[17].z);
-            Vector3 p5 = new Vector3(lm[5].x, lm[5].y, lm[5].z);
+            Vector3 p0 = new(lm[0].x, lm[0].y, lm[0].z);
+            Vector3 p9 = new(lm[9].x, lm[9].y, lm[9].z);
+            Vector3 p17 = new(lm[17].x, lm[17].y, lm[17].z);
+            Vector3 p5 = new(lm[5].x, lm[5].y, lm[5].z);
 
             float s1 = Vector3.Distance(p0, p9);
             float s2 = Vector3.Distance(p0, p17);

@@ -13,14 +13,14 @@ public class HandMarker3D : MonoBehaviour
 
     private Vector3 prevHandPos;
 
-    private int isFleezCount;
+    private int isFreezeCount;
     // カメラ
     private Camera cam;
 
     private void Start()
     {
         cam = Camera.main;
-        isFleezCount = 0;
+        isFreezeCount = 0;
     }
 
     private void Update()
@@ -28,15 +28,15 @@ public class HandMarker3D : MonoBehaviour
         if (receiver == null ||
             receiver.result.handLandmarks == null ||
             receiver.result.handLandmarks.Count == 0 ||
-            isFleezCount >= 30)
+            isFreezeCount >= 30)
         {
             DisableAll();
-            if (isFleezCount >= 30 && !CheckFleez())
-                isFleezCount = 0;
+            if (isFreezeCount >= 30 && !CheckFreeze())
+                isFreezeCount = 0;
             return;
         }
 
-        CheckFleez();
+        CheckFreeze();
 
         // 左右の手インデックス取得
         var (left, right) = GetHandIndices();
@@ -117,17 +117,15 @@ public class HandMarker3D : MonoBehaviour
         return (wrist + indexBase + pinkyBase) / 3f;
     }
 
-    private bool CheckFleez()
+    private bool CheckFreeze()
     {
         if (receiver.handPos[0] == prevHandPos)
         {
-            isFleezCount++;
+            isFreezeCount++;
             return true;
         }
         else
-        {
-            isFleezCount = 0;
-        }
+            isFreezeCount = 0;
 
         prevHandPos = receiver.handPos[0];
         return false;

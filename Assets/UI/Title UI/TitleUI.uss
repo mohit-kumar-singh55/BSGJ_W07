@@ -1,89 +1,31 @@
 :root {
 }
 
-VisualElement > #NameInput > #unity-text-input {
-    color: rgb(218, 83, 87);
-}
 
-.button {
-    margin-top: 0;
-    width: 100%;
-    height: auto;
-    font-size: 100px;
-    background-color: rgb(218, 83, 87);
-    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Examples%20&%20Extras/Fonts/Bangers.ttf?fileID=12800000&guid=5dd49b3eacc540408c98eee0de38e0f1&type=3#Bangers");
-    rotate: 10 45 0 45deg;
+
+#OptionsButton:hover {
     transition-duration: 0.5s;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
+    rotate: 180deg;
 }
 
-.button:hover {
-    width: 100%;
-    height: auto;
-    font-size: 100px;
-    background-color: rgb(205, 104, 180);
-    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Examples%20&%20Extras/Fonts/Bangers.ttf?fileID=12800000&guid=5dd49b3eacc540408c98eee0de38e0f1&type=3#Bangers");
-    transition-duration: 0.5s;
-    border-bottom-width: 10px;
-    border-left-width: 10px;
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-}
-
-#Menu > #LeftContainer > #NameInput > .unity-text-field__label {
-    -unity-font-definition: url("project://database/Assets/Fonts/%E3%81%AB%E3%81%8F%E3%81%BE%E3%82%8B%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88/%E3%81%9D%E3%81%AE%E4%BB%96%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%EF%BC%88%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E5%A4%96%EF%BC%89/07%E3%81%AB%E3%81%8F%E3%81%BE%E3%82%8B%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88.ttf?fileID=12800000&guid=c91bcb31496a3b84ca237724e147fdff&type=3#07にくまるフォント");
-    -unity-text-outline-width: 4px;
-    -unity-text-outline-color: rgb(218, 83, 87);
-    letter-spacing: 4px;
-}
-
-#Menu > #LeftContainer > #NameInput:focus > .unity-text-field__label {
-    color: rgb(255, 255, 255);
-}
-
-#Menu > #LeftContainer > #NameInput > #unity-text-input {
-    height: 100%;
-    width: 100%;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    -unity-background-image-tint-color: rgba(0, 0, 0, 0);
-    background-color: rgba(255, 255, 255, 0);
-    border-top-width: 4px;
-    border-right-width: 4px;
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-bottom-width: 10px;
-    border-left-width: 10px;
-    transition-duration: 0.5s;
-    padding-right: 30px;
-    padding-left: 30px;
-}
-
-#Menu > #LeftContainer > #NameInput:focus > #unity-text-input {
-    border-left-color: rgb(218, 83, 87);
-    border-right-color: rgb(218, 83, 87);
-    border-top-color: rgb(218, 83, 87);
-    border-bottom-color: rgb(218, 83, 87);
-    transition-duration: 0.5s;
-}
-
-#Menu > #LeftContainer > #NameInput > #unity-text-input > .unity-text-element--inner-input-field-component {
-    -unity-background-image-tint-color: rgb(0, 0, 0);
-    color: rgb(255, 255, 255);
-    -unity-text-outline-width: 5px;
-    -unity-text-outline-color: rgb(202, 43, 43);
-    letter-spacing: 20px;
+#NameInput > #unity-text-input {
+    padding-top: 50px;
+    padding-right: 25px;
+    padding-bottom: 50px;
+    padding-left: 25px;
+    -unity-text-align: upper-center;
+    background-image: url("project://database/Assets/Art/Game%20UI/Title%20UI/inputbox_bg.png?fileID=2800000&guid=bc6eb89c8b27df242a97893588de3f2f&type=3#inputbox_bg");
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
     background-color: rgba(0, 0, 0, 0);
+}
+
+#NameInput > #unity-text-input > .unity-text-element--inner-input-field-component {
+    font-size: 88px;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 20px;
+    -unity-text-outline-color: rgb(255, 115, 155);
+    letter-spacing: 14px;
 }

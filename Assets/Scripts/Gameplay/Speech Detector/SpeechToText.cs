@@ -57,7 +57,7 @@ public class SpeechToText : MonoBehaviour
         {
             _phraseDetected = true;
             OnKeyPhraseDetected?.Invoke(result, NormalizedVolume());
-            Debug.LogError("💖 KYUN DETECTED 💖");
+            // Debug.LogError("💖 KYUN DETECTED 💖");
             CancelInvoke(nameof(StopRecording));   // cancel the auto stop if key phrase detected
             StopRecording();
         }

@@ -509,6 +509,31 @@ MonoBehaviour:
   _rightHandElementName: HandRight
   _leftHandMarker: {fileID: 185861651}
   _rightHandMarker: {fileID: 1581330050}
+  _characterElementName: Character
+  _characterAnimCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2.751086
+      outSlope: 2.751086
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.047318608
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 2.7242837
+      outSlope: 2.7242837
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.06624615
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &236675946
 GameObject:
   m_ObjectHideFlags: 0

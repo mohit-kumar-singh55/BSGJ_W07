@@ -18,6 +18,7 @@
     border-bottom-width: 0;
     border-left-width: 0;
     background-color: rgba(0, 0, 0, 0);
+    transition-duration: 0.5s;
 }
 
 #NameInput > #unity-text-input > .unity-text-element--inner-input-field-component {
@@ -26,6 +27,11 @@
     -unity-text-outline-width: 20px;
     -unity-text-outline-color: rgb(255, 115, 155);
     letter-spacing: 14px;
+}
+
+#NameInput:focus > #unity-text-input {
+    transition-duration: 0.5s;
+    filter: tint(rgb(163, 223, 237));
 }
 
 .input_common {

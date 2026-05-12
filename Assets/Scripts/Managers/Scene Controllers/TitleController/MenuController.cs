@@ -57,6 +57,7 @@ public class MenuController : TitleController
         }));
     }
 
+    // syncing ui toolkit hand images with the hand markers in world space
     private void LateUpdate()
     {
         _leftHandImage.style.display = _rightHandMarker.activeSelf ? DisplayStyle.Flex : DisplayStyle.None;

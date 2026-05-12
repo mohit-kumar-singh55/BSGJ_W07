@@ -1,0 +1,35 @@
+:root {
+}
+
+.proceed_button {
+    width: auto;
+    align-self: center;
+    margin-top: 230px;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    font-size: 60px;
+    -unity-font-definition: url("project://database/Assets/Fonts/%E3%81%AB%E3%81%8F%E3%81%BE%E3%82%8B%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88/%E3%81%9D%E3%81%AE%E4%BB%96%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%EF%BC%88%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E5%A4%96%EF%BC%89/07%E3%81%AB%E3%81%8F%E3%81%BE%E3%82%8B%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88.ttf?fileID=12800000&guid=c91bcb31496a3b84ca237724e147fdff&type=3#07にくまるフォント");
+    background-color: rgba(0, 0, 0, 0);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    background-image: url("project://database/Assets/Art/Game%20UI/Title%20UI/inputbox_bg.png?fileID=2800000&guid=bc6eb89c8b27df242a97893588de3f2f&type=3#inputbox_bg");
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-right: 60px;
+    padding-left: 60px;
+    color: rgb(255, 115, 156);
+    transition-duration: 0.5s;
+    filter: opacity(0.6);
+}
+
+.proceed_button:hover {
+    transition-duration: 0.5s;
+    filter: opacity(1);
+}

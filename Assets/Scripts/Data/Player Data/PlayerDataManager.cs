@@ -53,5 +53,5 @@ public class PlayerDataManager : Singleton<PlayerDataManager>
 
     public void ResetScore() => _playerData.Score = 0;
 
-    public void ResetPlayerData() => SetPlayerData(new(-1, "Unknown Player", 0));
+    public void ResetPlayerData() => SetPlayerData(new(-1, "Unknown", 0));
 }

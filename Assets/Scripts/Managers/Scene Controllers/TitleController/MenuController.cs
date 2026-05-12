@@ -53,6 +53,9 @@ public class MenuController : TitleController
         // start hand detection
         StartCoroutine(WaitTimer.WaitFor(_handDetectionStartDelay, () =>
         {
+            // focus on name input field at start
+            _playerName.Focus();
+
             _handDetection.StartCheck();
         }));
     }

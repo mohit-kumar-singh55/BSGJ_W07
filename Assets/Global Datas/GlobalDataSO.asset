@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GlobalDataSO
   m_EditorClassIdentifier: Assembly-CSharp::GlobalDataSO
   timerSettings:
-    timeLimit: 420
+    timeLimit: 270
   feverModeSettings:
     perfectCountToActivateFever: 3
     minScoreToCountAsPerfect: 80

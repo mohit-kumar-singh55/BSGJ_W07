@@ -14,7 +14,7 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: W07
   productName: BSGJ_W07
-  defaultCursor: {fileID: 0}
+  defaultCursor: {fileID: 2800000, guid: 1746db34eff72ad4a9a6d40f635f918f, type: 3}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_ShowUnitySplashScreen: 1

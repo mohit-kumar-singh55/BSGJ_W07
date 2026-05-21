@@ -31,6 +31,7 @@ public class ScoreSceneController : MonoBehaviour
             (score) => _scoreText.text = _score.ToString()
         ));
 
-        // TODO: go to next scene if pressed any button
+        // show the cursor
+        UnityEngine.Cursor.visible = true;
     }
 }

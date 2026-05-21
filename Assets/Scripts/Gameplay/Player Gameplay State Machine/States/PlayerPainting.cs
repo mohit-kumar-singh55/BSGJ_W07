@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
 {
     private PlayerStateContext _context;

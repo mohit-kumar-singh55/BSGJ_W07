@@ -20,7 +20,7 @@
                 {
                     "name": "",
                     "id": "7ffcb481-7f32-4423-8820-9c349229153b",
-                    "path": "<Keyboard>/numpadPeriod",
+                    "path": "<Keyboard>/period",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",

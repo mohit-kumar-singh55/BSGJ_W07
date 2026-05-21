@@ -15,3 +15,7 @@
 - Don't Extract it.
 - Place the whole folder under "Assets/UnUploadables/"
 - Then open the Unity Editor
+
+# To run this game after build, requires "vc_redist.x64.exe" installation in that PC
+- Download this file from [here](https://aka.ms/vc14/vc_redist.x64.exe)
+- run and install it and then restart before runnig the game

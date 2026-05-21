@@ -21,7 +21,7 @@ MonoBehaviour:
     feverScoreMultiplier: 1.2
   customerSettings:
     waitingTime: 20
-    scoreToDeductOnTimesUp: 50
+    scoreToDeductOnTimesUp: 20
     customerMoodSettings:
       minScoreRequiredInBadMood: 100
       badMoodScoreMultiplier: 1.8

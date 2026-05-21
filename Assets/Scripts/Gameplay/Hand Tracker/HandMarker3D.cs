@@ -93,7 +93,7 @@ public class HandMarker3D : MonoBehaviour
 
         Vector3 worldPos = cam.ScreenToWorldPoint(screenPos);
 
-        handSpheres[sphereIndex].position = worldPos + posOffset;
+        handSpheres[sphereIndex].position = Vector3.Lerp(handSpheres[sphereIndex].position, worldPos + posOffset, 10 * Time.deltaTime);
         handSpheres[sphereIndex].localScale = Vector3.one * 0.1f;
     }
 

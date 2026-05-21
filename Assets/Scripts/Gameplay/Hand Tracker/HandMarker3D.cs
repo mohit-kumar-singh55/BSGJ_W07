@@ -10,11 +10,9 @@ public class HandMarker3D : MonoBehaviour
 
     // 座標オフセット
     [SerializeField] private Vector3 posOffset;
-    
-    // 前のフレームの座標
+
     private Vector3 prevHandPos;
 
-    // 停止してからのカウント
     private int isFreezeCount;
     // カメラ
     private Camera cam;
@@ -29,11 +27,16 @@ public class HandMarker3D : MonoBehaviour
     {
         if (receiver == null ||
             receiver.result.handLandmarks == null ||
-            receiver.result.handLandmarks.Count == 0)
+            receiver.result.handLandmarks.Count == 0 ||
+            isFreezeCount >= 30)
         {
             DisableAll();
+            if (isFreezeCount >= 30 && !CheckFreeze())
+                isFreezeCount = 0;
             return;
         }
+
+        CheckFreeze();
 
         // 左右の手インデックス取得
         var (left, right) = GetHandIndices();
@@ -51,16 +54,12 @@ public class HandMarker3D : MonoBehaviour
             handSpheres[1].gameObject.SetActive(false);
     }
 
-    
     private void DisableAll()
     {
         foreach (var s in handSpheres)
             s.gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// 手の向きの取得
-    /// </summary>
     private (int left, int right) GetHandIndices()
     {
         int leftIndex = -1;

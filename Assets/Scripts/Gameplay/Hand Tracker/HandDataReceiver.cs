@@ -104,10 +104,28 @@ public class HandDataReceiver : MonoBehaviour
         if (result.handLandmarks == null || result.handLandmarks.Count == 0)
         {
             for (int i = 0; i < numHands; i++)
+            {
                 lostCount[i]++;
 
+                // 一定フレーム以上見えなければ座標を固定
+                if (lostCount[i] == 1)
+                {
+                    // 初回消失時は前フレームの位置に固定
+                    handPos[i] = prevHandPos[i];
+                    handMoveDir[i] = Vector2.zero;
+                }
+
+                if (lostCount[i] > 5)
+                {
+                    // 完全消失扱い
+                    handPos[i] = Vector3.zero;
+                    prevHandPos[i] = Vector3.zero;
+                    handMoveDir[i] = Vector2.zero;
+                }
+            }
             return;
         }
+
 
         for (int i = 0; i < result.handLandmarks.Count; i++)
         {
@@ -123,7 +141,16 @@ public class HandDataReceiver : MonoBehaviour
 
             // 手首の座標
             var wrist = lm[0];
-            handPos[i] = Smooth(handPos[i], new Vector3(wrist.x, wrist.y, wrist.z));
+            Vector3 newPos = new Vector3(wrist.x, wrist.y, wrist.z);
+
+            if (lostCount[i] > 0 && lostCount[i] <= 3)
+            {
+                handPos[i] = Vector3.Lerp(prevHandPos[i], newPos, 0.1f);
+            }
+            else
+            {
+                handPos[i] = Smooth(handPos[i], newPos);
+            }
 
             float dx = lm[12].x - lm[0].x;
             float dy = lm[12].y - lm[0].y;
@@ -143,6 +170,7 @@ public class HandDataReceiver : MonoBehaviour
             handScale = scale * scaleMultiPlier;
 
         }
+        SortHandsByX();
     }
 
     /// <summary>
@@ -365,7 +393,29 @@ public class HandDataReceiver : MonoBehaviour
     /// <returns></returns>
     private Vector3 Smooth(Vector3 prev, Vector3 current)
     {
-        return Vector3.Lerp(prev, current, smoothFactor);
+        return prev + (current - prev) * smoothFactor;
     }
+
+    /// <summary>
+    /// ハンドをソート
+    /// </summary>
+    private void SortHandsByX()
+    {
+        if (result.handLandmarks == null) return;
+        if (result.handLandmarks.Count < 2) return;
+
+        var lm0 = result.handLandmarks[0].landmarks[0];
+        var lm1 = result.handLandmarks[1].landmarks[0];
+
+        // 左手が index=0、右手が index=1 になるように
+        if (lm0.x > lm1.x)
+        {
+            // swap
+            (handPos[0], handPos[1]) = (handPos[1], handPos[0]);
+            (prevHandPos[0], prevHandPos[1]) = (prevHandPos[1], prevHandPos[0]);
+            (handMoveDir[0], handMoveDir[1]) = (handMoveDir[1], handMoveDir[0]);
+        }
+    }
+
 
 }

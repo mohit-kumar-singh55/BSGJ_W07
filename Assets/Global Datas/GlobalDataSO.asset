@@ -15,7 +15,7 @@ MonoBehaviour:
   timerSettings:
     timeLimit: 180
   feverModeSettings:
-    perfectCountToActivateFever: 1
+    perfectCountToActivateFever: 3
     minScoreToCountAsPerfect: 80
     feverDuration: 40
     feverScoreMultiplier: 1.2

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: decb114c58d34e748b810764c0892292, type: 3}
-  m_Name: Start Button
+  m_Name: Fever
   m_EditorClassIdentifier: Assembly-CSharp::AudioSO
   _audioType: 0
-  _sfxType: 4
+  _sfxType: 3
   _bgmType: 0
-  _audioClip: {fileID: 8300000, guid: 5fb23bb8a40ab40e99b9aafaf007c4b5, type: 3}
+  _audioClip: {fileID: 8300000, guid: 33196d7dcf0dccb4e88a5dd1b4341410, type: 3}

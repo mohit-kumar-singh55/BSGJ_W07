@@ -4531,8 +4531,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281545523
-  m_fontColor: {r: 0.20125782, g: 0.20125782, b: 0.20125782, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5267,6 +5267,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1077815917
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1077815918}
+  - component: {fileID: 1077815919}
+  m_Layer: 0
+  m_Name: Fever Effects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1077815918
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077815917}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1421748466}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1077815919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077815917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea46816ba2d54344f907a70159bfc407, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FeverEffects
+  _feverModeTextPrefab: {fileID: 0}
+  _feverModeTextParent: {fileID: 0}
+  _destroyfeverPopupDelay: 1
 --- !u!1 &1078135990
 GameObject:
   m_ObjectHideFlags: 0
@@ -6007,7 +6054,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1077815918}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1436132406
@@ -6803,6 +6851,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d20a04318f49b43c6bc63466911eccfc, type: 2}
   - {fileID: 11400000, guid: 39bf49049237f48f1823243e4c1fa036, type: 2}
   - {fileID: 11400000, guid: 38f7cf794807143c1ace3e232f117654, type: 2}
+  - {fileID: 11400000, guid: 24010887c06583f4f85938cdfc7b6ccd, type: 2}
+  - {fileID: 11400000, guid: 3912fedcb2b3949429a9801112691f3a, type: 2}
 --- !u!4 &1760225497
 Transform:
   m_ObjectHideFlags: 0

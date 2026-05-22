@@ -6,6 +6,7 @@ TagManager:
   tags:
   - FxTemporaire
   - Global Resource
+  - Customer
   layers:
   - Default
   - TransparentFX

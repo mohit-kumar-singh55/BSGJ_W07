@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Options Button
   m_EditorClassIdentifier: Assembly-CSharp::AudioSO
   _audioType: 0
-  _sfxType: 3
+  _sfxType: 5
   _bgmType: 0
   _audioClip: {fileID: 8300000, guid: 70fc2632874824777a3fd47820c66b66, type: 3}

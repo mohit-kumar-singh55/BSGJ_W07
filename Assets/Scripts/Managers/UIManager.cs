@@ -98,6 +98,14 @@ public class UIManager : Singleton<UIManager>
         Destroy(popup, _destroyScorePopupDelay);
     }
 
+    public void SpawnFeverModeTextPopup(GameObject feverPrefab, Transform parent, float destroyDelay = 1f)
+    {
+        GameObject popup = Instantiate(feverPrefab, parent);
+
+        // Destroy the popup after a delay
+        Destroy(popup, destroyDelay);
+    }
+
     private void ShowHideRemainingStokesText()
     {
         _remainingStokesText.gameObject.SetActive(!_remainingStokesText.gameObject.activeSelf);

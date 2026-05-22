@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: decb114c58d34e748b810764c0892292, type: 3}
-  m_Name: Start Button
+  m_Name: Itterasshai
   m_EditorClassIdentifier: Assembly-CSharp::AudioSO
   _audioType: 0
-  _sfxType: 4
+  _sfxType: 6
   _bgmType: 0
-  _audioClip: {fileID: 8300000, guid: 5fb23bb8a40ab40e99b9aafaf007c4b5, type: 3}
+  _audioClip: {fileID: 8300000, guid: 30297f45bf57f15418b0e7587b4293c3, type: 3}

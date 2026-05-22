@@ -94,7 +94,8 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
             if (FeverMode.Instance != null && FeverMode.Instance.IsFeverMode)
                 AudioManager.Instance.PlaySFX(SFX.FeverScoreUp);
             else
-                AudioManager.Instance.PlaySFX(SFX.ScoreUp);
+                // AudioManager.Instance.PlaySFX(SFX.ScoreUp);
+                AudioManager.Instance.PlaySFX(SFX.Itterasshai);
         }
     }
 

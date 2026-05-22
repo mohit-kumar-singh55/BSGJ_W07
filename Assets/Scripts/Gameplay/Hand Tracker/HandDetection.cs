@@ -62,6 +62,7 @@ public class HandDetection : MonoBehaviour
         point = 0;
         checkTime = new float[4] { 0, 1, 1, 1 };
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -69,6 +70,7 @@ public class HandDetection : MonoBehaviour
             StartCheck();
         }
     }
+
     // チェック開始
     public void StartCheck()
     {
@@ -118,8 +120,6 @@ public class HandDetection : MonoBehaviour
                 default: break;
             }
 
-            // Debug.Log("StartHandDistance: " + startHandDistance + ", ReceiverHandDistance: " + receiver.handsDistance);
-
             nowCheckTime += Time.fixedDeltaTime;
         }
     }
@@ -146,7 +146,7 @@ public class HandDetection : MonoBehaviour
         HeartTimeCount += Time.deltaTime;
 
         // 手がしばらく止まっている
-        if (receiver.isFleezCount[0] > 3 && receiver.isFleezCount[1] > 3 && HeartTimeCount > 0.4f)
+        if (receiver.isFleezCount[0] > 3 && receiver.isFleezCount[1] > 3 && HeartTimeCount > 0.2f)
         {
             // フェーズ移行処理
             SetStartHandDistance();

@@ -19,10 +19,7 @@ public class TitleController : MonoBehaviour
     private void Awake()
     {
         _uiPanel = GetComponent<UIDocument>();
-    }
 
-    private void Start()
-    {
         VisualElement root = _uiPanel.rootVisualElement;
 
         // get all UI

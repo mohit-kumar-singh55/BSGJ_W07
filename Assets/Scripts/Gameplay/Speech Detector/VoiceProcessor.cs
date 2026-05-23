@@ -112,6 +112,9 @@ public class VoiceProcessor : MonoBehaviour
     private bool _audioDetected;
     private bool _didDetect;
     private bool _transmit;
+    private Coroutine _recordCoroutine;
+    private float[] _sampleBuffer;
+    private short[] _pcmBuffer;
 
     AudioClip _audioClip;
     private event Action RestartRecording;
@@ -194,7 +197,8 @@ public class VoiceProcessor : MonoBehaviour
     /// <param name="sampleRate">Sample rate to record at</param>
     /// <param name="frameSize">Size of audio frames to be delivered</param>
     /// <param name="autoDetect">Should the audio continuously record based on the volume</param>
-    public void StartRecording(int sampleRate = 16000, int frameSize = 512, bool? autoDetect = null)
+    // public void StartRecording(int sampleRate = 16000, int frameSize = 512, bool? autoDetect = null)
+    public void StartRecording(int sampleRate = 16000, int frameSize = 2048, bool? autoDetect = null)
     {
         if (autoDetect != null)
         {
@@ -220,9 +224,12 @@ public class VoiceProcessor : MonoBehaviour
         SampleRate = sampleRate;
         FrameLength = frameSize;
 
-        _audioClip = Microphone.Start(CurrentDeviceName, true, 1, sampleRate);
+        _sampleBuffer = new float[FrameLength];
+        _pcmBuffer = new short[FrameLength];
 
-        StartCoroutine(RecordData());
+        _audioClip = Microphone.Start(CurrentDeviceName, true, 4, sampleRate);
+
+        _recordCoroutine = StartCoroutine(RecordData());
     }
 
     /// <summary>
@@ -238,7 +245,11 @@ public class VoiceProcessor : MonoBehaviour
         _audioClip = null;
         _didDetect = false;
 
-        StopCoroutine(RecordData());
+        if (_recordCoroutine != null)
+        {
+            StopCoroutine(_recordCoroutine);
+            _recordCoroutine = null;
+        }
     }
 
     /// <summary>
@@ -246,7 +257,6 @@ public class VoiceProcessor : MonoBehaviour
     /// </summary>
     IEnumerator RecordData()
     {
-        float[] sampleBuffer = new float[FrameLength];
         int startReadPos = 0;
 
         if (OnRecordingStart != null)
@@ -280,12 +290,12 @@ public class VoiceProcessor : MonoBehaviour
                 _audioClip.GetData(startClipSamples, 0);
 
                 // combine to form full frame
-                Buffer.BlockCopy(endClipSamples, 0, sampleBuffer, 0, numSamplesClipEnd);
-                Buffer.BlockCopy(startClipSamples, 0, sampleBuffer, numSamplesClipEnd, numSamplesClipStart);
+                Buffer.BlockCopy(endClipSamples, 0, _sampleBuffer, 0, numSamplesClipEnd);
+                Buffer.BlockCopy(startClipSamples, 0, _sampleBuffer, numSamplesClipEnd, numSamplesClipStart);
             }
             else
             {
-                _audioClip.GetData(sampleBuffer, startReadPos);
+                _audioClip.GetData(_sampleBuffer, startReadPos);
             }
 
             startReadPos = endReadPos % _audioClip.samples;
@@ -297,11 +307,11 @@ public class VoiceProcessor : MonoBehaviour
             {
                 float maxVolume = 0.0f;
 
-                for (int i = 0; i < sampleBuffer.Length; i++)
+                for (int i = 0; i < _sampleBuffer.Length; i++)
                 {
-                    if (sampleBuffer[i] > maxVolume)
+                    if (_sampleBuffer[i] > maxVolume)
                     {
-                        maxVolume = sampleBuffer[i];
+                        maxVolume = _sampleBuffer[i];
                     }
                 }
 
@@ -328,15 +338,14 @@ public class VoiceProcessor : MonoBehaviour
             {
                 _didDetect = true;
                 // converts to 16-bit int samples
-                short[] pcmBuffer = new short[sampleBuffer.Length];
                 for (int i = 0; i < FrameLength; i++)
                 {
-                    pcmBuffer[i] = (short)Math.Floor(sampleBuffer[i] * short.MaxValue);
+                    _pcmBuffer[i] = (short)(_sampleBuffer[i] * short.MaxValue);
                 }
 
                 // raise buffer event
                 if (OnFrameCaptured != null && _transmit)
-                    OnFrameCaptured.Invoke(pcmBuffer);
+                    OnFrameCaptured.Invoke(_pcmBuffer);
             }
             else
             {

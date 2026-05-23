@@ -18,13 +18,13 @@ MonoBehaviour:
     perfectCountToActivateFever: 3
     minScoreToCountAsPerfect: 80
     feverDuration: 40
-    feverScoreMultiplier: 1.2
+    feverScoreMultiplier: 1.8
   customerSettings:
     waitingTime: 20
     scoreToDeductOnTimesUp: 20
     customerMoodSettings:
       minScoreRequiredInBadMood: 100
-      badMoodScoreMultiplier: 1.8
+      badMoodScoreMultiplier: 2.5
   customerManagerSettings:
     maxCustomerCount: 20
     customerSpawnInterval: 15

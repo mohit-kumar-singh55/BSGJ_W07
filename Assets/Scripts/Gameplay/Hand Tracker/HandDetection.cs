@@ -146,7 +146,7 @@ public class HandDetection : MonoBehaviour
         HeartTimeCount += Time.deltaTime;
 
         // 手がしばらく止まっている
-        if (receiver.isFleezCount[0] > 3 && receiver.isFleezCount[1] > 3 && HeartTimeCount > 0.2f)
+        if (receiver.isFleezCount[0] > 3 && receiver.isFleezCount[1] > 3 && HeartTimeCount > 0.4f)
         {
             // フェーズ移行処理
             SetStartHandDistance();

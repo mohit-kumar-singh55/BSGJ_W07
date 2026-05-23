@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-[RequireComponent(typeof(UIDocument))]
-public class MenuController : TitleController
+[RequireComponent(typeof(TitleController))]
+public class MenuController : MonoBehaviour
 {
     [Header("Element Names")]
     [SerializeField] private string _startButton = "StartButton";
@@ -22,33 +22,36 @@ public class MenuController : TitleController
     private TextField _playerName;
     private Image _leftHandImage;
     private Image _rightHandImage;
+    private TitleController _titleController;
 
     private void OnEnable()
     {
         _handDetection.OnHandCheckStart += OnHandCheckStart;
     }
 
-    protected override void Awake()
+    private void OnDisable()
     {
-        base.Awake();
+        _handDetection.OnHandCheckStart -= OnHandCheckStart;
+    }
 
+    private void Awake()
+    {
         if (_handDetection == null)
             Debug.LogError("HandDetection reference is missing in MenuController!");
     }
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
-
         _mainCam = Camera.main;
+        _titleController = GetComponent<TitleController>();
 
-        Button startButton = MenuUI.Q<Button>(_startButton);
-        Button optionsButton = MenuUI.Q<Button>(_optionsButton);
-        _playerName = MenuUI.Q<TextField>(_playerNameInput);
-        _leftHandImage = MenuUI.Q<Image>(_leftHandElementName);
-        _rightHandImage = MenuUI.Q<Image>(_rightHandElementName);
+        Button startButton = _titleController.MenuUI.Q<Button>(_startButton);
+        Button optionsButton = _titleController.MenuUI.Q<Button>(_optionsButton);
+        _playerName = _titleController.MenuUI.Q<TextField>(_playerNameInput);
+        _leftHandImage = _titleController.MenuUI.Q<Image>(_leftHandElementName);
+        _rightHandImage = _titleController.MenuUI.Q<Image>(_rightHandElementName);
 
-        optionsButton.clicked += ShowOptionsPanel;
+        optionsButton.clicked += _titleController.ShowOptionsPanel;
 
         // start hand detection
         StartCoroutine(WaitTimer.WaitFor(_handDetectionStartDelay, () =>

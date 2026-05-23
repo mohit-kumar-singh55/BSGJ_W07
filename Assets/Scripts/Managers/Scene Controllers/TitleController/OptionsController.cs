@@ -3,8 +3,8 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UIElements;
 
-[RequireComponent(typeof(UIDocument))]
-public class OptionsController : TitleController
+[RequireComponent(typeof(TitleController))]
+public class OptionsController : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private AudioMixer _audioMixer;
@@ -19,22 +19,22 @@ public class OptionsController : TitleController
     private DropdownField _micDropdown;
     private DropdownField _langDropdown;
     private Slider _soundSlider;
+    private TitleController _titleController;
 
     private const string MASTER_VOLUME_MIXER_PARAM = "MasterVolume";
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
-
         _gameManager = GameManager.Instance;
+        _titleController = GetComponent<TitleController>();
 
-        Button backButton = OptionsUI.Q<Button>(_backButtonString);
-        _micDropdown = OptionsUI.Q<DropdownField>(_micDropdownString);
-        _langDropdown = OptionsUI.Q<DropdownField>(_langDropdownString);
-        _soundSlider = OptionsUI.Q<Slider>(_soundSliderString);
+        Button backButton = _titleController.OptionsUI.Q<Button>(_backButtonString);
+        _micDropdown = _titleController.OptionsUI.Q<DropdownField>(_micDropdownString);
+        _langDropdown = _titleController.OptionsUI.Q<DropdownField>(_langDropdownString);
+        _soundSlider = _titleController.OptionsUI.Q<Slider>(_soundSliderString);
 
         // go back to title
-        backButton.clicked += ShowMenuPanel;
+        backButton.clicked += _titleController.ShowMenuPanel;
 
         // return if there are no microphones connected
         if (Microphone.devices.Length <= 0) return;

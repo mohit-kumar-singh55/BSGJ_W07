@@ -3,11 +3,13 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.Video;
 
-public class TrailerVideoManager : TitleController
+[RequireComponent(typeof(TitleController))]
+public class TrailerVideoManager : MonoBehaviour
 {
     [SerializeField] private VideoPlayer _videoPlayer;
     [SerializeField] private float _startVideoAfterInactivity = 30f;
 
+    private TitleController _titleController;
     private bool _isPlaying = false;
     private float _lastTimePressedBefore = 0f;  // last time "any" button was pressed
 
@@ -21,9 +23,9 @@ public class TrailerVideoManager : TitleController
         InputSystem.onEvent -= OnEvent;
     }
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
+        _titleController = GetComponent<TitleController>();
 
         _lastTimePressedBefore = 0;
         _videoPlayer.gameObject.SetActive(false);
@@ -39,7 +41,7 @@ public class TrailerVideoManager : TitleController
             _isPlaying = true;
             _videoPlayer.gameObject.SetActive(true);
             _videoPlayer.Play();
-            ShowTrailerVideoUIPanel();
+            _titleController.ShowTrailerVideoUIPanel();
         }
         else _lastTimePressedBefore += Time.unscaledDeltaTime;
     }
@@ -48,7 +50,7 @@ public class TrailerVideoManager : TitleController
     {
         if (eventPtr.IsA<StateEvent>() || eventPtr.IsA<DeltaStateEvent>())
         {
-            //     // reset time if pressed any button
+            // reset time if pressed any button
             _lastTimePressedBefore = 0;
 
             // stop video
@@ -57,7 +59,7 @@ public class TrailerVideoManager : TitleController
                 _isPlaying = false;
                 _videoPlayer.Stop();
                 _videoPlayer.gameObject.SetActive(false);
-                ShowMenuPanel();
+                _titleController.ShowMenuPanel();
             }
         }
     }

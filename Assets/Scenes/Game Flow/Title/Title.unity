@@ -426,6 +426,7 @@ GameObject:
   - component: {fileID: 221700529}
   - component: {fileID: 221700532}
   - component: {fileID: 221700531}
+  - component: {fileID: 221700533}
   m_Layer: 0
   m_Name: Title UI
   m_TagString: Untagged
@@ -509,6 +510,20 @@ MonoBehaviour:
   _rightHandElementName: HandRight
   _leftHandMarker: {fileID: 185861651}
   _rightHandMarker: {fileID: 1581330050}
+--- !u!114 &221700533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221700528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c303a01a157590a4e9f758371d2fce91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrailerVideoManager
+  _videoPlayer: {fileID: 1678509731}
+  _startVideoAfterInactivity: 30
 --- !u!1 &236675946
 GameObject:
   m_ObjectHideFlags: 0
@@ -2013,6 +2028,72 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &1678509730
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1678509732}
+  - component: {fileID: 1678509731}
+  m_Layer: 0
+  m_Name: Trailer Video Player
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!328 &1678509731
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678509730}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: 2bc1c883e467b2d42ab943e24977674c, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: af18d160854722d4bbf0a5bc8a3d3b1d, type: 2}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: <noninit>
+  m_RenderMode: 2
+  m_AspectRatio: 2
+  m_DataSource: 0
+  m_TimeUpdateMode: 2
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 0
+  m_TargetAudioSources: []
+  m_DirectAudioVolumes: []
+  m_Url: 
+  m_EnabledAudioTracks: 
+  m_DirectAudioMutes: 
+  m_ControlledAudioTrackCount: 0
+  m_PlayOnAwake: 0
+  m_SkipOnDrop: 1
+  m_Looping: 1
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+  m_VideoShaders: []
+--- !u!4 &1678509732
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678509730}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1730931268
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2543,6 +2624,7 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 670168182}
   - {fileID: 221700530}
+  - {fileID: 1678509732}
   - {fileID: 1767437850}
   - {fileID: 1122102915}
   - {fileID: 704875376}

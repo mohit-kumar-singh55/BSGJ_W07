@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerIdle : BaseState<PlayerStateManager.PlayerState>
 {
-    private float _idleTimer = 5f;
+    private float _idleTimer = 3f;
     private bool _canTransition = false;
     private bool _isFeverMode = false;
 
@@ -20,7 +20,7 @@ public class PlayerIdle : BaseState<PlayerStateManager.PlayerState>
         }
 
         // just wait for sometime and then transition to painting
-        _idleTimer = 5f;
+        _idleTimer = 3f;
         _canTransition = false;
 
         OnPlayerEnterIdle?.Invoke();

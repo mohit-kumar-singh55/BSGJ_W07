@@ -524,7 +524,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrailerVideoManager
   _videoPlayer: {fileID: 1678509731}
-  _startVideoAfterInactivity: 3
+  _startVideoAfterInactivity: 30
 --- !u!114 &221700534
 MonoBehaviour:
   m_ObjectHideFlags: 0

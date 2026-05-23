@@ -42,11 +42,18 @@ public class HandDataReceiver : MonoBehaviour
 
     [SerializeField] private float smoothFactor = 0.2f;
 
+    private readonly int[] fingertipIds = { 4, 8, 12, 16, 20 };
+    private readonly int[,] fingerPairs = new int[,]{
+        { 2, 4 },   // 親指
+        { 5, 8 },   // 人差し指
+        { 9, 12 },  // 中指
+        { 13, 16 }, // 薬指
+        { 17, 20 }  // 小指
+    };
+
     private void Start()
     {
         Initalize();
-
-
     }
     // 初期化
     private void Initalize()
@@ -231,15 +238,6 @@ public class HandDataReceiver : MonoBehaviour
         if (result.handLandmarks == null || result.handLandmarks.Count == 0)
             return false;
 
-        int[,] fingerPairs = new int[,]
-        {
-        { 2, 4 },   // 親指
-        { 5, 8 },   // 人差し指
-        { 9, 12 },  // 中指
-        { 13, 16 }, // 薬指
-        { 17, 20 }  // 小指
-        };
-
         for (int h = 0; h < result.handLandmarks.Count; h++)
         {
             var lm = result.handLandmarks[h].landmarks;
@@ -273,15 +271,6 @@ public class HandDataReceiver : MonoBehaviour
     {
         if (result.handLandmarks == null || result.handLandmarks.Count == 0)
             return false;
-
-        int[,] fingerPairs = new int[,]
-        {
-        { 2, 4 },   // 親指
-        { 5, 8 },   // 人差し指
-        { 9, 12 },  // 中指
-        { 13, 16 }, // 薬指
-        { 17, 20 }  // 小指
-        };
 
         for (int h = 0; h < result.handLandmarks.Count; h++)
         {
@@ -329,8 +318,6 @@ public class HandDataReceiver : MonoBehaviour
             float thumbY = lm[thumbTip].y;
 
             // すべての指先（tip）をチェック
-            int[] fingertipIds = { 4, 8, 12, 16, 20 };
-
             foreach (int tipId in fingertipIds)
             {
                 if (tipId == thumbTip) continue;

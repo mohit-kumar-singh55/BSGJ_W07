@@ -136,7 +136,8 @@ public class HandDetection : MonoBehaviour
         }
 
         // 手の形がハートになっているかのチェック
-        if (receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result))
+        // if (receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.AreFingertipsBentInward(receiver.result) || receiver.IsThumbTipHighest(receiver.result))
+        if (receiver.AreAllFingertipsHigherThanBase(receiver.result) || receiver.IsThumbTipHighest(receiver.result))
         {
             // Debug.Log("手の形がハートではない");
             HeartTimeCount = 0;

@@ -10,6 +10,7 @@ using UnityEngine;
 // - keeping track of current in-service customer
 public class CustomersManager : Singleton<CustomersManager>
 {
+    [SerializeField] private CustomerPool _customerPool;
     [SerializeField] private GameObject _customerPrefab;
     [SerializeField] private Transform _customerSpawnPoint; // outside the resturant
     [SerializeField] private int _maxCustomerCount = 3; // max number of customers that can be in the resturant at the same time, that are occupying the seats (in-coming, ready, in-service), not including the customers that are out-going
@@ -45,6 +46,10 @@ public class CustomersManager : Singleton<CustomersManager>
         _timer = FindAnyObjectByType<Timer>();
         // get all the seats datas
         _customerSeatDatas = FindObjectsByType<PerCustomerData>(FindObjectsSortMode.None);
+
+        // setting up customer pool
+        _customerPool.CustomerPrefab = _customerPrefab;
+        _customerPool.CustomerSpawnPoint = _customerSpawnPoint;
 
         // spawn first customer 
         SpawnCustomer();
@@ -100,28 +105,27 @@ public class CustomersManager : Singleton<CustomersManager>
         }
 
         // spawn customer outside the resturant
-        GameObject customerObj = Instantiate(_customerPrefab, _customerSpawnPoint.position, Quaternion.identity, _customerSpawnPoint);
-        if (customerObj.TryGetComponent(out Customer customer))
-        {
-            // add into the active customers list
-            _currentActiveCustomers.Add(customer);
-            // add to keep track of the customer with its seat
-            currentCustomerData.CustomerAllocated = customer;
-            currentCustomerData.IsOccupied = true;
+        Customer customer = _customerPool.CurPool.Get();
+        // add into the active customers list
+        _currentActiveCustomers.Add(customer);
+        // add to keep track of the customer with its seat
+        currentCustomerData.CustomerAllocated = customer;
+        currentCustomerData.IsOccupied = true;
 
-            // TODO: assign currentCustomerData to customer
-            customer.InitializeCustomer(
-                currentCustomerData.FoodSpawnPoint,
-                currentCustomerData.StateCamera,
-                currentCustomerData.CustomerStandPoint
-            );
+        // assign currentCustomerData to customer
+        customer.InitializeCustomer(
+            currentCustomerData.FoodSpawnPoint,
+            currentCustomerData.StateCamera,
+            currentCustomerData.CustomerStandPoint
+        );
 
-            // keep track & wait to spawn next customer
-            _currentNoOfCustomers++;
-            _waitingToSpawnNextCustomer = true;
-            StartCoroutine(WaitTimer.WaitFor(GetNextCustomerSelectionTime(), () => _waitingToSpawnNextCustomer = false));
-        }
-        else Destroy(customerObj);
+        // send customer to its seat
+        customer.TransitionToState(Customer.CustomerState.InComing);
+
+        // keep track & wait to spawn next customer
+        _currentNoOfCustomers++;
+        _waitingToSpawnNextCustomer = true;
+        StartCoroutine(WaitTimer.WaitFor(GetNextCustomerSelectionTime(), () => _waitingToSpawnNextCustomer = false));
     }
 
     public void SelectNextCustomer()

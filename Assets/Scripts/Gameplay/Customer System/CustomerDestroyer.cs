@@ -15,7 +15,7 @@ public class CustomerDestroyer : MonoBehaviour
                 // remove mood setter from off screen mood displayer ui
                 MoodSetter moodSetter = customer.GetComponentInChildren<MoodSetter>();
                 if (moodSetter != null) OnCustomerDestroy?.Invoke(moodSetter);
-                Destroy(customer.gameObject);
+                // Destroy(customer.gameObject);    // instead releasing it from pool
             }
         }
     }

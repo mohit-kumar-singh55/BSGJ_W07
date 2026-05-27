@@ -36,3 +36,10 @@
 - This game requires `"vc_redist.x64.exe"` to be installed on the PC
 - Download it from [here](https://aka.ms/vc14/vc_redist.x64.exe)
 - Run the installer and restart the PC before launching the game
+
+
+---
+---
+- customer object pooling
+- zip the vosk model
+- write readme in japanese as well

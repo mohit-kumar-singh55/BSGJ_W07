@@ -38,8 +38,8 @@
 - Run the installer and restart the PC before launching the game
 
 
+<!-- ---
 ---
----
-- customer object pooling
+## TODO
 - zip the vosk model
-- write readme in japanese as well
+-->

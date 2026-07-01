@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ランキングデータを管理するクラス
+/// </summary>
 public class RankingManager : MonoBehaviour
 {
     [SerializeField] private int _maxRankingSize = 20;

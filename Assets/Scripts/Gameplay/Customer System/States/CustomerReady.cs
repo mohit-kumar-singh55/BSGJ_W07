@@ -1,17 +1,17 @@
 using UnityEngine;
 
 /// <summary>
-/// Starts customer waiting timer
-/// if times up:
-///     - give bad review (score deduction)
-///     - transition to out-going state
+/// お客の待機タイマーを開始する
+/// 時間切れになった場合：
+///     - 悪いレビューを付ける（スコア減点）
+///     - OutGoingステートへ遷移する
 /// </summary>
 public class CustomerReady : BaseState<Customer.CustomerState>
 {
     private CustomerStateContext _context;
     private bool _transitionByTimesUp = false;
     private float _waitingTimer;
-    private const float _badMoodThreshold = 0.5f;   // threshold for setting bad mood (50% of waiting time)
+    private const float _badMoodThreshold = 0.5f;   // 悪い気分を設定するための閾値 (待機時間の50%)
 
     public CustomerReady(CustomerStateContext context, Customer.CustomerState stateKey) : base(stateKey)
     {
@@ -23,7 +23,7 @@ public class CustomerReady : BaseState<Customer.CustomerState>
         _transitionByTimesUp = false;
         _waitingTimer = 0;
 
-        // set happy mood
+        // 初期の気分を設定
         _context.MoodSetter.SetMood(CustomerMood.Happy);
     }
 
@@ -32,19 +32,19 @@ public class CustomerReady : BaseState<Customer.CustomerState>
         if (_waitingTimer < _context.WaitingTime) _waitingTimer += Time.deltaTime;
         else
         {
-            // unoccupie the current taken seat & transition to out-going
+            // 使用中の席を空けて、OutGoingステートへ遷移する
             if (CustomersManager.Instance != null)
                 CustomersManager.Instance.UnoccupieSeat(_context.ThisCustomer);
             _transitionByTimesUp = true;
 
-            // deduce score
-            _context.MoodSetter.SetMood(CustomerMood.Angry);    // angry mood when going outside due to times up
+            // スコアを減点
+            _context.MoodSetter.SetMood(CustomerMood.Angry);    // 時間切れで退店するため、怒りの気分にする
             if (PlayerDataManager.Instance != null)
                 PlayerDataManager.Instance.DeduceScore(_context.ScoreToDeductOnTimesUp);
             return;
         }
 
-        // set sad mood
+        // 悲しい気分にする
         if (_context.MoodSetter.CurrentMood != CustomerMood.Sad && _waitingTimer >= _context.WaitingTime * _badMoodThreshold)
             _context.MoodSetter.SetMood(CustomerMood.Sad);
     }
@@ -53,7 +53,7 @@ public class CustomerReady : BaseState<Customer.CustomerState>
 
     public override Customer.CustomerState GetNextState()
     {
-        // ** Transition to In-service state is done by the customers manager **
+        // ** InServiceステートへの遷移はCustomerManagerが行う **
         return _transitionByTimesUp ? Customer.CustomerState.OutGoing : Customer.CustomerState.Ready;
     }
 }

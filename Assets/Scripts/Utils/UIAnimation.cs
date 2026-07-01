@@ -3,6 +3,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// UIアニメーションを管理するクラス
+/// </summary>
 public class UIAnimation
 {
     public static IEnumerator ZoomIn(float time, Graphic graphic, Image image, Action onComplete = null)

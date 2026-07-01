@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.Video;
 
+/// <summary>
+/// タイトル画面のトレーラー動画を管理するコントローラークラス
+/// </summary>
 [RequireComponent(typeof(TitleController))]
 public class TrailerVideoManager : MonoBehaviour
 {
@@ -11,7 +14,7 @@ public class TrailerVideoManager : MonoBehaviour
 
     private TitleController _titleController;
     private bool _isPlaying = false;
-    private float _lastTimePressedBefore = 0f;  // last time "any" button was pressed
+    private float _lastTimePressedBefore = 0f;  // 最後に「何かキー」が押された時刻
 
     private void OnEnable()
     {
@@ -35,7 +38,7 @@ public class TrailerVideoManager : MonoBehaviour
     {
         if (_isPlaying) return;
 
-        // play video if no activity for the given time
+        // 一定時間操作がない場合は動画を再生する
         if (!_isPlaying && _lastTimePressedBefore >= _startVideoAfterInactivity)
         {
             _isPlaying = true;
@@ -50,10 +53,10 @@ public class TrailerVideoManager : MonoBehaviour
     {
         if (eventPtr.IsA<StateEvent>() || eventPtr.IsA<DeltaStateEvent>())
         {
-            // reset time if pressed any button
+            // いずれかのボタンが押されたら時間をリセットする
             _lastTimePressedBefore = 0;
 
-            // stop video
+            // 動画を停止する
             if (_isPlaying)
             {
                 _isPlaying = false;

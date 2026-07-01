@@ -2,25 +2,25 @@ using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.AI;
 
-// Represents a customer
-// responsible for:
-// giving feedback reaction after getting served
-// managing the waiting timer of the customer (not sure)
-// if time is up, the customer leaves (state to idle) (giving a bad reaction and decrease in score)
+// お客を表すクラス
+// 役割：
+// 接客後のリアクションを返す
+// お客の待機タイマーを管理する
+// 時間切れになった場合は、悪いリアクションをしてスコアを減点し、Idleステートへ戻る
 
-// create state machine with states:
-// in-coming -> going inside the restaurant, to its seat, then set state to ready
-// ready -> run a timer for customer waiting, timeout -> set state to idle (bad reaction and decrease in score)
-// in-service -> currently getting served by player, give feedback reaction and set state to idle
-// out-going -> customer is leaving the restaurant, destroy customer (or reuse as pooling) after animation is done
+// ステートマシンを作成する：
+// InComing -> 店内に入り、席まで移動した後、Readyステートへ遷移
+// Ready -> お客の待機タイマーを開始し、時間切れの場合はIdleステートへ遷移（悪いリアクションとスコア減点）
+// InService -> プレイヤーに接客されている状態。リアクションを返してIdleステートへ遷移
+// OutGoing -> お客が退店する状態。アニメーション終了後に削除する（またはプールで再利用する）
 [RequireComponent(typeof(NavMeshAgent))]
 public class Customer : StateManager<Customer.CustomerState>
 {
     public enum CustomerState { InComing, Ready, InService, OutGoing }
 
-    [Tooltip("Customer's Waiting Time")]
+    [Tooltip("お客の待機時間")]
     [SerializeField] private float _waitingTime = 20f;
-    [Tooltip("Score deduction value when customer leaves due to waiting times up")]
+    [Tooltip("待機時間切れでお客が退店した時のスコア減点値")]
     [SerializeField] private int _scoreToDeductOnTimesUp = 20;
 
     private NavMeshAgent _customerAgent;
@@ -36,7 +36,7 @@ public class Customer : StateManager<Customer.CustomerState>
     {
         _customerAgent = GetComponent<NavMeshAgent>();
         _moodSetter = GetComponentInChildren<MoodSetter>();
-        // Point where customer will go back when in out-going state to get destroyed
+        // OutGoingステートで削除されるために向かう目的地
         _customerDestroyPoint = FindAnyObjectByType<CustomerDestroyer>().transform;
 
         if (_moodSetter == null)
@@ -56,7 +56,7 @@ public class Customer : StateManager<Customer.CustomerState>
     {
         base.Update();
 
-        // check if customer is in bad mood
+        // お客が機嫌の悪い状態か確認
         if (_moodSetter.CurrentMood == CustomerMood.Sad)
             IsInBadMood = true;
     }
@@ -70,7 +70,7 @@ public class Customer : StateManager<Customer.CustomerState>
 
     private void InitializeStates()
     {
-        // Add states to inherited StateManager "States" dictionary and set Initial State
+        // 継承元のStateManagerのStates辞書にステートを追加し、初期ステートを設定する
         States.Add(CustomerState.InComing, new CustomerInComing(_context, CustomerState.InComing));
         States.Add(CustomerState.Ready, new CustomerReady(_context, CustomerState.Ready));
         States.Add(CustomerState.InService, new CustomerInService(_context, CustomerState.InService));
@@ -80,7 +80,7 @@ public class Customer : StateManager<Customer.CustomerState>
         CurrentState = States[CustomerState.InComing];
     }
 
-    // ** initialize data from GlobalData **
+    // ** GlobalDataからデータを初期化する **
     private void InitializeData()
     {
         if (GlobalData.Instance == null) return;

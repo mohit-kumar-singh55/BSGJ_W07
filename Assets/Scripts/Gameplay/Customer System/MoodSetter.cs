@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// MoodSpritePairは、お客のムードに対応するスプライトを保持する構造体
+/// </summary>
 [Serializable]
 public struct MoodSpritePair
 {
@@ -21,6 +24,9 @@ public enum CustomerMood
     Angry
 }
 
+/// <summary>
+/// MoodSetterは、お客のムードを設定し、対応するスプライトを表示するコンポーネント
+/// </summary>
 [RequireComponent(typeof(SpriteRenderer))]
 public class MoodSetter : MonoBehaviour
 {
@@ -39,7 +45,7 @@ public class MoodSetter : MonoBehaviour
 
     private void Start()
     {
-        // reset (remove mood sprite) when start
+        // お客のムードをリセットする
         SetMood(CustomerMood.None);
         _mainCam = Camera.main;
     }

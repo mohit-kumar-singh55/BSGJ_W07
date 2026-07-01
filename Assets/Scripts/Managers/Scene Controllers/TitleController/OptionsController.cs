@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UIElements;
 
+/// <summary>
+/// オプション画面のコントローラー
+/// </summary>
 [RequireComponent(typeof(TitleController))]
 public class OptionsController : MonoBehaviour
 {
@@ -36,11 +39,11 @@ public class OptionsController : MonoBehaviour
         // go back to title
         backButton.clicked += _titleController.ShowMenuPanel;
 
-        // return if there are no microphones connected
+        // マイクが接続されていない場合は終了する
         if (Microphone.devices.Length <= 0) return;
 
         // mic selection
-        _micDropdown.value = Microphone.devices[GetMicIndex()];   // set default value to current mic in use
+        _micDropdown.value = Microphone.devices[GetMicIndex()];   // 現在使用中のマイクを初期値として設定する
         _micDropdown.RegisterValueChangedCallback(SetMicToUse);
 
         // populate mic list
@@ -63,9 +66,9 @@ public class OptionsController : MonoBehaviour
     private int GetMicIndex()
     {
         int micIndex = PlayerPrefs.GetInt(PLAYER_PREFS.CURRENT_MIC_IN_USE, 0);
-        micIndex = Mathf.Clamp(micIndex, 0, Microphone.devices.Length - 1);    // clamp to avoid error
+        micIndex = Mathf.Clamp(micIndex, 0, Microphone.devices.Length - 1);    // エラーを防ぐためにClampする
 
-        // resave clamped value to player prefs to avoid error in future
+        // r今後エラーが発生しないよう、Clamp後の値をPlayerPrefsに保存する
         PlayerPrefs.SetInt(PLAYER_PREFS.CURRENT_MIC_IN_USE, micIndex);
 
         return micIndex;
@@ -73,8 +76,8 @@ public class OptionsController : MonoBehaviour
 
     private string GetCurrentLanguage()
     {
-        LANG currentLang = (LANG)PlayerPrefs.GetInt(PLAYER_PREFS.CURRENT_LANGUAGE, (int)LANG.JAPANESE);   // get current language, default to japanese
-        _gameManager.CurrentLanguage = currentLang;   // set current language in game manager
+        LANG currentLang = (LANG)PlayerPrefs.GetInt(PLAYER_PREFS.CURRENT_LANGUAGE, (int)LANG.JAPANESE);   // 現在の言語を取得する（デフォルトは日本語）
+        _gameManager.CurrentLanguage = currentLang;   // GameManagerに現在の言語を設定する
         return currentLang.ToString();
     }
 

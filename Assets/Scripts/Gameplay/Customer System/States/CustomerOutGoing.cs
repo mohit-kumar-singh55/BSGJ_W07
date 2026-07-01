@@ -1,6 +1,6 @@
 /// <summary>
-/// go to the customer destroy point
-/// and it will be destroyed automatically as it enters the trigger collider
+/// お客削除ポイントへ移動する
+/// トリガーコライダーに入ると自動で削除される
 /// </summary>
 public class CustomerOutGoing : BaseState<Customer.CustomerState>
 {
@@ -23,7 +23,7 @@ public class CustomerOutGoing : BaseState<Customer.CustomerState>
 
     public override Customer.CustomerState GetNextState()
     {
-        // ! this never gonna run as customer will be destroyed as soon as it goes out of the resturant
+        // ! レストランの外へ出るとすぐに削除されるため、ここは実行されない
         return _canTransition ? Customer.CustomerState.InComing : Customer.CustomerState.OutGoing;
     }
 }

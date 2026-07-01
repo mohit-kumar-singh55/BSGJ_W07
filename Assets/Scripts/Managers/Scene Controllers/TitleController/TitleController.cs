@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
+/// <summary>
+/// タイトル画面のUIを管理するコントローラークラス
+/// </summary>
 [RequireComponent(typeof(UIDocument))]
 public class TitleController : MonoBehaviour
 {
@@ -27,7 +30,7 @@ public class TitleController : MonoBehaviour
         _optionsUI = root.Q<VisualElement>(OPTIONS_UI_NAME);
         _trailerVideoUI = root.Q<VisualElement>(TRAILER_VIDEO_UI_NAME);
 
-        // initially show menu only
+        // 初期状態ではメニューUIのみ表示する
         ShowMenuPanel();
     }
 

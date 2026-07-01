@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// オーディオの管理を行うシングルトンクラス
+/// </summary>
 public class AudioManager : Singleton<AudioManager>
 {
     [Header("Audio Sources")]

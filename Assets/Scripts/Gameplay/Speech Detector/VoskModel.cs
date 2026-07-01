@@ -3,7 +3,10 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Vosk;
 
-// Singleton manager for Vosk model to ensure it's loaded only once at the start of the game and shared across the game
+/// <summary>
+/// Voskモデルを管理するSingletonクラス
+/// ゲーム開始時に一度だけ読み込み、ゲーム全体で共有する
+/// </summary>
 public class VoskModel : Singleton<VoskModel>
 {
     private string _fullModelPath;
@@ -15,13 +18,13 @@ public class VoskModel : Singleton<VoskModel>
 
     void OnDestroy()
     {
-        // Dispose model to avoid memory leaks
+        // メモリリークを防ぐためにモデルを破棄する
         Model?.Dispose();
     }
 
     void OnApplicationQuit()
     {
-        // Dispose model to avoid memory leaks
+        // メモリリークを防ぐためにモデルを破棄する
         Model?.Dispose();
     }
 
@@ -37,7 +40,7 @@ public class VoskModel : Singleton<VoskModel>
     {
         _fullModelPath = Path.Combine(Application.streamingAssetsPath, MODEL_PATH).Replace("\\", "/");
 
-        // Load model in background to avoid freezing Unity
+        // Unityがフリーズしないようにバックグラウンドでモデルを読み込む
         Task.Run(() =>
         {
             if (Model == null)

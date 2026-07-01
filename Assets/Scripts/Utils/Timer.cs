@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// タイマーの動作を管理するクラス
+/// </summary>
 public class Timer : MonoBehaviour
 {
     [SerializeField] private float _timeLimit = 90f;
@@ -46,8 +49,8 @@ public class Timer : MonoBehaviour
             _currentTime = 0;
             _isRunning = false;
 
-            // stop player state machine
-            // go to next scene
+            // プレイヤーのステートマシンを停止する
+            // 次のシーンへ進む
             OnTimesUp?.Invoke();
             return;
         }

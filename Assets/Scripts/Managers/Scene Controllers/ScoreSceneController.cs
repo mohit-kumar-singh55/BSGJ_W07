@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
+/// <summary>
+/// ScoreSceneController画面のコントローラークラス
+/// </summary>
 public class ScoreSceneController : MonoBehaviour
 {
     [Header("References")]
@@ -19,10 +22,10 @@ public class ScoreSceneController : MonoBehaviour
 
         _scoreText = root.Q<Label>(_scoreName);
 
-        // get current player's score
+        // 現在のプレイヤーのスコアを取得する
         _score = PlayerDataManager.Instance.Score;
 
-        // show score
+        // スコアを表示する
         StartCoroutine(Counter.CountUpTo(
             0,
             _score,
@@ -31,7 +34,7 @@ public class ScoreSceneController : MonoBehaviour
             (score) => _scoreText.text = _score.ToString()
         ));
 
-        // show the cursor
+        // カーソルを表示する
         UnityEngine.Cursor.visible = true;
     }
 }

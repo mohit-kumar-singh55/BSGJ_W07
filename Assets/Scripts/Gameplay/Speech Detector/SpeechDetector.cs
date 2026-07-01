@@ -3,11 +3,13 @@ using UnityEngine;
 
 public enum PhraseType { MOE, KYUN }
 
-// it starts the speech detection process, checks the timing of the speech we are looking for, and score based on the timing accuracy
+/// <summary>
+/// SpeechDetectorクラスは、音声検出プロセスを開始し、検出された音声のタイミングをチェックし、タイミングの精度に基づいてスコアを計算する
+/// </summary>
 [RequireComponent(typeof(SpeechToText))]
 public class SpeechDetector : MonoBehaviour
 {
-	[Tooltip("Time window (in seconds), if speech detected in-between this time, will be considered as Good. Should be in format (min, max) where min < max")]
+	[Tooltip("音声がこの時間内（秒）に検出されるとGood判定になる。(min, max)形式で設定し、min < maxであること")]
 	[SerializeField] private Vector2 _detectionWindow = new(1f, 2f);
 
 	[Space(10)]
@@ -16,7 +18,7 @@ public class SpeechDetector : MonoBehaviour
 	[SerializeField] private List<string> _kyunPhrases = new();
 	[SerializeField] private List<string> _extraPhrases = new();
 
-	private List<string> _keyPhrases = new();   // ! can be made local variable in start method to save memory
+	private List<string> _keyPhrases = new();   // ! メモリ節約のため、Startメソッド内のローカル変数にできる
 	private float _startTime;
 	private SpeechToText _speechToText;
 	private enum DetectionStage { Early = 80, Good = 100, Late = 60, Miss = 50 }
@@ -32,7 +34,7 @@ public class SpeechDetector : MonoBehaviour
 
 	private void Awake()
 	{
-		// joining all the phrases into one list
+		// すべてのフレーズを1つのリストにまとめる
 		_keyPhrases.AddRange(_moePhrases);
 		_keyPhrases.AddRange(_kyunPhrases);
 		_keyPhrases.AddRange(_extraPhrases);
@@ -48,20 +50,20 @@ public class SpeechDetector : MonoBehaviour
 			return;
 		}
 
-		// set key phrases to search for
+		// 検出対象のキーフレーズを設定する
 		_speechToText.KeyPhrases = _keyPhrases;
 
-		// bind to get know whether key phrase is detected or not
+		// キーフレーズが検出されたかどうかを受け取るために登録する
 		_speechToText.OnKeyPhraseDetected += OnKeyPhraseDetected;
 		_speechToText.OnKeyPhraseUnDetected += OnKeyPhraseUnDetected;
 	}
 
 	public void StartDetection()
 	{
-		// start rec
+		// 音声認識を開始する
 		_speechToText.StartRecording(_detectionWindow.y);
 
-		// record the start time
+		// 開始時刻を記録する
 		_startTime = Time.time;
 	}
 
@@ -69,7 +71,7 @@ public class SpeechDetector : MonoBehaviour
 	{
 		float elapsedTime = Time.time - _startTime;
 
-		// score based on the elapsed time and volume
+		// 経過時間と音量に応じてスコアを計算する
 		DetectionStage stage;
 
 		//  score as Early
@@ -79,10 +81,10 @@ public class SpeechDetector : MonoBehaviour
 		// score as Late
 		else stage = DetectionStage.Late;
 
-		// sending score
+		// スコアを送信する
 		OnRecordingCompleted?.Invoke(CalculateScore((int)stage, volume), resultPhrase);
 
-		// updating ui
+		// UIを更新する
 		OnFoundPhraseOccurrence?.Invoke(OrganizeOccurrence(resultPhrase));
 	}
 
@@ -120,7 +122,7 @@ public class SpeechDetector : MonoBehaviour
 
 			occurringTimes++;
 
-			// removing already found word
+			// すでに検出済みの単語を削除する
 			phrase = phrase.Remove(phrase.IndexOf(word), word.Length);
 			// phrase = phrase[(phrase.IndexOf(word[^1]) + 1)..];
 		}

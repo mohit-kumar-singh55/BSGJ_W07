@@ -1,3 +1,7 @@
+/// <summary>
+/// シーンのインデックスを定義するクラス
+/// TODO: enumに置き換える
+/// </summary>
 public class SCENES
 {
     public const int TITLE = 0;

@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// プレイヤーの状態を管理するステートマシン
+/// </summary>
 [RequireComponent(typeof(Animator))]
 public class PlayerStateManager : StateManager<PlayerStateManager.PlayerState>
 {
@@ -25,7 +28,7 @@ public class PlayerStateManager : StateManager<PlayerStateManager.PlayerState>
 
     void OnEnable()
     {
-        // stop player state machine, when times up
+        // 時間切れになったらプレイヤーのステートマシンを停止する
         Timer.OnTimesUp += OnTimesUp;
     }
 
@@ -42,12 +45,12 @@ public class PlayerStateManager : StateManager<PlayerStateManager.PlayerState>
 
     private void InitializeStates()
     {
-        // Add states to inherited StateManager "States" dictionary and set Initial State
+        // 継承元のStateManagerのStates辞書にステートを追加し、初期ステートを設定する
         States.Add(PlayerState.Idle, new PlayerIdle(_context, PlayerState.Idle));
         States.Add(PlayerState.Painting, new PlayerPainting(_context, PlayerState.Painting));
         States.Add(PlayerState.DoingMoeMoe, new PlayerDoingMoeMoe(_context, PlayerState.DoingMoeMoe));
 
-        // always start in idle
+        // 常にIdleステートから開始する
         CurrentState = States[PlayerState.Idle];
     }
 

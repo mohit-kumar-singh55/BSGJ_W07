@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// CustomerPoolはCustomerオブジェクトを再利用するためのオブジェクトプール
+/// 頻繁な生成・削除を避けるため、Customerオブジェクトの生成・有効化・無効化・削除を管理する
+/// </summary>
 public class CustomerPool : Pool<Customer>
 {
     [HideInInspector] public GameObject CustomerPrefab;
@@ -18,7 +22,7 @@ public class CustomerPool : Pool<Customer>
     protected override Customer CreateObject()
     {
         GameObject customerObj = Instantiate(CustomerPrefab, CustomerSpawnPoint.position, Quaternion.identity, CustomerSpawnPoint);
-        // TODO: stop from moving and hide
+        // Customerオブジェクトを無効化してプールに戻す
         customerObj.SetActive(false);
         return customerObj.GetComponent<Customer>();
     }
@@ -36,7 +40,7 @@ public class CustomerPool : Pool<Customer>
     protected override void OnReturnToPool(Customer pooledObject)
     {
         pooledObject.gameObject.SetActive(false);
-        pooledObject.transform.position = CustomerSpawnPoint.position;  // reset position
+        pooledObject.transform.position = CustomerSpawnPoint.position;  // 位置をリセットする
     }
 
     private void ReturnToPool(MoodSetter moodSetter)

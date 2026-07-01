@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// このクラスは、オブジェクトが常にカメラの方向を向くようにするビルボード効果を実装します。
+/// </summary>
 public class Billboarding : MonoBehaviour
 {
     private Transform _mainCam;

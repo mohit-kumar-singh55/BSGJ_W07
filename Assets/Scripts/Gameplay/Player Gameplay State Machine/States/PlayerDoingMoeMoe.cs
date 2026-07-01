@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// MoeMoeステートは、プレイヤーが「もえもえ」アクションを行う状態を管理するクラス
+/// </summary>
 public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 {
     private PlayerStateContext _context;
@@ -29,8 +32,6 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         _voiceDetectionFinished = false;
         _handDetectionFinished = false;
 
-        // TODO: wait for some seconds, play some sound
-
         // subscribe to events
         _context.SpeechDetector.OnRecordingCompleted += OnRecordingCompleted;
         _context.HandDetection.OnHandCheckStart += OnHandCheckStart;
@@ -39,14 +40,14 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
         _context.VFXCountdown.StartCountdown(() =>
         {
-            // start hand detection
+            // 手認識を開始する
             _context.HandDetection.StartCheck();
 
-            // show moe example effect
+            // 萌え萌えの例エフェクトを表示する
             _context.MoeExampleAnimator.gameObject.SetActive(true);
             _context.MoeExampleAnimator.SetBool(_heartPulseAnimHash, true);
 
-            // moe moe started
+            // 萌え萌え アクションが開始されたことを通知する
             OnMoeMoeStarted?.Invoke();
         });
     }
@@ -55,16 +56,16 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     public override void ExitState()
     {
-        // save score
+        // スコアを保存する
         if (PlayerDataManager.Instance != null)
         {
             float scoreMultiplier = 1f;
 
-            // apply fever score multiplier
+            // フィーバーモードのスコア倍率を適用する
             if (FeverMode.Instance != null && FeverMode.Instance.IsFeverMode)
                 scoreMultiplier *= FeverMode.Instance.FeverScoreMultiplier;
 
-            // apply customer's bad mood score multiplier
+            // お客の機嫌が悪い場合のスコア倍率を適用する
             if (GlobalData.Instance != null && CustomersManager.Instance.CurrentCustomer.IsInBadMood)
             {
                 CustomerMoodSettings customerMoodSettings = GlobalData.Instance.CustomerData.customerMoodSettings;
@@ -72,14 +73,14 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
                     scoreMultiplier *= customerMoodSettings.badMoodScoreMultiplier;
             }
 
-            // addup all scores
+            // すべてのスコアを合計する
             PlayerDataManager.Instance.AddPlayerScore(Mathf.RoundToInt(_totalScore * scoreMultiplier));
         }
-        // check for fever mode
+        // フィーバーモードかどうか確認する
         if (FeverMode.Instance != null) FeverMode.Instance.CheckIfPerfect(_totalScore);
 
-        // remove current spawned food
-        // go to next customer
+        // 現在生成されている料理を削除する
+        // 次のお客へ進む
         OnMoeMoeCompleted?.Invoke();
 
         // unsubscribe from events
@@ -106,14 +107,14 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
 
     private void OnHandCheckStart()
     {
-        // hide moe example effect
+        // 萌えのお手本エフェクトを非表示にする
         _context.MoeExampleAnimator.SetBool(_heartPulseAnimHash, false);
         _context.MoeExampleAnimator.gameObject.SetActive(false);
 
-        // play moe effect
+        // 萌えエフェクトを再生する　➀
         _context.MoeEffectAnimator.SetTrigger(MOE1_ANIM);
 
-        // start voice detection
+        // 音声認識を開始する
         _context.SpeechDetector.StartDetection();
     }
 
@@ -128,11 +129,11 @@ public class PlayerDoingMoeMoe : BaseState<PlayerStateManager.PlayerState>
         switch (phase)
         {
             case 3:
-                // play moe effect
+                // 萌えエフェクトを再生する　➁
                 _context.MoeEffectAnimator.SetTrigger(MOE2_ANIM);
                 break;
             case 4:
-                // play kyun effect
+                // キュンエフェクトを再生する　➂
                 _context.MoeEffectAnimator.SetTrigger(KYUN_ANIM);
                 break;
         }

@@ -1,7 +1,7 @@
 using UnityEngine.AI;
 
 /// <summary>
-/// Moves the customer to the seat
+/// このステートでは、お客を席まで移動させる
 /// </summary>
 public class CustomerInComing : BaseState<Customer.CustomerState>
 {
@@ -32,10 +32,10 @@ public class CustomerInComing : BaseState<Customer.CustomerState>
 
         _canTransition = reached;
 
-        // set final rotation towards the table
+        // テーブルの方向へ最終的な向きを設定
         if (_canTransition) _context.ThisCustomer.transform.rotation = _context.CustomerStandPoint.rotation;
 
-        // transition to ready
+        // Readyステートへ遷移
         return _canTransition ? Customer.CustomerState.Ready : Customer.CustomerState.InComing;
     }
 }

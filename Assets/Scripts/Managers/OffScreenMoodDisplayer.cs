@@ -2,6 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// OffScreenMoodDisplayerクラスは、
+/// 画面外にいるお客のムードをUIで表示するためのクラスです。
+/// </summary>
 public class OffScreenMoodDisplayer : MonoBehaviour
 {
     [SerializeField] private Transform _moodDisplayUIParent;
@@ -26,14 +30,14 @@ public class OffScreenMoodDisplayer : MonoBehaviour
 
     private void Start() => _mainCam = Camera.main;
 
-    // updating mood display ui after camera and customer movement
+    // カメラとお客の移動後に気分表示UIを更新する
     private void LateUpdate() => UpdateMoodDisplays();
 
     private void UpdateMoodDisplays()
     {
         foreach (MoodSetter moodSetter in _moodSetters)
         {
-            // remove if no mood
+            // 気分が設定されていない場合は削除する
             if (moodSetter.CurrentMood == CustomerMood.None)
             {
                 DestroyMoodDisplayAndRemoveFromDic(moodSetter);
@@ -45,27 +49,27 @@ public class OffScreenMoodDisplayer : MonoBehaviour
 
             if (isInView)
             {
-                // skip if this is not spawned
+                // 生成されていない場合はスキップする
                 DestroyMoodDisplayAndRemoveFromDic(moodSetter);
                 continue;
             }
 
-            // spawn mood ui images & position them on the screen on the camera edge as the direction to the customer
+            // 気分UI画像を生成し、お客の方向を示すように画面端へ配置する
             GameObject moodDisplay;
             if (!_moodDisplays.ContainsKey(moodSetter))
             {
-                // spawn
+                // 生成する
                 moodDisplay = Instantiate(_moodDisplayUIPrefab, _moodDisplayUIParent);
                 _moodDisplays.Add(moodSetter, moodDisplay);
             }
             else moodDisplay = _moodDisplays[moodSetter];
 
-            // set the image
+            // 画像を設定する
             if (moodDisplay.TryGetComponent(out Image moodDisplayImage) &&
                 moodSetter.TryGetComponent(out SpriteRenderer moodSetterSR))
                 moodDisplayImage.sprite = moodSetterSR.sprite;
 
-            // set position
+            // 位置を設定する
             Vector3 screenPos = _mainCam.WorldToScreenPoint(moodSetter.transform.position);
             moodDisplay.transform.position = new(Mathf.Clamp(screenPos.x, _moodDisplayUIOffset, Screen.width - _moodDisplayUIOffset), Mathf.Clamp(screenPos.y, _moodDisplayUIOffset, Screen.height - _moodDisplayUIOffset), 0);
         }

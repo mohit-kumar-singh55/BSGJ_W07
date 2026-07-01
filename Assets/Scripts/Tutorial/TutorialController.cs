@@ -16,6 +16,9 @@ public enum TutorialDialogStep
     END_LINE
 }
 
+/// <summary>
+/// TutorialDialog構造体は、チュートリアルの各ステップに対応する説明テキストと画像を格納します。
+/// </summary>
 [Serializable]
 public struct TutorialDialog
 {
@@ -26,6 +29,10 @@ public struct TutorialDialog
     [TextArea] public string explainationText_JP;
 }
 
+/// <summary>
+/// TutorialControllerクラスは、ゲームのチュートリアルを管理するためのクラスです。
+/// チュートリアルの各ステップに対応する説明テキストと画像を表示し、プレイヤーの入力に応じて次のステップに進めます。
+/// </summary>
 public class TutorialController : MonoBehaviour
 {
     [Header("Tutorial UI")]
@@ -77,7 +84,7 @@ public class TutorialController : MonoBehaviour
         _tutorialPlayer.gameObject.SetActive(false);
         _tutorialTextParentBG.gameObject.SetActive(false);
 
-        // initialize tutorial dialog dictionary
+        // チュートリアルダイアログの辞書を初期化する
         foreach (var dialog in _tutorialDialogs)
             _tutorialDialogDict[dialog.step] = dialog;
     }
@@ -93,7 +100,7 @@ public class TutorialController : MonoBehaviour
     {
         if (!val.isPressed) return;
 
-        // current tutorial dialog at the time of clicking
+        // クリック時点で表示中のチュートリアルダイアログ
         switch (_currentTutorialDialogStep)
         {
             case TutorialDialogStep.NEW_MAID_TRAINING:
@@ -113,7 +120,7 @@ public class TutorialController : MonoBehaviour
                 break;
             case TutorialDialogStep.END_LINE:
                 HideAllTutorialUI();
-                // ** tutorial completed, reset the score and go the next scene **
+                // ** チュートリアル完了、スコアをリセットして次のシーンに進む **
                 StartCoroutine(WaitTimer.WaitFor(_goNextSceneDelay, () =>
                 {
                     PlayerDataManager.Instance.ResetScore();

@@ -8,7 +8,7 @@ public class RankingFileManager
     // ranking file path
     private readonly string RANKING_PATH = Application.persistentDataPath + "/leaderboard.json";
 
-    // file will be created automatically, when saved for the first time
+    // 初回保存時にファイルが自動作成される
     public void SaveRankingData(List<PlayerData> playerDatas)
     {
         RankingData data = new() { playerDatas = playerDatas };

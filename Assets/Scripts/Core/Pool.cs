@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.Pool;
 
+/// <summary>
+/// 型Tのオブジェクトを管理する汎用オブジェクトプールクラス
+/// </summary>
+/// <typeparam name="T">The type of MonoBehaviour to pool</typeparam>
 public abstract class Pool<T> : MonoBehaviour where T : MonoBehaviour
 {
     private ObjectPool<T> _pool;

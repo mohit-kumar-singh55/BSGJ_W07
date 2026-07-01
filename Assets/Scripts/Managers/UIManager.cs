@@ -4,11 +4,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// UIの管理を行うマネージャークラス
+/// </summary>
 public class UIManager : Singleton<UIManager>
 {
     [Header("Clock UI Settings")]
     [SerializeField] private GameObject _needleUI;
-    [SerializeField] private float _rotationOffset = -211f;     // current rotation of needle ui
+    [SerializeField] private float _rotationOffset = -211f;     // 針UIの現在の回転角
     [SerializeField] private Image _clockRemainingMask;
     [SerializeField] private Color _clockRemainingMaskNormalColor;
     [SerializeField] private Color _clockRemainingMaskCriticalColor;
@@ -60,15 +63,15 @@ public class UIManager : Singleton<UIManager>
         PlayerDoingMoeMoe.OnMoeMoeCompleted -= HideSubtitleMoeKyun;
     }
 
-    // rotate needle of clock ui
+    // 時計UIの針を回転させる
     // time: [0, 1]
     public void RotateNeedle(float time)
     {
         float t = Mathf.Clamp01(time);
         float angle = t * 360f + _rotationOffset;
-        _needleUI.transform.localEulerAngles = new Vector3(0, 0, angle);    // rotate needle ui
-        _clockRemainingMask.fillAmount = t;   // rotate remaining mask together with needle
-        _clockRemainingMask.color = t <= 0.25f ? _clockRemainingMaskCriticalColor : _clockRemainingMaskNormalColor;   // change color when time is critical 
+        _needleUI.transform.localEulerAngles = new Vector3(0, 0, angle);    // 針UIを回転させる
+        _clockRemainingMask.fillAmount = t;   // 針と一緒に残り時間マスクを回転させる
+        _clockRemainingMask.color = t <= 0.25f ? _clockRemainingMaskCriticalColor : _clockRemainingMaskNormalColor;   // 残り時間が少なくなったら色を変更する 
     }
 
     public void UpdateScoreUpto(int currentScore, int newScore)
@@ -83,7 +86,7 @@ public class UIManager : Singleton<UIManager>
             (score) => _scoreText.text = newScore.ToString()
         ));
 
-        // Spawn score popup
+        // スコアポップアップを生成する
         int scoreDifference = newScore - currentScore;
         if (scoreDifference != 0) SpawnScorePopup(Mathf.Abs(scoreDifference), scoreDifference < 0);
     }
@@ -94,7 +97,7 @@ public class UIManager : Singleton<UIManager>
         if (popup.TryGetComponent(out TMP_Text popupText))
             popupText.text = (isDeduction ? "-" : "+") + score.ToString();
 
-        // Destroy the popup after a delay
+        // 一定時間後にポップアップを削除する
         Destroy(popup, _destroyScorePopupDelay);
     }
 
@@ -102,7 +105,7 @@ public class UIManager : Singleton<UIManager>
     {
         GameObject popup = Instantiate(feverPrefab, parent);
 
-        // Destroy the popup after a delay
+        // 一定時間後にポップアップを削除する
         Destroy(popup, destroyDelay);
     }
 
@@ -129,10 +132,10 @@ public class UIManager : Singleton<UIManager>
 
     public void HideSubtitleMoeKyun()
     {
-        // hide after delay
+        // 一定時間後に字幕UIを非表示にする
         StartCoroutine(WaitTimer.WaitFor(_subtitleMoeKyunHideDelay, () =>
         {
-            ResetSubtitleColors();  // reset colors when hiding
+            ResetSubtitleColors();  // 非表示時に色をリセットする
             _subtitleMoeKyunParent.SetActive(false);
         }));
     }

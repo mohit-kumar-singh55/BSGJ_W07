@@ -1,7 +1,7 @@
 [System.Serializable]
 public struct PlayerData
 {
-    // rank is just the index, order of the sorted list according to score
+    // rankはスコア順に並べたリストのインデックス
     public int RankNo;
     public string Name;
     public int Score;

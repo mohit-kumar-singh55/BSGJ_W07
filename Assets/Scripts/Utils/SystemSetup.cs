@@ -7,6 +7,6 @@ public class SystemSetup : MonoBehaviour
         // setup
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = -1;
-        Screen.SetResolution(2560, 1440, true); // ! maybe better to comment it when in release for the jam to increase quality
+        Screen.SetResolution(2560, 1440, true); // ! ジャム版のリリース時は品質向上のため、無効化した方がよいかもしれない
     }
 }

@@ -1,26 +1,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Manages all the customers
-// responsible for:
-// - spawning customers
-// - unoccupying the seats of the customers that are leaving the resturant
-// - selecting next customer
-// - keeping track of active customers
-// - keeping track of current in-service customer
+// すべてのお客を管理するクラス
+// 役割：
+// - お客を生成する
+// - 退店するお客の席を空席にする
+// - 次に接客するお客を選択する
+// - アクティブなお客を管理する
+// - 現在接客中のお客を管理する
 public class CustomersManager : Singleton<CustomersManager>
 {
     [SerializeField] private CustomerPool _customerPool;
     [SerializeField] private GameObject _customerPrefab;
-    [SerializeField] private Transform _customerSpawnPoint; // outside the resturant
-    [SerializeField] private int _maxCustomerCount = 3; // max number of customers that can be in the resturant at the same time, that are occupying the seats (in-coming, ready, in-service), not including the customers that are out-going
+    [SerializeField] private Transform _customerSpawnPoint; // レストランの外にあるお客を生成する場所
+    [SerializeField] private int _maxCustomerCount = 3; // 同時に店内で席を使用できるお客の最大人数（InComing・Ready・InService）。OutGoingのお客は含まない
     [SerializeField] private float _customerSpawnInterval = 20f;
     [SerializeField] private AnimationCurve _customerSpawnCurve;
     [SerializeField] private float _retryCustomerSelectionAfter = 5f;
 
-    private Customer _currentInServiceCustomer; // customer that is being served right now
-    private PerCustomerData[] _customerSeatDatas;   // total seats in the resturant
-    private List<Customer> _currentActiveCustomers = new(); // customers that are in in-coming/ready state
+    private Customer _currentInServiceCustomer; // 現在接客中のお客
+    private PerCustomerData[] _customerSeatDatas;   // レストラン内の全席データの配列
+    private List<Customer> _currentActiveCustomers = new(); // InComingまたはReadyステートのお客
     private int _currentNoOfCustomers = 0;
     private bool _waitingToSpawnNextCustomer = true;
     private Timer _timer;
@@ -42,16 +42,16 @@ public class CustomersManager : Singleton<CustomersManager>
         // initialize data
         InitializeData();
 
-        // get timer
+        // タイマーを取得する
         _timer = FindAnyObjectByType<Timer>();
-        // get all the seats datas
+        // すべての席データを取得する
         _customerSeatDatas = FindObjectsByType<PerCustomerData>(FindObjectsSortMode.None);
 
-        // setting up customer pool
+        // CustomerPoolを設定する
         _customerPool.CustomerPrefab = _customerPrefab;
         _customerPool.CustomerSpawnPoint = _customerSpawnPoint;
 
-        // spawn first customer 
+        // 最初のお客を生成する 
         SpawnCustomer();
         SelectNextCustomer();
     }
@@ -60,12 +60,12 @@ public class CustomersManager : Singleton<CustomersManager>
     {
         if (!_waitingToSpawnNextCustomer && _currentNoOfCustomers < _maxCustomerCount)
         {
-            // spawn next customer
+            // 次のお客を生成する
             SpawnCustomer();
         }
     }
 
-    // ** initialize data from GlobalData **
+    // ** GlobalDataからデータを初期化する **
     private void InitializeData()
     {
         if (GlobalData.Instance == null) return;
@@ -88,41 +88,41 @@ public class CustomersManager : Singleton<CustomersManager>
         int maxTries = _customerSeatDatas.Length;
         PerCustomerData currentCustomerData = GetRandomCustomerData();
 
-        // make sure the seat is unoccupied
+        // 席が空いていることを確認する
         while (maxTries >= 0 && currentCustomerData != null && currentCustomerData.IsOccupied)
         {
             maxTries--;
             currentCustomerData = GetRandomCustomerData();
         }
 
-        // cannot find unoccupied seat
+        // 空いている席が見つからない場合
         if (maxTries < 0 || currentCustomerData == null || currentCustomerData.IsOccupied)
         {
-            // again to into waiting period
+            // 再び待機時間へ切り替える
             _waitingToSpawnNextCustomer = true;
             StartCoroutine(WaitTimer.WaitFor(GetNextCustomerSelectionTime(), () => _waitingToSpawnNextCustomer = false));
             return;
         }
 
-        // spawn customer outside the resturant
+        // レストランの外にお客を生成する
         Customer customer = _customerPool.CurPool.Get();
-        // add into the active customers list
+        // アクティブなお客リストに追加する
         _currentActiveCustomers.Add(customer);
-        // add to keep track of the customer with its seat
+        // お客と席の対応を管理するために追加する
         currentCustomerData.CustomerAllocated = customer;
         currentCustomerData.IsOccupied = true;
 
-        // assign currentCustomerData to customer
+        // currentCustomerDataをお客に設定する
         customer.InitializeCustomer(
             currentCustomerData.FoodSpawnPoint,
             currentCustomerData.StateCamera,
             currentCustomerData.CustomerStandPoint
         );
 
-        // send customer to its seat
+        // お客を席へ移動させる
         customer.TransitionToState(Customer.CustomerState.InComing);
 
-        // keep track & wait to spawn next customer
+        // 管理対象に追加し、次のお客を生成するまで待機する
         _currentNoOfCustomers++;
         _waitingToSpawnNextCustomer = true;
         StartCoroutine(WaitTimer.WaitFor(GetNextCustomerSelectionTime(), () => _waitingToSpawnNextCustomer = false));
@@ -130,48 +130,48 @@ public class CustomersManager : Singleton<CustomersManager>
 
     public void SelectNextCustomer()
     {
-        // if there is currently in-service customer, make them out-going first
+        // 現在接客中のお客がいる場合は、先にOutGoingステートへ遷移させる
         if (_currentInServiceCustomer != null)
         {
-            // change current customer's in-service state to outgoing
+            // 現在接客中のお客をOutGoingステートへ変更する
             _currentInServiceCustomer.TransitionToState(Customer.CustomerState.OutGoing);
-            // unoccupie this seat
+            // この席を空席にする
             UnoccupieSeat(_currentInServiceCustomer);
-            // reset current in-service customer
+            // 現在接客中のお客をリセットする
             _currentInServiceCustomer = null;
         }
 
-        // cannot find any customer in ready state
+        // Readyステートのお客が見つからない場合
         if (_currentActiveCustomers.Count == 0 || !_currentActiveCustomers[0].CurrentState.StateKey.Equals(Customer.CustomerState.Ready))
         {
-            // retry after sometime
+            // しばらく待ってから再試行する
             StartCoroutine(WaitTimer.WaitFor(_retryCustomerSelectionAfter, () => SelectNextCustomer()));
             return;
         }
 
-        // select next customer from the active customers list
+        // アクティブなお客リストから次のお客を選択する
         Customer nextCustomer = _currentActiveCustomers[0];
 
-        // remove next customer from the active customer list as it will be in-service
+        // 接客中になるため、次のお客をアクティブなお客リストから削除する
         _currentActiveCustomers.Remove(nextCustomer);
 
-        // set next customer to current customer
+        // 次のお客を現在接客中のお客として設定する
         _currentInServiceCustomer = nextCustomer;
-        // change state to in-service
+        // InServiceステートへ変更する
         _currentInServiceCustomer.TransitionToState(Customer.CustomerState.InService);
     }
 
-    // removes the customer from that seat & mark it unoccupied for next use
+    // 席からお客を外し、次に使えるよう空席にする
     public void UnoccupieSeat(Customer customerHavingThisSeat)
     {
-        // decrease current number of customers in the restaurant
+        // 現在店内にいるお客の人数を減らす
         _currentNoOfCustomers--;
 
-        // remove from active customers list in case the customer's waiting time is up & it transitioned into out-going state
+        // 待機時間切れでOutGoingステートへ遷移した場合に備えて、アクティブなお客リストから削除する
         if (_currentActiveCustomers.Contains(customerHavingThisSeat))
             _currentActiveCustomers.Remove(customerHavingThisSeat);
 
-        // reset data
+        // データをリセットする
         foreach (PerCustomerData data in _customerSeatDatas)
         {
             if (data.CustomerAllocated == null || !data.CustomerAllocated.Equals(customerHavingThisSeat)) continue;

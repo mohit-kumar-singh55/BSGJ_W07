@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// フードのスポーンを管理するマネージャークラス
+/// </summary>
 public class FoodManager : Singleton<FoodManager>
 {
     [SerializeField] private float _spawnFoodDelay = 2f;
@@ -23,7 +26,7 @@ public class FoodManager : Singleton<FoodManager>
     {
         if (CustomersManager.Instance.CurrentCustomer == null) return;
 
-        // in tutorial mode, always spawn the heart food prefab
+        // チュートリアルモードでは常にハートのフードをスポーンする
         if (_isTutorialMode)
         {
             _lastSpawnedFood = Instantiate(_foodPrefabs[0], foodSpawnPoint.position, foodSpawnPoint.rotation);

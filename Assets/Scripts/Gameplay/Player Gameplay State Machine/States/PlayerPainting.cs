@@ -1,3 +1,7 @@
+/// <summary>
+/// プレイヤーのペイント状態を表すステート
+/// ペイント状態では、プレイヤーはお絵描きパートを行い、描き終わったらMoeMoeステートに遷移する
+/// </summary>
 public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
 {
     private PlayerStateContext _context;
@@ -16,7 +20,7 @@ public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
         _canTransition = false;
         OnPlayerEnterPainting?.Invoke();
 
-        // camera transition
+        // カメラ切り替え
         _context.Animator.SetBool(_context.PAINTING_ANIM, true);
 
         // events 
@@ -29,7 +33,7 @@ public class PlayerPainting : BaseState<PlayerStateManager.PlayerState>
     {
         OnPlayerExitPainting?.Invoke();
 
-        // camera transition
+        // カメラ切り替え
         _context.Animator.SetBool(_context.PAINTING_ANIM, false);
 
         // unsubscribe

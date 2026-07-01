@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// singleton which holds and manages player data for a single player
-// once the player finishes main scene, this player data will be saved in a csv file and then read in the ranking scene
+/// <summary>
+/// シングルプレイ用のプレイヤーデータを保持・管理するシングルトン
+// メインシーン終了後、このプレイヤーデータをCSVファイルに保存し、ランキングシーンで読み込む
+/// </summary>
 public class PlayerDataManager : Singleton<PlayerDataManager>
 {
     private PlayerData _playerData;

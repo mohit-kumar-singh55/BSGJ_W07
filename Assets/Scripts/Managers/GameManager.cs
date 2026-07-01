@@ -8,6 +8,10 @@ public enum LANG
     JAPANESE
 }
 
+/// <summary>
+/// GameManagerクラスは、ゲーム全体の管理を担当するシングルトンです。
+/// シーンの遷移やタイマーの終了時の処理など、ゲーム全体に関わる機能を提供します。
+/// </summary>
 public class GameManager : Singleton<GameManager>
 {
     private ScreenFader _screenFader;
@@ -32,22 +36,16 @@ public class GameManager : Singleton<GameManager>
         DontDestroyOnLoad(gameObject);
     }
 
-    // ! TEMP
-    // void Start()
-    // {
-    //     Time.timeScale = 2f;
-    // }
-
     private void Start()
     {
-        // fade in the screen when the scene is loaded
+        // シーン読み込み時に画面をフェードインする
         // if (LoadSceneFader()) _screenFader.FadeInScreen();
         LoadSceneFader();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // fade in the screen when the scene is loaded
+        // シーン読み込み時に画面をフェードインする
         // if (LoadSceneFader()) _screenFader.FadeInScreen();
         LoadSceneFader();
     }

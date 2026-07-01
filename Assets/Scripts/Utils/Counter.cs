@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// このクラスは、指定された範囲内でカウントアップする機能を提供します。
+/// </summary>
 public class Counter
 {
     public static IEnumerator CountUpTo(int from, int to, float countTimeLimit, Action<int> onUpdate = null, Action<int> onComplete = null)

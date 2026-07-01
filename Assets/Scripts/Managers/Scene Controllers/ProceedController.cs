@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
+/// <summary>
+/// Proceedボタンを押したときに次のシーンに遷移するコントローラークラス
+/// </summary>
 public class ProceedController : MonoBehaviour
 {
     [Header("References")]

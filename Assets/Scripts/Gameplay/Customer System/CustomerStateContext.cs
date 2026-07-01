@@ -2,6 +2,12 @@ using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// お客のステートマシン用コンテキスト
+/// お客やNavMeshAgentなどの参照を保持する
+/// 待機時間、削除地点、気分設定も管理する
+/// 待機時間切れで退店した際のスコア減点値も保持する
+/// </summary>
 public class CustomerStateContext
 {
     private NavMeshAgent _customerAgent;
@@ -9,7 +15,7 @@ public class CustomerStateContext
     private Customer _thisCustomer;
     private Transform _customerDestroyPoint;
     private MoodSetter _moodSetter;
-    private int _scoreToDeductOnTimesUp;   // score deduction value when customer leaves due to waiting times up
+    private int _scoreToDeductOnTimesUp;   // 待機時間切れで退店した際のスコア減点値
 
     public NavMeshAgent CustomerAgent => _customerAgent;
     public float WaitingTime => _waitingTime;

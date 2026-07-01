@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// ケチャップボトルの動作を管理するクラス
+/// </summary>
 public class KetchupPointer : MonoBehaviour
 {
     [SerializeField] private GameObject _ketchupBottle;
@@ -38,12 +41,12 @@ public class KetchupPointer : MonoBehaviour
     {
         if (!_isDrawing) return;
 
-        // Get the position of the mouse in world space
+        // マウスの画面上での座標を取得する
         Vector3 mousePos = Input.mousePosition;
-        mousePos.z = _bottleOffsetFromCamera; // distance of the bottle from the camera
+        mousePos.z = _bottleOffsetFromCamera; // カメラからボトルまでの距離
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
 
-        // Move the ketchup bottle to the mouse position
+        // ケチャップボトルをマウス位置へ移動する
         _ketchupBottle.transform.position = worldPos;
     }
 

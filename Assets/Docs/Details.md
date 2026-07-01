@@ -13,8 +13,8 @@
 
 <!-- - create customer system -->
 
-- In the End BEFORE Tutorial
+<!-- - In the End BEFORE Tutorial
     - version that doesn't uses hand detection, just proceed with voice
     - give a checkbox to enable this in the game options
 
-- In the End TUTORIAL
+- In the End TUTORIAL -->

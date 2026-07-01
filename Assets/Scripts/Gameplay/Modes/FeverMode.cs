@@ -1,18 +1,17 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/*
-- フィーバーの条件を一度
-    - 連続でタイミングよく萌えキュンできたらフィーバー突入
-    - オムライスパートなしで萌えキュンのみできるボーナスタイム
-    - 点数が1.2倍で入るように調整
-*/
+/// <summary>
+/// フィーバー条件：連続でタイミングよく萌えキュンできたらフィーバーに突入
+/// フィーバー中はオムライスパートなしで、萌えキュンのみ行うボーナスタイム
+/// フィーバー中のスコアは1.2倍になる
+/// </summary>
 public class FeverMode : Singleton<FeverMode>
 {
     [Header("Conditions To Activate Fever Mode")]
-    [Tooltip("Number of consecutive perfect 萌えキュン to activate fever mode")]
+    [Tooltip("フィーバーモード発動に必要な連続パーフェクト萌えキュン回数")]
     [SerializeField] private int _perfectCountToActivateFever = 3;
-    [Tooltip("Minimum score to count as perfect 萌えキュン out of 200 (Voice: 100, Hand: 100, not including the Paint)")]
+    [Tooltip("フィーバーモード発動に必要な最低スコア (200点満点、ボイス: 100, ハンド: 100, ペイントを除く)")]
     [SerializeField] private int _minScoreToCountAsPerfect = 120;
 
     [Space(10)]
@@ -75,7 +74,7 @@ public class FeverMode : Singleton<FeverMode>
         }
     }
 
-    // ** initialize data from GlobalData **
+    // ** GlobalDataからデータを初期化する **
     private void InitializeData()
     {
         if (GlobalData.Instance == null) return;
@@ -90,15 +89,15 @@ public class FeverMode : Singleton<FeverMode>
 
     public void CheckIfPerfect(int score)
     {
-        // return if already in fever mode
+        // すでにフィーバーモード中なら終了する
         if (_isFeverMode) return;
 
-        // decrement perfect count, if not enough score
+        // スコアが足りない場合は、パーフェクト回数を減らす
         if (score < _minScoreToCountAsPerfect)
             _currentPerfectCount = 0;
         else _currentPerfectCount++;
 
-        // activate fever mode
+        // フィーバーモードを発動する
         if (_currentPerfectCount >= _perfectCountToActivateFever)
         {
             _isFeverMode = true;

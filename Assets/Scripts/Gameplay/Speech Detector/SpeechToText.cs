@@ -2,6 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Vosk;
 
+/// <summary>
+/// Vosk音声認識ライブラリを使用して音声をテキストへ変換するクラス
+/// 指定したキーフレーズを検出し、録音時間内に
+/// 検出・未検出に応じたイベントを発行する
+/// 音声入力および録音の管理にはVoiceProcessorを使用する
+/// </summary>
 [RequireComponent(typeof(VoiceProcessor))]
 public class SpeechToText : MonoBehaviour
 {
@@ -16,7 +22,7 @@ public class SpeechToText : MonoBehaviour
     private string _grammar = "";
     private List<string> _keyPhrases = new();
 
-    // set key phrases and update grammar accordingly
+    // キーフレーズを設定し、それに合わせてGrammarを更新する
     public List<string> KeyPhrases { set { _keyPhrases = value; UpdateGrammar(); } }
 
     public event System.Action<string, int> OnKeyPhraseDetected;
@@ -58,7 +64,7 @@ public class SpeechToText : MonoBehaviour
             _phraseDetected = true;
             OnKeyPhraseDetected?.Invoke(result, NormalizedVolume());
             // Debug.LogError("💖 KYUN DETECTED 💖");
-            CancelInvoke(nameof(StopRecording));   // cancel the auto stop if key phrase detected
+            CancelInvoke(nameof(StopRecording));   // キーフレーズが検出されたら自動停止をキャンセルする
             StopRecording();
         }
     }
@@ -83,7 +89,7 @@ public class SpeechToText : MonoBehaviour
 
         _voiceProcessor.StartRecording();
 
-        // stop recording after specified duration
+        // 指定時間経過後に録音を停止する
         Invoke(nameof(StopRecording), duration);
     }
 
@@ -99,8 +105,9 @@ public class SpeechToText : MonoBehaviour
         _rec?.Dispose();
         _rec = null;
 
-        // when recording stops without detecting key phrase by timeout, invoke un-detected event
-        if (!_phraseDetected) OnKeyPhraseUnDetected?.Invoke("Not detected & Recording stopped because of timeout", NormalizedVolume());
+        // タイムアウトまでキーフレーズが検出されなかった場合、
+        // 未検出イベントを発行する
+        if (!_phraseDetected) OnKeyPhraseUnDetected?.Invoke("タイムアウトにより録音終了（未検出）", NormalizedVolume());
     }
 
     private void UpdateGrammar()

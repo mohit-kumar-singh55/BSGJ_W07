@@ -3,6 +3,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// このクラスは、スクリーンのフェードイン・フェードアウト効果を実装します。
+/// </summary>
 public class ScreenFader : MonoBehaviour
 {
     private GameObject _fader;

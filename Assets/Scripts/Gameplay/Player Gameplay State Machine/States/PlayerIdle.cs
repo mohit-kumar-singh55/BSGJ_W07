@@ -1,5 +1,10 @@
 using UnityEngine;
 
+/// <summary>
+/// プレイヤーの待機状態を表すステート
+/// 待機状態では、プレイヤーは何もせず、一定時間経過後にペイントステートに遷移する
+/// ただし、フィーバーモード中はペイントステートに遷移しない
+/// </summary>
 public class PlayerIdle : BaseState<PlayerStateManager.PlayerState>
 {
     private float _idleTimer = 3f;
@@ -12,14 +17,15 @@ public class PlayerIdle : BaseState<PlayerStateManager.PlayerState>
 
     public override void EnterState()
     {
-        // if fever mode is active, directly transition to moe moe state (no painting in fever mode)
+        // フィーバーモード中なら、そのままMoeMoeステートへ遷移する
+        // （フィーバーモード中はお絵描きパートなし）
         if (FeverMode.Instance != null && FeverMode.Instance.IsFeverMode)
         {
             _isFeverMode = true;
             return;
         }
 
-        // just wait for sometime and then transition to painting
+        // 少し待機してからPaintingステートへ遷移する
         _idleTimer = 3f;
         _canTransition = false;
 
@@ -28,7 +34,8 @@ public class PlayerIdle : BaseState<PlayerStateManager.PlayerState>
 
     public override void UpdateState()
     {
-        // stop timer if there is no customer in service, as player cannot paint without customer
+        // 接客中のお客がいない場合はタイマーを停止する
+        // （お客がいないとお絵描きできないため）
         if (CustomersManager.Instance == null || CustomersManager.Instance.CurrentCustomer == null)
             return;
 
@@ -44,7 +51,7 @@ public class PlayerIdle : BaseState<PlayerStateManager.PlayerState>
 
     public override PlayerStateManager.PlayerState GetNextState()
     {
-        // not allow to transition to painting state if there is no customer in service
+        // 接客中のお客がいない場合はPaintingステートへ遷移させない
         bool customerReady = CustomersManager.Instance != null && CustomersManager.Instance.CurrentCustomer != null;
 
         return _isFeverMode && customerReady ?

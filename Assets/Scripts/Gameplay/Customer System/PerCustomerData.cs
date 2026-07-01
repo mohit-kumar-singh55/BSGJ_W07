@@ -1,10 +1,10 @@
 using Unity.Cinemachine;
 using UnityEngine;
 
-// Data of a single Seat of a table
-// Responsible for:
-// Holding data for camera set, food points, customer stand position
-// Which seat is already occupied
+// テーブルの1席分のデータ
+// 役割：
+// カメラセット、料理配置位置、お客の待機位置を保持する
+// 席が使用中かどうかを管理する
 public class PerCustomerData : MonoBehaviour
 {
     [SerializeField] private Transform _foodSpawnPoint;
@@ -16,6 +16,6 @@ public class PerCustomerData : MonoBehaviour
     public Transform CustomerStandPoint => _customerStandPoint;
     public bool IsOccupied;
 
-    // customer allocated on this seat
+    // この席に割り当てられているお客
     public Customer CustomerAllocated { get; set; }
 }

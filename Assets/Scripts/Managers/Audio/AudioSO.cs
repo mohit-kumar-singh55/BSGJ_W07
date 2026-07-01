@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// オーディオクリップとその種類（SFX/BGM）を管理するScriptableObject
+/// Unityエディタ上でオーディオアセットを簡単に設定・管理できる
+/// </summary>
 [CreateAssetMenu(fileName = "New Audio SO", menuName = "AudioSO", order = 0)]
 public class AudioSO : ScriptableObject
 {

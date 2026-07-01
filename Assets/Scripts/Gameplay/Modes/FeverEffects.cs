@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// FeverEffectsはフィーバーモードのエフェクトを管理するクラス
+/// フィーバーモードが開始された際に、UIのポップアップ表示
+/// </summary>
 public class FeverEffects : MonoBehaviour
 {
     [Header("Fever Mode Text Popup")]
@@ -28,7 +32,7 @@ public class FeverEffects : MonoBehaviour
 
     private void OnFeverModeStarted()
     {
-        // spawn fever mode text ui popup
+        // フィーバーモードのテキストUIポップアップを生成する
         _uiManager.SpawnFeverModeTextPopup(_feverModeTextPrefab, _feverModeTextParent, _destroyfeverPopupDelay);
 
         // play fever sfx

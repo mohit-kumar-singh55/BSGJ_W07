@@ -1,8 +1,11 @@
 using UnityEngine;
 
+/// <summary>
+/// PlayerStateContextクラスは、プレイヤーの状態遷移に必要なコンテキスト情報を保持するクラス
+/// </summary>
 public class PlayerStateContext
 {
-    // cinemachine camera transitions are happening via animator
+    // Cinemachineカメラの切り替えはAnimatorで行う
     private Animator _animator;
     private SpeechDetector _speechDetector;
     private Animator _moeEffectAnimator;

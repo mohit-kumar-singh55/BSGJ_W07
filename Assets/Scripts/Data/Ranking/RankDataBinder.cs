@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
+/// <summary>
+/// ランキングシーンのUIにランキングデータをバインドするクラス
+/// </summary>
 [RequireComponent(typeof(RankingManager))]
 public class RankDataBinder : MonoBehaviour
 {

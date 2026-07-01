@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// turn-on the camera
-/// spawn food
+/// このステートではカメラを有効にする
+/// 料理を生成する
 /// </summary>
 public class CustomerInService : BaseState<Customer.CustomerState>
 {
@@ -32,7 +32,7 @@ public class CustomerInService : BaseState<Customer.CustomerState>
         // spawn food
         _foodManager.SpawnFood(_context.FoodPoint);
 
-        // dont show mood when started servicing
+        // 接客開始時は気分を表示しない
         _context.MoodSetter.SetMood(CustomerMood.None);
 
         OnCustomerEnterInService?.Invoke();
@@ -45,7 +45,7 @@ public class CustomerInService : BaseState<Customer.CustomerState>
         // turn off camera
         TurnCamera(false);
 
-        // destroy current food
+        // 現在の料理を削除
         _foodManager.DestroyFood();
     }
 
@@ -56,7 +56,7 @@ public class CustomerInService : BaseState<Customer.CustomerState>
     }
 
     /// <summary>
-    /// Turns on or off the camera
+    /// カメラの有効化/無効化
     /// </summary>
     /// <param name="on"></param>
     public void TurnCamera(bool on = true)
